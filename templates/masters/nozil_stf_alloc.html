@@ -8,50 +8,51 @@
     <!-- Page Title -->
     <div class="mb-4">
         <h3 class="fw-bold">Nozzle Staff Allocation</h3>
-     
     </div>
-
 
     <div class="row g-4">
 
-        <!-- ==========================
-             LEFT SECTION — ALLOCATION FORM
-        =========================== -->
-<div class="col-xl-4 col-lg-5 col-md-12 allocation-fixed">
-    <div class="card shadow-sm h-100 allocation-card">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Allocation Form</h5>
-        </div>
-
-        <div class="card-body">
-            <form>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Select Staff</label>
-                    <select class="form-select" id="staffSelect" required onchange="loadStaffDetails()">
-                        <option value selected>-- Choose Staff --</option>
-                        <option value="all-staffs">All Staffs</option>
-                        <option value="1">John Mathew</option>
-                        <option value="2">Anish Kumar</option>
-                        <option value="3">Krishna Devi</option>
-                        <option value="4">Rahul Nair</option>
-                    </select>
+        <!-- LEFT: Staff Selection -->
+        <div class="col-xl-4 col-lg-5 col-md-12 allocation-fixed">
+            <div class="card shadow-sm h-100 allocation-card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Allocation Form</h5>
                 </div>
-            </form>
+                <div class="card-body">
+                    <form method="POST" id="allocationForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Select Staff</label>
+                            <select class="form-select" id="staffSelect" name="staff_id" required onchange="loadStaffDetails()">
+                                <option value="" selected>-- Choose Staff --</option>
+                                <option value="all-staffs">All Staffs</option>
+                                {% for staff in staff_list %}
+                                    <option value="{{ staff.id }}" {% if editing_staff and staff.id == editing_staff.id %}selected{% endif %}>
+                                        {{ staff.staff_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Hidden inputs for dynamic allocations -->
+                        <div id="dynamicAllocations"></div>
+
+                        <button type="submit" class="btn btn-warning w-100 mt-3">
+                            Save Allocations
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-
-
-        <!-- ==========================
-             RIGHT TOP — STAFF DETAILS TABLE
-        =========================== -->
+        <!-- RIGHT: Staff Allocation Details -->
         <div class="col-xl-8 col-lg-7 col-md-12">
-            <div class="card shadow-sm d-none" id="detailsCard">
+
+            <!-- STAFF DETAILS TABLE -->
+            <div class="card shadow-sm {% if not staff_list %}d-none{% endif %}" id="detailsCard">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0">Staff Allocation Details</h5>
                 </div>
-
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle mb-0">
@@ -63,52 +64,77 @@
                                     <th class="text-center">Edit</th>
                                 </tr>
                             </thead>
-                            <tbody id="staffTableBody"></tbody>
+<tbody id="staffTableBody">
+{% for row in staff_table_data %}
+    <tr>
+        <td>{{ row.staff.staff_name }}</td>
+
+        {% if row.allocations %}
+            <td>
+                {% for alloc in row.allocations %}
+                    {{ alloc.tank_name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for alloc in row.allocations %}
+                    {{ alloc.nozzle_name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        {% else %}
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        {% endif %}
+
+        <td class="text-center">
+            <button class="btn btn-warning btn-sm" onclick="openEditForm({{ row.staff.id }})">
+                Edit
+            </button>
+        </td>
+    </tr>
+{% empty %}
+    <tr>
+        <td colspan="4" class="text-center">No staff found.</td>
+    </tr>
+{% endfor %}
+</tbody>
+
+
+
+
+
+
+
+
+
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- ==========================
-                 RIGHT BOTTOM — EDIT FORM
-            =========================== -->
+            <!-- EDIT FORM -->
             <div class="card shadow-sm mt-4 d-none" id="editFormCard">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Already Allocated Tank And Nozzle</h5>
+                    <h5 class="mb-0">Edit Allocations</h5>
                 </div>
-
                 <div class="card-body">
 
-                    <!-- TABLE -->
+                    <!-- Allocations Table -->
                     <div class="table-responsive mb-3">
-                        <table class="table table-bordered text-center align-middle">
-                            <thead class="bg-primary text-white">
+                        <table class="table table-bordered text-center align-middle" id="editAllocatedTable">
+                            <thead class="bg-primary text-black">
                                 <tr>
-                                    <th>PRODUCT NAME</th>
-                                    <th>TANK NAME</th>
-                                    <th>NOZZLE NAME</th>
-                                    <th>DELETE</th>
+                                    <th>Product Name</th>
+                                    <th>Tank Name</th>
+                                    <th>Nozzle Name</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="editAllocatedBody"></tbody>
                         </table>
                     </div>
 
-                    <!-- DATE AND TIME -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Date</label>
-                            <input type="date" class="form-control" id="editDate">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Time</label>
-                            <input type="time" class="form-control" id="editTime">
-                        </div>
-                    </div>
-
-                    <h5 class="fw-bold mb-3">Change Tank And Nozzle</h5>
-
-                    <!-- CHANGE TABLE -->
+                    <!-- Add New Allocation -->
+                    <h5 class="fw-bold mb-3">Add New Allocation</h5>
                     <div class="table-responsive mb-3">
                         <table class="table table-bordered text-center align-middle">
                             <thead class="bg-primary text-black">
@@ -116,49 +142,40 @@
                                     <th>Product Name</th>
                                     <th>Tank Name</th>
                                     <th>Nozzle Name</th>
+                                    <th>Add</th>
                                 </tr>
                             </thead>
-                            <tbody id="editChangeBody">
+                            <tbody>
                                 <tr>
                                     <td>
-                                        <select class="form-select" id="editProduct">
-                                            <option>SPEED 1 TST FUEL</option>
-                                            <option>DIESEL</option>
+                                        <select class="form-select" id="newProduct">
+                                            {% for product in tank_entries %}
+                                                <option value="{{ product.product_name }}">{{ product.product_name }}</option>
+                                            {% endfor %}
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-select" id="editTank">
-                                            <option>TANK A</option>
-                                            <option>TANK B</option>
-                                            <option>TANK C</option>
+                                        <select class="form-select" id="newTank">
+                                            {% for product in tank_entries %}
+                                                <option value="{{ product.tank.tank_name }}">{{ product.tank.tank_name }}</option>
+                                            {% endfor %}
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-select" id="editNozzle">
-                                            <option>Select All Nozzle</option>
-                                            <option>Nozzle 1</option>
-                                            <option>Nozzle 2</option>
-                                            <option>Nozzle 3</option>
+                                        <select class="form-select" id="newNozzle">
+                                            {% for nozzle in nozzle_entries %}
+                                                <option value="{{ nozzle.nozzle_name }}">{{ nozzle.nozzle_name }}</option>
+                                            {% endfor %}
                                         </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-success btn-sm" onclick="addAllocation()">
+                                            Add
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-
-                    <!-- ACTION BUTTONS -->
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-success rounded-circle" style="width:50px;height:50px;">
-                            <i class="ri-add-line fs-3"></i>
-                        </button>
-
-                        <button class="btn btn-danger rounded-circle" style="width:50px;height:50px;">
-                            <i class="ri-delete-bin-5-line fs-4"></i>
-                        </button>
-                    </div>
-
-                    <div class="mt-4">
-                        <button class="btn btn-warning w-100">Save</button>
                     </div>
 
                 </div>
@@ -168,82 +185,174 @@
 
     </div> <!-- END ROW -->
 
-
+</div>
 
 <!-- JS SECTION -->
 <script>
+/* ===============================
+   STAFF DATA FROM DJANGO
+================================ */
+const staffData = [
+{% for staff in staff_list %}
+    {
+        id: {{ staff.id }},
+        staff_name: "{{ staff.staff_name|escapejs }}",
+        allocations: [
+            {% for alloc in staff.nozzle_allocations.all %}
+            {
+                product: "{{ alloc.product_name|escapejs }}",
+                tank: "{{ alloc.tank_name|escapejs }}",
+                nozzle: "{{ alloc.nozzle_name|escapejs }}"
+            },
+            {% endfor %}
+        ]
+    },
+{% endfor %}
+];
 
-    // Dummy staff allocation list
-    const staffData = [
-        { id: 1, name: "John Mathew", product:"Speed 1 Fuel", tank: "Tank A", nozzle: "Nozzle 1" },
-        { id: 2, name: "Anish Kumar", product:"Diesel", tank: "Tank B", nozzle: "Nozzle 3" },
-        { id: 3, name: "Krishna Devi", product:"Speed 1 Fuel", tank: "Tank A", nozzle: "Nozzle 2" },
-        { id: 4, name: "Rahul Nair", product:"Diesel", tank: "Tank C", nozzle: "Nozzle 1" }
-    ];
+const dynamicAllocations = document.getElementById("dynamicAllocations");
 
-    function loadStaffDetails() {
-        const selectedStaff = document.getElementById("staffSelect").value;
-        const detailsCard = document.getElementById("detailsCard");
-        const tableBody = document.getElementById("staffTableBody");
 
-        tableBody.innerHTML = "";
-        if (!selectedStaff) return;
+/* ===============================
+   OPEN EDIT FORM
+================================ */
 
-        detailsCard.classList.remove("d-none");
 
-        let filtered = staffData;
+function openEditForm(staffId) {
+    const card = document.getElementById("editFormCard");
+    const tableBody = document.getElementById("editAllocatedBody");
+    const staff = staffData.find(s => s.id == staffId);
 
-        if (selectedStaff !== "all-staffs") {
-            filtered = staffData.filter(s => s.id == selectedStaff);
-        }
+    tableBody.innerHTML = "";
+    dynamicAllocations.innerHTML = "";
 
-        filtered.forEach(staff => {
+    staff.allocations.forEach(alloc => {
+        addAllocationRow(alloc.product, alloc.tank, alloc.nozzle);
+    });
+
+    card.classList.remove("d-none");
+}
+
+
+/* ===============================
+   LOAD STAFF DETAILS
+================================ */
+function loadStaffDetails() {
+    const selectedStaff = document.getElementById("staffSelect").value;
+    const detailsCard = document.getElementById("detailsCard");
+    const tableBody = document.getElementById("staffTableBody");
+
+    tableBody.innerHTML = "";
+
+    if (!selectedStaff) {
+        detailsCard.classList.add("d-none");
+        return;
+    }
+
+    detailsCard.classList.remove("d-none");
+
+    let filteredStaff = staffData;
+    if (selectedStaff !== "all-staffs") {
+        filteredStaff = staffData.filter(s => s.id == selectedStaff);
+    }
+
+    filteredStaff.forEach(staff => {
+if (staff.allocations.length === 0) {
+    tableBody.innerHTML += `
+        <tr>
+            <td>${staff.staff_name}</td>
+            <td>-</td>
+            <td>-</td>
+            <td class="text-center">
+                <button class="btn btn-warning btn-sm"
+                        onclick="openEditForm(${staff.id})">
+                    Edit
+                </button>
+            </td>
+        </tr>`;
+}
+
+        staff.allocations.forEach(alloc => {
             tableBody.innerHTML += `
                 <tr>
-                    <td>${staff.name}</td>
-                    <td>${staff.tank}</td>
-                    <td>${staff.nozzle}</td>
+                    <td>${staff.staff_name}</td>
+                    <td>${alloc.tank}</td>
+                    <td>${alloc.nozzle}</td>
                     <td class="text-center">
                         <button class="btn btn-warning btn-sm"
                                 onclick="openEditForm(${staff.id})">
-                                Edit
+                            Edit
                         </button>
                     </td>
-                </tr>
-            `;
+                </tr>`;
         });
+    });
+}
+
+
+/* ===============================
+   ADD NEW ALLOCATION
+================================ */
+function addAllocation() {
+    const product = document.getElementById("newProduct").value;
+    const tank = document.getElementById("newTank").value;
+    const nozzle = document.getElementById("newNozzle").value;
+
+    if (!product || !tank || !nozzle) {
+        alert("Please select Product, Tank and Nozzle");
+        return;
     }
 
-    function openEditForm(staffId) {
-        const card = document.getElementById("editFormCard");
-        const table = document.getElementById("editAllocatedBody");
+    addAllocationRow(product, tank, nozzle);
+}
 
-        let staff = staffData.find(s => s.id == staffId);
-        table.innerHTML = `
-            <tr>
-                <td>${staff.product}</td>
-                <td>${staff.tank}</td>
-                <td>${staff.nozzle}</td>
-                <td>
-                    <button class="btn btn-danger btn-sm">
-                        <i class="ri-delete-bin-line"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
+/* ===============================
+   ADD ROW + HIDDEN INPUTS
+================================ */
+function addAllocationRow(product, tank, nozzle) {
+    const tableBody = document.getElementById("editAllocatedBody");
 
-        // Populate edit inputs
-        document.getElementById("editProduct").value = staff.product;
-        document.getElementById("editTank").value = staff.tank;
-        document.getElementById("editNozzle").value = staff.nozzle;
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${product}</td>
+        <td>${tank}</td>
+        <td>${nozzle}</td>
+        <td>
+            <button type="button"
+                class="btn btn-danger btn-sm"
+                onclick="removeRow(this)">
+                Delete
+            </button>
+        </td>
+    `;
+    tableBody.appendChild(row);
 
-        // auto date time
-        document.getElementById("editDate").value = new Date().toISOString().split("T")[0];
-        document.getElementById("editTime").value = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    // 🔥 FIX: REMOVE [] FROM NAMES
+    const div = document.createElement("div");
+    div.innerHTML = `
+        <input type="hidden" name="product_name" value="${product}">
+        <input type="hidden" name="tank_name" value="${tank}">
+        <input type="hidden" name="nozzle_name" value="${nozzle}">
+    `;
+    dynamicAllocations.appendChild(div);
+}
 
-        card.classList.remove("d-none");
-    }
+/* ===============================
+   REMOVE ROW + HIDDEN INPUT
+================================ */
+function removeRow(btn) {
+    const row = btn.closest("tr");
+    const index = Array.from(row.parentNode.children).indexOf(row);
 
+    row.remove();
+    dynamicAllocations.children[index].remove();
+}
+
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", loadStaffDetails);
 </script>
+
 
 {% endblock %}

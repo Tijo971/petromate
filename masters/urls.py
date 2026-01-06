@@ -23,7 +23,7 @@ urlpatterns = [
         path('fuel-rate/export/<str:export_type>/', export_fuel_rates, name='export_fuel_rates'),
         path('fuel-rate/delete/<int:pk>/', delete_fuel_rate, name='delete_fuel_rate'),
 
-    path('nozilstfallocation/', nozilstfallocationview.as_view(), name='nozilstfallocation'),
+    path("nozzle-staff-alloc/", NozzleStaffAllocView.as_view(), name="nozzle_staff_alloc"),
     path('entry/create/', EntryMasterView.as_view(), name='entry_master'),
     path('entry/delete/<int:pk>/', EntryDeleteView.as_view(), name='entry_delete'),
     path('product-delete/<int:pk>/', ProductDeleteView.as_view(), name='product_delete'), 
