@@ -1,0 +1,506 @@
+<aside class="app-sidebar sticky bg-bd" id="sidebar">
+{% load static %}
+    <!-- Sidebar Logo:Start -->
+    <div class="main-sidebar-header border-0"
+        style="background:#0d0d0d; box-shadow: -8px 0px 8px #0b0b0b;">
+        <a href="{% url 'masters:dashboard' %}" class="header-logo">
+            <img src="{% static 'web/img/PETROMATE NEW LOGO.png' %}"
+                alt="logo"
+                class="logo desktop-logo img-fluid"
+                style="width:150px;">
+
+            <img src="{% static 'web/img/PETROMATE NEW LOGO.png' %}" alt="logo"
+                class="logo toggle-dark">
+            <img src="{% static 'web/img/PETROMATE NEW LOGO.png' %}" alt="logo"
+                class="logo desktop-dark">
+            <img src="{% static 'web/img/PETROMATE NEW LOGO.png' %}" alt="logo"
+                class="logo toggle-logo">
+        </a>
+    </div>
+    <!-- Sidebar Logo:End -->
+
+    <div class="main-sidebar" id="sidebar-scroll">
+
+        <!-- Menu:Start -->
+        <nav class="main-menu-container nav nav-pills flex-column sub-open">
+
+            <div class="slide-left" id="slide-left">
+                <!-- Arrow icon in black -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000"
+                    width="24" height="24" viewBox="0 0 24 24">
+                    <path
+                        d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
+                </svg>
+            </div>
+
+            <ul class="main-menu">
+
+                <!-- Dashboard -->
+                <li class="slide mb-2 mt-3">
+                    <a href="{% url 'masters:dashboard' %}"
+                        class="side-menu__item">
+                        <i class="ri-dashboard-line side-menu__icon"
+                            style="color:#000;"></i>
+                        <span class="side-menu__label"
+                            style="color:#000;">Dashboard</span>
+                    </a>
+                </li>
+
+                <!-- Masters -->
+                <li class="slide has-sub mb-2">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-database-2-line side-menu__icon"
+                            style="color:#000;"></i>
+                        <span class="side-menu__label"
+                            style="color:#000;">Masters</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle"
+                            style="color:#000;"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide side-menu__label1">
+                            <a href="javascript:void(0)">Masters</a>
+                        </li>
+
+                        <!-- Admin Panel Masters -->
+
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Admin Panel
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:modeofpay' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Mode of Pay</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:taxmaster' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Tax Master</a></li>
+
+                                <li class="slide"><a
+                                        href="{% url 'masters:stockadjustmentview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Stock
+                                        Adjustment</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- charts -->
+
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Charts
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:calibrationchart' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Calibration
+                                        Chart</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:densitychartview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Density
+                                        Chart</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Reset settlements -->
+
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Reset Settlements
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:resetshiftview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Shiftwise
+                                        reset</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:deleteshiftview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Delete
+                                        shift</a></li>
+
+                            </ul>
+                        </li>
+
+                        <!-- Main Masters -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Main Masters
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:productcategory' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Product
+                                        Category</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:tankmaster' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Tank
+                                        Master</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:entry_master' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Product
+                                        Master</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:fuel_nozzle_master' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Tank
+                                        & Nozzle</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:fuel_rate' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Manage Fuel
+                                        Rate</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:nozilstfallocation' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Nozzle Staff
+                                        Allocation
+                                    </a></li>
+                            </ul>
+                        </li>
+
+                        <!-- CRM -->
+
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">CRM
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:vehicle_type_master' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Vehicle
+                                        Type</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:managecustomerview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Manage
+                                        Customer</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:indentissueview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Indent
+                                        Issue</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:customeroutstandingview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Customers
+                                        Outstandings</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- suppliers -->
+
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Suppliers
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:managesupplierview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Manage
+                                        Suppliers</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:supplieroutstandingview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Suppliers
+                                        Outstanding</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Staff Masters -->
+
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Staffs
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:staffmaster' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Manage
+                                        Staffs</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Account Masters -->
+
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Account Masters
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+                            <ul class="slide-menu child2">
+                                <li class="slide"><a
+                                        href="{% url 'masters:groupmaster' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Group
+                                        Master</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:ledgermaster' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Ledger
+                                        Master</a></li>
+                                <li class="slide"><a
+                                        href="{% url 'masters:bankdetailsview' %}"
+                                        class="side-menu__item"
+                                        style="color:#000;">Bank
+                                        Details</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <!-- Transactions -->
+                <li
+                    class="slide has-sub mb-2 {% if 'transactions' in request.path or current_url == 'managepurchaseview' or current_url == 'purchasereturn' or current_url == 'openingbalance' or current_url == 'creditsale' or current_url == 'individualsale' or current_url == 'salesreturn' %}open{% endif %}">
+
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-bank-line side-menu__icon"
+                            style="color:#000;"></i>
+                        <span class="side-menu__label"
+                            style="color:#000;">Transactions</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle"
+                            style="color:#000;"></i>
+                    </a>
+
+                    <ul
+                        class="slide-menu child1 {% if 'transactions' in request.path or current_url == 'managepurchaseview' or current_url == 'purchasereturn' or current_url == 'openingbalance' or current_url == 'creditsale' or current_url == 'individualsale' or current_url == 'salesreturn' %}open{% endif %}">
+
+                        <!-- PROCUREMENT -->
+                        <li
+                            class="slide has-sub {% if current_url == 'managepurchaseview' or current_url == 'purchasereturn' %}open{% endif %}">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">
+                                Procurement
+                                <i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i>
+                            </a>
+
+                            <ul
+                                class="slide-menu child2 {% if current_url == 'managepurchaseview' or current_url == 'purchasereturn' %}open{% endif %}">
+                                <li class="slide">
+                                    <a
+                                        href="{% url 'transactions:managepurchaseview' %}"
+                                        class="side-menu__item {% if current_url == 'managepurchaseview' %}active{% endif %}"
+                                        style="color:#000;">Manage Purchase</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a
+                                        href="{% url 'transactions:purchasereturn' %}"
+                                        class="side-menu__item {% if current_url == 'purchasereturn' %}active{% endif %}"
+                                        style="color:#000;">Purchase Return</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- DAILY TRANSACTIONS -->
+                        <li
+                            class="slide has-sub {% if current_url == 'openingbalance' or current_url == 'creditsale' or current_url == 'individualsale' %}open{% endif %}">
+                            <a href="javascript:void(0);"
+                                class="side-menu__item">Daily Transactions<i
+                                    class="ri-arrow-down-s-line side-menu__angle"></i></a>
+
+                            <ul
+                                class="slide-menu child2 {% if current_url == 'openingbalance' or current_url == 'creditsale' or current_url == 'individualsale' %}open{% endif %}">
+                                <li class="slide">
+                                    <a
+                                        href="{% url 'transactions:openingbalance' %}"
+                                        class="side-menu__item {% if current_url == 'openingbalance' %}active{% endif %}"
+                                        style="color:#000;">Opening Balance</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a
+                                        href="{% url 'transactions:creditsale' %}"
+                                        class="side-menu__item {% if current_url == 'creditsale' %}active{% endif %}"
+                                        style="color:#000;">Credit Sale</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a
+                                        href="{% url 'transactions:individualsale' %}"
+                                        class="side-menu__item {% if current_url == 'individualsale' %}active{% endif %}"
+                                        style="color:#000;">Individual Credit
+                                        Sale</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- SALES RETURN -->
+                        <li class="slide">
+                            <a href="{% url 'transactions:salesreturn' %}"
+                                class="side-menu__item {% if current_url == 'salesreturn' %}active{% endif %}"
+                                style="color:#000;">Sales Return</a>
+                        </li>
+
+                        <!-- Generate Invoice -->
+                        <li class="slide">
+                            <a href="{% url 'transactions:generateinvoice'%}" class="side-menu__item"
+                                style="color:#000;">Generate Invoice</a>
+                        </li>
+
+                             <!-- Billing -->
+                        <li class="slide">
+                            <a href="{% url 'transactions:billing' %}" class="side-menu__item"
+                                style="color:#000;">Billing</a>
+                        </li>
+
+                                                     <!-- Dip Entry -->
+                        <li class="slide">
+                            <a href="{% url 'transactions:dipentry' %}" class="side-menu__item"
+                                style="color:#000;">Dip Entry</a>
+                        </li>
+
+                                                               <!-- Tank Density -->
+                        <li class="slide">
+                            <a href="{% url 'transactions:tankdencityview' %}" class="side-menu__item"
+                                style="color:#000;">Tank Density</a>
+                        </li>
+
+                                                                      <!-- Tanker Density -->
+                        <li class="slide">
+                            <a href="{% url 'transactions:tankerdensityview' %}" class="side-menu__item"
+                                style="color:#000;">Tanker Density</a>
+                        </li>
+
+                          <li class="slide">
+                            <a href="{% url 'transactions:transaction' %}" class="side-menu__item"
+                                style="color:#000;">Staff Daily Transactions</a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <!-- Leads -->
+                <!-- <li class="slide has-sub mb-2">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-user-follow-line side-menu__icon" style="color:#000;"></i>
+                        <span class="side-menu__label" style="color:#000;">Leads</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle" style="color:#000;"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">Lead Reference</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">New Lead</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">View Leads</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">Quotations</a></li>
+                    </ul>
+                </li> -->
+
+                <!-- Projects -->
+                <!-- <li class="slide has-sub mb-2">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-folder-line side-menu__icon" style="color:#000;"></i>
+                        <span class="side-menu__label" style="color:#000;">Projects</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle" style="color:#000;"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">New Project</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">View Projects</a></li>
+                    </ul>
+                </li> -->
+
+                <!-- Schedules -->
+                <!-- <li class="slide has-sub mb-2">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-calendar-line side-menu__icon" style="color:#000;"></i>
+                        <span class="side-menu__label" style="color:#000;">Schedules</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle" style="color:#000;"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">New Schedule</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">View Schedules</a></li>
+                    </ul>
+                </li> -->
+
+                <!-- My Team -->
+                <!-- <li class="slide has-sub mb-2">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-team-line side-menu__icon" style="color:#000;"></i>
+                        <span class="side-menu__label" style="color:#000;">My Team</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle" style="color:#000;"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">Manage Teams</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item" style="color:#000;">Manage Members</a></li>
+                    </ul>
+                </li> -->
+
+                <!-- Reports -->
+                <li class="slide has-sub mb-2">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-bar-chart-2-line side-menu__icon"
+                            style="color:#000;"></i>
+                        <span class="side-menu__label"
+                            style="color:#000;">Reports</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle"
+                            style="color:#000;"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Project Reports</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Task Reports</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Team Performance</a></li>
+                    </ul>
+                </li>
+
+                <!-- Settings -->
+                <li class="slide has-sub mb-2">
+                    <a href="javascript:void(0);" class="side-menu__item">
+                        <i class="ri-settings-3-line side-menu__icon"
+                            style="color:#000;"></i>
+                        <span class="side-menu__label"
+                            style="color:#000;">Settings</span>
+                        <i class="ri-arrow-down-s-line side-menu__angle"
+                            style="color:#000;"></i>
+                    </a>
+                    <ul class="slide-menu child1">
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Create Role</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Create User</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Profile</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Profile</a></li>
+                        <li class="slide"><a href="#" class="side-menu__item"
+                                style="color:#000;">Support</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
+            <div class="slide-right" id="slide-right">
+                <!-- Arrow icon in black -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000"
+                    width="24" height="24" viewBox="0 0 24 24">
+                    <path
+                        d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
+                </svg>
+            </div>
+
+        </nav>
+        <!-- Menu:End -->
+
+    </div>
+
+</aside>

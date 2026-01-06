@@ -1,0 +1,424 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <h3 class="mt-1 mb-4">Staff Details</h3>
+
+    <!-- ========================== STAFF FORM ============================ -->
+    <div class="col-xl-6">
+        <div class="card custom-card">
+            <div class="card-header justify-content-between">
+                <h5>{{ editing_staff.pk|yesno:'Edit,Add' }} Staff</h5>
+            </div>
+
+            <div class="card-body">
+<form method="post" id="StaffForm" novalidate>
+    {% csrf_token %}
+    {% if editing_staff %}
+        <input type="hidden" name="staff_id" value="{{ editing_staff.pk }}">
+    {% endif %}
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Staff Name <span class="text-danger">*</span></label>
+            {{ staff_form.staff_name }}{{ staff_form.staff_name.errors }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Address</label>
+            {{ staff_form.address }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Phone</label>
+            {{ staff_form.phone }}{{ staff_form.phone.errors }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Mobile <span class="text-danger">*</span></label>
+            {{ staff_form.mobile }}{{ staff_form.mobile.errors }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Open Balance <span class="text-danger">*</span></label>
+            {{ staff_form.open_balance }}{{ staff_form.open_balance.errors }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Dr/Cr <span class="text-danger">*</span></label>
+            {{ staff_form.dr_cr }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Date</label>
+            {{ staff_form.date }}
+        </div>
+        <div class="col-md-6 d-flex align-items-center mt-4">
+            {{ staff_form.nozzle_applicable }}
+            <label class="form-check-label ms-2" for="{{ staff_form.nozzle_applicable.id_for_label }}">
+                Nozzle Applicable
+            </label>
+        </div>
+        <div class="col-md-6 mt-3">
+            <div class="form-check form-switch">
+                {{ staff_form.is_active }}
+                <label class="form-check-label ms-2">Active</label>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- ========================== NOZZLE ALLOCATION ============================ -->
+    <div id="nozzleTableContainer" class="d-none">
+        <h5 class="mb-3">Add Nozzle</h5>
+        <table class="table table-bordered" id="nozzleTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Nozzle Name</th>
+                    <th>Tank Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button type="button" class="btn btn-primary btn-sm" id="addNozzleRow">Add</button>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-warning btn-wave">{{ editing_staff.pk|yesno:'Update,Save' }}</button>
+        <button type="reset" class="btn btn-danger-light btn-wave">Cancel</button>
+    </div>
+</form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================== STAFF LIST ============================ -->
+    <div class="col-xl-6">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Staff List</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <a href="{% url 'masters:export_staff' 'excel' %}" class="btn btn-success"><i class="ri-file-excel-2-line"></i> Export Excel</a>
+                        <a href="{% url 'masters:export_staff' 'pdf' %}" class="btn btn-danger"><i class="ri-file-pdf-line"></i> Export PDF</a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#summaryTable, #detailedTable" placeholder="Search...">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap w-100" id="staffTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sl.No</th>
+                                <th>Action</th>
+                                <th>Staff Name</th>
+                                <th>Mobile</th>
+                                <th>Nozzle Applicable</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in staff_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="?edit={{ staff.id }}" class="text-info"><i class="ri-edit-line p-2"></i></a>
+<i class="text-danger ri-delete-bin-5-line p-2 text-danger"
+   style="cursor:pointer;"
+   onclick="confirmStaffDelete('{{ staff.id }}')">
+</i>
+
+
+<form id="delete-form-{{ staff.id }}"
+      method="post"
+      action="{% url 'masters:delete_staff' staff.id %}"
+      style="display:none;">
+    {% csrf_token %}
+</form>
+                                    
+                                </td>
+                                <td>{{ staff.staff_name }}</td>
+                                <td>{{ staff.mobile }}</td>
+                                <td class="text-center">{% if staff.nozzle_applicable %}<i class="bi bi-fuel-pump text-primary fs-5"></i>{% else %}No{% endif %}</td>
+                                <td>{% if staff.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-danger">Inactive</span>{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                               <tr class="no-data" style="display:none;">
+        <td colspan="6" class="text-center">No data found</td>
+    </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                        <!-- Pagination -->
+        <div class="card-footer border-top-0">
+    <div class="d-flex align-items-center flex-wrap overflow-auto">
+        <div class="mb-2 mb-sm-0">
+            Showing
+            <b>{{ staff_list.start_index }}</b> to
+            <b>{{ staff_list.end_index }}</b> of
+            <b>{{ staff_list.paginator.count }}</b> Staff
+        </div>
+
+        <div class="ms-auto">
+            <ul class="pagination mb-0 overflow-auto">
+
+                {% if staff_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ staff_list.previous_page_number }}">
+                        <i class="ri-arrow-left-s-line"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for i in staff_list.paginator.page_range %}
+                    {% if staff_list.number == i %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                    {% elif i >= staff_list.number|add:'-2' and i <= staff_list.number|add:'2' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if staff_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ staff_list.next_page_number }}">
+                        <i class="ri-arrow-right-s-line"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+
+
+{% if messages %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    {% for message in messages %}
+    Swal.fire({
+        icon: "{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% else %}info{% endif %}",
+        title: "{{ message|escapejs }}",
+        showConfirmButton: false,
+        timer: 2500
+    });
+    {% endfor %}
+});
+</script>
+{% endif %}
+
+
+
+
+
+<!-- ========================== JS for dynamic nozzle allocation ============================ -->
+<script>
+window.NOZZLES = `
+{% for n in nozzle_entries %}
+<option value="{{ n.nozzle_name }}">{{ n.nozzle_name }}</option>
+{% endfor %}
+`;
+
+window.TANKS = `
+{% for t in tank_entries %}
+<option value="{{ t.tank.tank_name }}"
+        data-product="{{ t.product_name }}">
+    {{ t.tank.tank_name }}
+</option>
+{% endfor %}
+`;
+</script>
+
+<script>
+window.EXISTING_ALLOCATIONS = [
+    {% for a in nozzle_allocations %}
+    {
+        nozzle_name: "{{ a.nozzle_name|escapejs }}",
+        tank_name: "{{ a.tank_name|escapejs }}",
+        product_name: "{{ a.product_name|escapejs }}"
+    },
+    {% endfor %}
+];
+
+</script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const checkbox = document.getElementById("id_nozzle_applicable");
+    const container = document.getElementById("nozzleTableContainer");
+    const tbody = document.querySelector("#nozzleTable tbody");
+    const addBtn = document.getElementById("addNozzleRow");
+
+    // 🔒 SAFETY CHECK (THIS WAS MISSING)
+    if (!checkbox || !container || !tbody || !addBtn) {
+        return; // page loaded without form
+    }
+
+    function addRow(data = null) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+        <td>
+            <select name="nozzle_name[]" class="form-select">
+                <option value="">Select Nozzle</option>
+                ${window.NOZZLES}
+            </select>
+        </td>
+
+        <td>
+            <select name="tank_name[]" class="form-select tank-select">
+                <option value="">Select Tank</option>
+                ${window.TANKS}
+            </select>
+        </td>
+
+        <!-- ✅ HIDDEN PRODUCT FIELD -->
+        <td style="display:none;">
+            <input type="hidden"
+                   name="product_name[]"
+                   class="product-name">
+        </td>
+
+        <td>
+            <button type="button"
+                    class="btn btn-danger btn-sm deleteRow">
+                Delete
+            </button>
+        </td>
+    `;
+    tbody.appendChild(tr);
+
+    if (data) {
+        tr.querySelector('[name="nozzle_name[]"]').value = data.nozzle_name;
+        tr.querySelector('[name="tank_name[]"]').value = data.tank_name;
+        tr.querySelector('.product-name').value = data.product_name || "";
+    }
+}
+
+    
+
+    function showTable() {
+        container.classList.remove("d-none");
+        tbody.innerHTML = "";
+
+        if (window.EXISTING_ALLOCATIONS && window.EXISTING_ALLOCATIONS.length) {
+            window.EXISTING_ALLOCATIONS.forEach(addRow);
+        } else {
+            addRow();
+        }
+    }
+
+    function hideTable() {
+        container.classList.add("d-none");
+        tbody.innerHTML = "";
+    }
+
+    checkbox.addEventListener("change", function () {
+        checkbox.checked ? showTable() : hideTable();
+    });
+
+    // ✅ EDIT MODE AUTO LOAD
+    if (checkbox.checked) {
+        showTable();
+    }
+
+    addBtn.addEventListener("click", function () {
+        addRow();
+    });
+
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("deleteRow")) {
+            e.target.closest("tr").remove();
+        }
+    });
+
+});
+</script>
+
+
+<script>
+document.addEventListener("change", function (e) {
+    if (!e.target.classList.contains("tank-select")) return;
+
+    const row = e.target.closest("tr");
+    const selectedOption = e.target.selectedOptions[0];
+
+    const productName = selectedOption.dataset.product || "";
+    row.querySelector(".product-name").value = productName;
+});
+</script>
+
+
+
+<script>
+function confirmStaffDelete(staffId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This staff and all related nozzle allocations will be deleted!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-${staffId}`).submit();
+        }
+    });
+}
+</script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.querySelector(".search-table");
+    const table = document.getElementById("staffTable");
+    const tbody = table.querySelector("tbody");
+    const noDataRow = tbody.querySelector(".no-data");
+
+    searchInput.addEventListener("keyup", function() {
+        const query = this.value.toLowerCase();
+        let visibleCount = 0;
+
+        Array.from(tbody.rows).forEach(row => {
+            if (row.classList.contains("no-data")) return; // skip no-data row
+
+            let match = false;
+            Array.from(row.cells).forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(query)) {
+                    match = true;
+                }
+            });
+
+            if (match) {
+                row.style.display = "";
+                visibleCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        // Show or hide the "No data found" row
+        noDataRow.style.display = visibleCount === 0 ? "" : "none";
+    });
+});
+</script>
+
+
+
+
+{% endblock %}

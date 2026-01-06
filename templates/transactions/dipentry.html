@@ -1,0 +1,263 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-3">
+
+    <!-- Page Title -->
+    <h3 class="mb-4">Dip Entry</h3>
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-7">
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    <h5 class="mb-0">Add Dip Entry</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form class="row g-3">
+
+                        <!-- Dip No -->
+                        <div class="col-md-2">
+                            <label class="form-label">No</label>
+                            <input type="text" class="form-control" placeholder="Dip No" disabled>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="col-md-2">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" value="{{today}}">
+                        </div>
+
+                        <!-- Time -->
+                        <div class="col-md-2">
+                            <label class="form-label">Time</label>
+                            <input type="time" class="form-control" value="{{now_time}}">
+                        </div>
+
+                        <!-- Calculation -->
+                        <div class="col-md-2">
+                            <label class="form-label">Calculation</label>
+                            <select class="form-select">
+                                <option>Select calculation</option>
+                                <option>Calculate</option>
+                                <option>Non Calculate</option>
+                            </select>
+                        </div>
+
+                        <!-- Staff Name -->
+                        <div class="col-md-2">
+                            <label class="form-label">Staff Name<span class="text-danger">*</span></label>
+                            <select class="form-select">
+                                <option>Select Staff</option>
+                                <option>Staff 1</option>
+                                <option>Staff 2</option>
+                            </select>
+                        </div>
+
+                        <!-- Dip Type -->
+                        <div class="col-md-2">
+                            <label class="form-label">Dip Type<span class="text-danger">*</span></label>
+                            <select class="form-select">
+                                <option>Opening</option>
+                                <option>Closing</option>
+                            </select>
+                        </div>
+
+                        <!-- Tank Name -->
+                        <div class="col-md-2">
+                            <label class="form-label">Tank Name<span class="text-danger">*</span></label>
+                            <select class="form-select">
+                                <option>CNG</option>
+                                <option>Petrol</option>
+                                <option>Diesel</option>
+                            </select>
+                        </div>
+
+                        <!-- Show Capacity -->
+                        <div class="col-md-2">
+                            <label class="form-label">Show Capacity</label>
+                            <input type="text" class="form-control" placeholder="Capacity">
+                        </div>
+
+                        <!-- Dip Reading -->
+                        <div class="col-md-2">
+                            <label class="form-label">Dip Reading<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" placeholder="Dip Reading">
+                        </div>
+
+                        <!-- Show Volume -->
+                        <div class="col-md-2">
+                            <label class="form-label">Show - Volume (Ltr)</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <!-- Show Diff In -->
+                        <div class="col-md-2">
+                            <label class="form-label">Show Diff. In</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <!-- Net Volume -->
+                        <div class="col-md-2">
+                            <label class="form-label">Net Volume</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <!-- Current Stock -->
+                        <div class="col-md-2">
+                            <label class="form-label">Current Stock</label>
+                            <input type="text" class="form-control" disabled>
+                        </div>
+
+                        <!-- Difference -->
+                        <div class="col-md-2">
+                            <label class="form-label">Difference</label>
+                            <input type="text" class="form-control" disabled>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-12 mt-3">
+                            <button class="btn btn-warning">Save</button>
+                            <button type="button" class="btn btn-danger-light">Cancel</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE TABLE -->
+        
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Dip Entry List</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="#" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="#" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" placeholder="Search...">
+                    </div>
+                </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped text-nowrap">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Actions</th>
+                                    <th>Dip No</th>
+                                    <th>Date & Time</th>
+                                    <th>Staff Name</th>
+                                    <th>Dip Type</th>
+                                    <th>Tank Name</th>
+                                    <th>Show Capacity</th>
+                                    <th>Dip Reading</th>
+                                    <th>Show Volume (Ltr)</th>
+                                    <th>Show Diff In</th>
+                                    <th>Net Volume</th>
+                                    <th>Book Value</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                     <td>
+                                    <div class="hstack gap-2 fs-15">
+                                        <a href="" class="btn btn-icon btn-sm btn-info-transparent rounded-pill"><i class="ri-edit-line"></i></a>
+                                        <a href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger-transparent rounded-pill"><i class="ri-delete-bin-line"></i></a>
+                                    </div>
+                                </td>
+                                    <td>DIP2025-01</td>
+                                    <td>02/12/2025 - 10:30 AM</td>
+                                    <td>John</td>
+                                    <td>Opening</td>
+                                    <td>Petrol</td>
+                                    <td>10000</td>
+                                    <td>250</td>
+                                    <td>6200</td>
+                                    <td>-20</td>
+                                    <td>6180</td>
+                                    <td>6150</td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                          <div class="d-flex align-items-center flex-wrap overflow-auto">
+                            <div class="mb-2 mb-sm-0">
+                                Showing <b>{{ categories.start_index }}</b> to <b>{{ categories.end_index }}</b> 
+                                of <b>{{ categories.paginator.count }}</b> Product Categories  
+                                <i class="bi bi-arrow-right ms-2 fw-medium"></i>
+                            </div>
+                            <div class="ms-auto">
+                                <ul class="pagination mb-0 overflow-auto">
+                                    {% if categories.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categories.previous_page_number }}">
+                                            <i class="ri-arrow-left-s-line align-middle"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            <i class="ri-arrow-left-s-line align-middle"></i>
+                                        </span>
+                                    </li>
+                                    {% endif %}
+
+                                    {% for i in categories.paginator.page_range %}
+                                        {% if categories.number == i %}
+                                            <li class="page-item active">
+                                                <a class="page-link" href="javascript:void(0);">{{ i }}</a>
+                                            </li>
+                                        {% elif i >= categories.number|add:'-2' and i <= categories.number|add:'2' %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if categories.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categories.next_page_number }}">
+                                            <i class="ri-arrow-right-s-line align-middle"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            <i class="ri-arrow-right-s-line align-middle"></i>
+                                        </span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+
+        
+
+    </div>
+
+</div>
+
+
+{% endblock %}

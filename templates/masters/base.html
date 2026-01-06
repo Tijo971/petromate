@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light"
+    data-header-styles="light" data-menu-styles="light" data-toggled="close">
+
+    <head>
+
+        <!-- Meta Data -->
+        <meta charset="UTF-8">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> PETROMATE </title>
+        <meta name="Description"
+            content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+        <meta name="Author" content="Spruko Technologies Private Limited">
+
+        <!-- Favicon -->
+        <link rel="icon" href="/static/images/favicon.png" type="image/x-icon">
+
+        <!-- Global Theme Color -->
+        <style>
+   :root {
+    --theme-orange: white;
+}
+
+/* ===================== */
+/* SIDEBAR THEME COLORS  */
+/* ===================== */
+.app-sidebar,
+.main-sidebar,
+#sidebar,
+.main-sidebar-header {
+    background-color: var(--theme-orange) !important;
+}
+
+.main-sidebar-header {
+    box-shadow: -8px 0px 8px #e0dfdf !important;
+}
+
+.side-menu__item,
+.side-menu__label {
+    color: #070707 !important;
+}
+
+.side-menu__icon,
+.side-menu__angle {
+    color: #2B5536 !important;
+    fill: #2B5536 !important;
+}
+
+body {
+    background-color: #f9fdfb!important;
+}
+
+.side-menu__item:hover {
+    background: #00000022 !important;
+    border-radius: 5px;
+}
+
+/* ===================== */
+/* HEADER FIXES          */
+/* ===================== */
+.app-header,
+#header,
+header.app-header {
+    background-color: var(--theme-orange) !important;
+    box-shadow: 0 0 8px #fdfdfd !important;
+    color: #000 !important;
+}
+
+.app-header *,
+#header *,
+header.app-header * {
+    color: #000 !important;
+    fill: #000 !important;
+    stroke: #000 !important;
+}
+
+.app-header .bg-primary,
+.app-header .text-primary {
+    background: transparent !important;
+    color: #000 !important;
+}
+
+/* ======================= */
+/* MOBILE RESPONSIVE FIXES */
+/* ======================= */
+@media (max-width: 767px) {
+
+    /* HEADER FIX */
+    .main-header-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .header-content-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+
+    /* LOGO FIX */
+    .horizontal-logo .desktop-logo {
+        max-height: 38px !important;
+        width: auto !important;
+        display: block !important;
+    }
+
+    /* TOGGLE BUTTON FIX */
+    .sidemenu-toggle {
+        z-index: 10001 !important;
+        padding: 4px 8px !important;
+    }
+
+    /* SIDEBAR BEHAVIOR */
+    .app-sidebar,
+    .main-sidebar {
+        position: fixed !important;
+        top: 0;
+        left: -260px !important;
+        width: 260px !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
+        background-color: var(--theme-orange) !important;
+        transition: left 0.35s ease-in-out !important;
+        z-index: 99999 !important;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.25);
+    }
+
+    body.sidebar-open .app-sidebar,
+    body.sidebar-open .main-sidebar {
+        left: 0 !important;
+    }
+
+    /* CONTENT BELOW HEADER */
+    .main-content.app-content {
+        margin-top: 78px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* CLOSE SIDEBAR BY CLICKING OUTSIDE */
+    #responsive-overlay {
+        display: none;
+    }
+
+    body.sidebar-open #responsive-overlay {
+        display: block !important;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.25);
+        z-index: 99990;
+    }
+}
+
+/* TABLE FIX */
+.table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* IMAGE RESPONSIVE */
+img {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* FOOTER */
+footer.footer {
+    width: 100%;
+    position: relative;
+    margin-top: 20px;
+}
+
+/* LOADER FIX */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+}
+
+#loader img {
+    width: 70px !important;
+    height: 70px !important;
+}
+
+</style>
+
+        <!-- Scripts + CSS -->
+        <script
+            src="/static/assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+        <script src="/static/assets/js/main.js"></script>
+        <link id="style"
+            href="/static/assets/libs/bootstrap/css/bootstrap.min.css"
+            rel="stylesheet">
+        <link href="/static/assets/css/styles.css" rel="stylesheet">
+        <link href="/static/assets/css/icons.css" rel="stylesheet">
+        <link href="/static/assets/libs/node-waves/waves.min.css"
+            rel="stylesheet">
+        <link href="/static/assets/libs/simplebar/simplebar.min.css"
+            rel="stylesheet">
+        <link rel="stylesheet"
+            href="/static/assets/libs/flatpickr/flatpickr.min.css">
+        <link rel="stylesheet"
+            href="/static/assets/libs/@simonwep/pickr/themes/nano.min.css">
+        <link rel="stylesheet"
+            href="/static/assets/libs/choices.js/public/assets/styles/choices.min.css">
+        <link rel="stylesheet"
+            href="/static/assets/libs/@tarekraafat/autocomplete.js/css/autoComplete.css">
+        <!-- <link rel="stylesheet" href="/static/styles/base.css">
+        <link rel="stylesheet" href="/static/styles/style.css"> -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+            rel="stylesheet">
+
+    </head>
+
+    <body>
+
+        <!-- Loader -->
+        <div id="loader">
+            <img src="/static/assets/images/media/loader.svg" alt>
+        </div>
+
+        <div class="page bg-bl bg-xlight">
+
+            <header class="app-header sticky" id="header">
+                <div class="main-header-container container-fluid">
+                    <div class="header-content-left">
+
+                        <div class="header-element">
+                            <div class="horizontal-logo">
+                                <a href="/" class="header-logo">
+                                    <img src="/static/images/PETROMATE LOGO.png"
+                                        class="desktop-logo">
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="header-element">
+                            <a class="sidemenu-toggle header-link"
+                                data-bs-toggle="sidebar"
+                                href="javascript:void(0);">
+                                <i class="ri-menu-line fs-3"></i>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <ul class="header-content-right">
+                        <li class="header-element header-theme-mode">
+                            <a href="{% url 'website:home' %}"
+                                class="header-link">
+                                <i class="ri-logout-box-r-line fs-4"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+
+            {% include "masters/sidebar.html" %}
+
+            <div class="main-content app-content pt-3">
+                <div class="container-fluid">
+                    {% block content %}{% endblock content %}
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="footer mt-auto py-3 bg-white text-center">
+            <div class="container">
+                <span class="text-muted">
+                    Copyright ©
+                    <span id="year"></span>
+                    <a href="#" class="text-dark fw-medium">PETROMATE</a>.
+                    Powered by
+                    <a href="https://geosysitsolutions.com/" target="_blank">
+                        <span class="fw-medium text-primary">GEOSYS IT
+                            SOLUTIONSPVT LTD.</span>
+                    </a>
+                </span>
+            </div>
+        </footer>
+
+        <div id="responsive-overlay"></div>
+
+        <!-- JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script
+            src="/static/assets/libs/@popperjs/core/umd/popper.min.js"></script>
+        <script
+            src="/static/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/assets/js/defaultmenu.min.js"></script>
+        <script src="/static/assets/libs/node-waves/waves.min.js"></script>
+        <script src="/static/assets/js/sticky.js"></script>
+        <script src="/static/assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="/static/assets/js/simplebar.js"></script>
+        <script
+            src="/static/assets/libs/@tarekraafat/autocomplete.js/autoComplete.min.js"></script>
+        <script
+            src="/static/assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+        <script src="/static/assets/libs/flatpickr/flatpickr.min.js"></script>
+        <script src="/static/assets/libs/apexcharts/apexcharts.min.js"></script>
+        <script src="/static/assets/js/sales-dashboard.js"></script>
+        <script
+            src="/static/assets/libs/vanilla-wizard/js/wizard.min.js"></script>
+        <script src="/static/assets/js/form-wizard.js"></script>
+        <script src="/static/assets/js/form-wizard-init.js"></script>
+        <script src="/static/assets/js/custom.js"></script>
+        <script
+            src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+        <script
+            src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+        <script
+            src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+        <script
+            src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+        <script
+            src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.6/pdfmake.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script
+            src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <script src="/static/assets/js/custom-switcher.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="/static/assets/js/select2.js"></script>
+        <script src="/static/assets/js/datatables.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/static/js/script.js"></script>
+
+        {% block script %}{% endblock script %}
+
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.querySelector(".sidemenu-toggle");
+            const body = document.body;
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    body.classList.toggle("sidebar-open");
+                });
+            }
+        });
+    </script>
+
+    </body>
+</html>

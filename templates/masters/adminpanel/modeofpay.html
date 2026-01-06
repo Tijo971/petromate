@@ -1,0 +1,302 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- ================= GLOBAL CSRF TOKEN ================= -->
+<input type="hidden" id="global-csrf-token" value="{{ csrf_token }}">
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Bill Type</h3>
+
+    <div class="col-xl-4">
+        <div class="card custom-card">
+            <div class="card-header justify-content-between">
+                <h5>{{ editing_mode.pk|yesno:'Edit,Add' }} Bill Type</h5>
+            </div>
+            <div class="card-body">
+
+                <form method="post" id="ProductCategoryForm" novalidate>
+                    {% csrf_token %}
+                    {% if editing_mode %}
+                        <input type="hidden" name="mode_id" value="{{ editing_mode.pk }}">
+                    {% endif %}
+
+                    <div class="row">
+
+                        <!-- Bill Type Name -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Bill Type Name<span class="text-danger">*</span></label>
+                            {{ form.bill_type_name }}
+                            {% if form.bill_type_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.bill_type_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Select Ledger -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Select Ledger</label>
+                            {{ form.ledger }}
+                            {% if form.ledger.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.ledger.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Display Status -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check form-switch mb-2">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Display Status
+                                </label>
+                            </div>
+                            <a href="{% url 'masters:ledgermaster' %}" class="text-primary fw-semibold">
+                                Manage Ledger
+                            </a>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-warning btn-wave">
+                                {{ editing_mode.pk|yesno:'Update,Save' }}
+                            </button>
+                            <a href="{% url 'masters:modeofpay' %}" class="btn btn-danger-light btn-wave">
+                                Cancel
+                            </a>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= LIST ================= -->
+    <div class="col-xl-8">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Bill Type List</h5>
+            </div>
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="{% url 'masters:export_modeofpay' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:export_modeofpay' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table"
+                               data-target="#searchTable" placeholder="Search...">
+                    </div>
+                </div>
+
+                <div class="table-responsive mt-2">
+                    <table class="table table-bordered text-nowrap w-100" id="searchTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Action</th>
+                                <th>Bill Type Name</th>
+                                <th>Ledger Name</th>
+                                <th>Display Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mode in modes %}
+                            <tr>
+                                <td>{{ forloop.counter0|add:modes.start_index }}</td>
+                                <td>
+                                    <a href="?edit={{ mode.pk }}" class="text-info fs-14 lh-1">
+                                        <i class="ri-edit-line p-2"></i>
+                                    </a>
+
+                                    {% if mode.is_used %}
+                                        <a href="javascript:void(0);" class="text-warning fs-14 lh-1">
+                                            <i class="ri-lock-line p-1"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="javascript:void(0);"
+                                           data-url="{% url 'masters:delete_modeofpay' mode.pk %}"
+                                           class="text-danger fs-14 lh-1 delete-btn">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ mode.bill_type_name }}</td>
+                                <td>{{ mode.ledger.ledger_name }}</td>
+                                <td>
+                                    {% if mode.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    No Bill Type found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Pagination -->
+            <div class="card-footer border-top-0">
+                <div class="d-flex align-items-center flex-wrap overflow-auto">
+                    <div>
+                        Showing <b>{{ modes.start_index }}</b> to
+                        <b>{{ modes.end_index }}</b> of
+                        <b>{{ modes.paginator.count }}</b> Bill Types
+                    </div>
+                    <div class="ms-auto">
+                        <ul class="pagination mb-0">
+                            {% if modes.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ modes.previous_page_number }}">
+                                        <i class="ri-arrow-left-s-line"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for i in modes.paginator.page_range %}
+                                {% if modes.number == i %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ i }}</span>
+                                    </li>
+                                {% elif i >= modes.number|add:'-2' and i <= modes.number|add:'2' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if modes.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ modes.next_page_number }}">
+                                        <i class="ri-arrow-right-s-line"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ---------------- FORM VALIDATION ----------------
+    const form = document.getElementById("ProductCategoryForm");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            let isValid = true;
+            const nameField = form.querySelector('input[name="bill_type_name"]');
+            if (!nameField.value.trim()) {
+                nameField.classList.add('is-invalid');
+                let errorDiv = nameField.nextElementSibling;
+                if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.className = 'invalid-feedback d-block';
+                    nameField.parentNode.appendChild(errorDiv);
+                }
+                errorDiv.textContent = 'Bill Type Name is required.';
+                isValid = false;
+            }
+            if (!isValid) e.preventDefault();
+        });
+    }
+
+    // ---------------- DELETE MODE OF PAY ----------------
+    document.querySelectorAll(".delete-btn").forEach(el => {
+        el.addEventListener("click", function () {
+            const url = this.dataset.url;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This Bill Type will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = url;
+
+                    // Attach CSRF token from hidden input
+                    const csrfToken = document.getElementById('global-csrf-token');
+                    if (csrfToken) {
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = 'csrfmiddlewaretoken';
+                        csrfInput.value = csrfToken.value;
+                        form.appendChild(csrfInput);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // ---------------- SEARCH TABLE ----------------
+    function searchTable(e) {
+        const tableId = e.target.dataset.target;
+        const filter = e.target.value.toLowerCase();
+        const table = document.querySelector(tableId);
+        if (!table) return;
+        table.querySelectorAll('tbody tr').forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    }
+
+    document.querySelectorAll(".search-table").forEach(el =>
+        el.addEventListener("input", searchTable)
+    );
+
+    // ---------------- SUCCESS MESSAGE ----------------
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{{ message|safe }}',
+                    confirmButtonColor: '#5bc0de',
+                });
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+});
+</script>
+
+{% endblock %}

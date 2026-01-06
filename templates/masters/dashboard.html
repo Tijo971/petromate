@@ -1,0 +1,730 @@
+{% extends "masters/base.html" %}
+
+{% block content %}
+
+<!-- Start::page-header -->
+<div
+    class="d-flex align-items-center justify-content-between my-3 page-header-breadcrumb flex-wrap gap-2">
+    <div>
+        <p class="fw-medium fs-18 mb-0">Welcome Anand Fuels</p>
+        <p class="fs-13 text-muted mb-0">Let's make today a productive one!</p>
+        <p class="fw-medium fs-10 mb-0" id="liveClock">
+            Loading date & time...
+        </p>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="d-flex gap-2">
+            <div class="position-relative">
+                <button class="btn btn-info btn-wave" type="button"
+                    id="dropdownMenuClickableInside" data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside" aria-expanded="false">
+                    Filter By <i class="ri-arrow-down-s-fill ms-1"></i>
+                </button>
+                <ul class="dropdown-menu"
+                    aria-labelledby="dropdownMenuClickableInside">
+                    <li><a class="dropdown-item"
+                            href="javascript:void(0);">Today</a></li>
+                    <li><a class="dropdown-item"
+                            href="javascript:void(0);">Yesterday</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);">Last
+                            7 Days</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);">Last
+                            30 Days</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);">Last
+                            6 Months</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);">Last
+                            Year</a></li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary btn-icon btn-wave"
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-title="Download">
+                <i class="ti ti-download"></i>
+            </button>
+            <button class="btn btn-success btn-icon btn-wave"
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-title="Share">
+                <i class="ti ti-share-3"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<!-- End::page-header -->
+
+<!-- Start:: row-1 -->
+<div class="row">
+    <div class="col-xl-12">
+        <div class="row">
+
+            <!-- Row 1 -->
+
+            <!-- Total Projects -->
+            <div class="col-xl-3 col-md-4">
+                <div class="card custom-card overflow-hidden">
+                    <div class="card-body">
+                        <div class="d-flex gap-3">
+                            <div
+                                class="avatar avatar-md bg-info text-white d-flex align-items-center justify-content-center rounded">
+                                <i class="bi bi-kanban fs-4"></i>
+                            </div>
+                            <div class="flex-fill">
+                                <div
+                                    class="fw-medium fs-13 mb-1 text-dark">Active
+                                    Projects</div>
+                                <div
+                                    class="fs-22 fw-semibold mb-1 text-info">24</div>
+                                <div class="d-flex align-items-center fs-11">
+                                    <span
+                                        class="text-success fw-semibold me-1">+5</span>
+                                    <span class="text-muted">This Month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members -->
+            <div class="col-xl-3 col-md-4">
+                <div class="card custom-card overflow-hidden">
+                    <div class="card-body">
+                        <div class="d-flex gap-3">
+                            <div
+                                class="avatar avatar-md bg-secondary text-white d-flex align-items-center justify-content-center rounded">
+                                <i class="bi bi-people fs-4"></i>
+                            </div>
+                            <div class="flex-fill">
+                                <div class="fw-medium fs-13 mb-1 text-dark">Team
+                                    Members</div>
+                                <div
+                                    class="fs-22 fw-semibold mb-1 text-secondary">150</div>
+                                <div class="d-flex align-items-center fs-11">
+                                    <span class="text-success fw-semibold me-1">
+                                        <i
+                                            class="bi bi-graph-up-arrow me-1"></i>120
+                                    </span>
+                                    <span class="text-muted">Assigned</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profit & Loss -->
+            <div class="col-xl-3 col-md-4">
+                <div class="card custom-card overflow-hidden">
+                    <div class="card-body">
+                        <div class="d-flex gap-3">
+                            <div
+                                class="avatar avatar-md bg-success text-white d-flex align-items-center justify-content-center rounded">
+                                <i class="bi bi-cash-coin fs-4"></i>
+                            </div>
+                            <div class="flex-fill">
+                                <div
+                                    class="fw-medium fs-13 mb-1 text-dark">Profit
+                                    / Loss</div>
+                                <div
+                                    class="fs-22 fw-semibold mb-1 text-success">₹82,500</div>
+                                <div class="d-flex align-items-center fs-11">
+                                    <span class="text-success fw-semibold me-1">
+                                        <i
+                                            class="bi bi-graph-up-arrow me-1"></i>12.5%
+                                    </span>
+                                    <span class="text-muted">vs Last
+                                        Month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget vs Expense -->
+            <div class="col-xl-3 col-md-4">
+                <div class="card custom-card overflow-hidden">
+                    <div class="card-body">
+                        <div class="d-flex gap-3">
+                            <div
+                                class="avatar avatar-md bg-warning text-white d-flex align-items-center justify-content-center rounded">
+                                <i class="bi bi-pie-chart fs-4"></i>
+                            </div>
+                            <div class="flex-fill">
+                                <div
+                                    class="fw-medium fs-13 mb-1 text-dark">Budget
+                                    Used</div>
+                                <div
+                                    class="fs-22 fw-semibold mb-1 text-warning">68%</div>
+                                <div class="d-flex align-items-center fs-11">
+                                    <span
+                                        class="text-danger fw-semibold me-1">₹2.5M</span>
+                                    <span class="text-muted">of ₹3.7M</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+
+            <!-- Chart: Budget VS Total Expense -->
+            <div class="col-xl-6 mb-3">
+                <div class="card custom-card h100">
+                    <div class="card-header">
+                        <div class="card-title">Budget VS Total Expense</div>
+                    </div>
+                    <div class="card-body">
+                        <div id="project-budget-expense-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Breakdown -->
+            <div class="col-xl-6 mb-3">
+                <div class="card custom-card h100">
+                    <div class="card-header justify-content-between">
+                        <div class="card-title">Projects Breakdown</div>
+                        <button class="btn btn-sm btn-info-light">
+                            View All <i
+                                class="ti ti-arrow-narrow-right ms-2"></i>
+                        </button>
+                    </div>
+                    <div class="card-body p-0 py-2 my-1">
+                        <div class="table-responsive">
+                            <table class="table text-nowrap align-middle">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Project</th>
+                                        <th scope="col">Budget</th>
+                                        <th scope="col">Expense</th>
+                                        <th scope="col">Change</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    <tr>
+                                        <th>Residential Complex</th>
+                                        <td class="fw-semibold">₹850K</td>
+                                        <td class="fw-semibold">₹820K</td>
+                                        <td
+                                            class="fw-semibold text-success">+₹30K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Shopping Mall Renovation</th>
+                                        <td class="fw-semibold">₹1.2M</td>
+                                        <td class="fw-semibold">₹1.25M</td>
+                                        <td
+                                            class="fw-semibold text-danger">-₹50K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Highway Expansion</th>
+                                        <td class="fw-semibold">₹620K</td>
+                                        <td class="fw-semibold">₹600K</td>
+                                        <td
+                                            class="fw-semibold text-success">+₹20K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Office Building Construction</th>
+                                        <td class="fw-semibold">₹430K</td>
+                                        <td class="fw-semibold">₹450K</td>
+                                        <td
+                                            class="fw-semibold text-danger">-₹20K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Hospital Extension</th>
+                                        <td class="fw-semibold">₹780K</td>
+                                        <td class="fw-semibold">₹750K</td>
+                                        <td
+                                            class="fw-semibold text-success">+₹30K</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="border-bottom-0">Bridge
+                                            Construction</th>
+                                        <td
+                                            class="fw-semibold border-bottom-0">₹550K</td>
+                                        <td
+                                            class="fw-semibold border-bottom-0">₹570K</td>
+                                        <td
+                                            class="fw-semibold border-bottom-0 text-danger">-₹20K</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3 -->
+
+            <!-- Chart: Budget VS Total Expense -->
+            <div class="col-xl-6 mb-3">
+                <div class="card custom-card h100">
+                    <div class="card-header">
+                        <div class="card-title">Budget VS Total Expense</div>
+                    </div>
+                    <div class="card-body">
+                        <div id="category-budget-expense-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Breakdown -->
+            <div class="col-xl-6 mb-3">
+                <div class="card custom-card h100">
+                    <div class="card-header justify-content-between">
+                        <div class="card-title">Categories Breakdown</div>
+                        <button class="btn btn-sm btn-info-light">
+                            View All <i
+                                class="ti ti-arrow-narrow-right ms-2"></i>
+                        </button>
+                    </div>
+                    <div class="card-body p-0 py-2 my-1">
+                        <div class="table-responsive">
+                            <table class="table text-nowrap align-middle">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Budget</th>
+                                        <th scope="col">Expense</th>
+                                        <th scope="col">Change</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    <tr>
+                                        <th>Mason</th>
+                                        <td class="fw-semibold">₹500K</td>
+                                        <td class="fw-semibold">₹520K</td>
+                                        <td
+                                            class="fw-semibold text-danger">-₹20K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Painting</th>
+                                        <td class="fw-semibold">₹300K</td>
+                                        <td class="fw-semibold">₹280K</td>
+                                        <td
+                                            class="fw-semibold text-success">+₹20K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Electrical</th>
+                                        <td class="fw-semibold">₹250K</td>
+                                        <td class="fw-semibold">₹230K</td>
+                                        <td
+                                            class="fw-semibold text-success">+₹20K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Plumbing</th>
+                                        <td class="fw-semibold">₹200K</td>
+                                        <td class="fw-semibold">₹210K</td>
+                                        <td
+                                            class="fw-semibold text-danger">-₹10K</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Interior</th>
+                                        <td class="fw-semibold">₹400K</td>
+                                        <td class="fw-semibold">₹370K</td>
+                                        <td
+                                            class="fw-semibold text-success">+₹30K</td>
+                                    </tr>
+                                    <tr>
+                                        <th
+                                            class="border-bottom-0">Carpentry</th>
+                                        <td
+                                            class="fw-semibold border-bottom-0">₹150K</td>
+                                        <td
+                                            class="fw-semibold border-bottom-0">₹160K</td>
+                                        <td
+                                            class="fw-semibold border-bottom-0 text-danger">-₹10K</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Timeline -->
+            <div class="col-xl-6 mb-3">
+                <div class="card custom-card h100">
+                    <div class="card-header">
+                        <div class="card-title">Project Timeline</div>
+                    </div>
+                    <div class="card-body">
+                        <div id="project-timeline-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profit/Loss -->
+            <div class="col-xl-6 mb-3">
+                <div class="card custom-card h100">
+                    <div class="card-header">
+                        <div class="card-title">Profit/Loss</div>
+                    </div>
+                    <div class="card-body">
+                        <div id="profit-loss-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!-- End:: row-1 -->
+
+{% endblock content %}
+
+{% block script %}
+
+<script>
+
+    /* Project-wise Budget vs Total Expense (Area Chart) */
+    var options = {
+        chart: {
+            type: 'area',  // changed from 'line' to 'area'
+            height: 400,
+            toolbar: { show: false },
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 3,
+        },
+        fill: {
+            type: 'solid',
+            opacity: 0.3, // adjust opacity of the area
+        },
+        dataLabels: { enabled: false },
+        legend: {
+            show: true,
+            position: "top",
+            horizontalAlign: "center",
+            fontWeight: 600,
+            fontSize: "12px",
+            labels: { colors: "#74767c" },
+            markers: { size: 4, strokeWidth: 0, strokeColor: '#fff', radius: 5 },
+        },
+        series: [
+            {
+                name: 'Budget',
+                data: [
+                    850000,   // Residential Complex
+                    1200000,  // Shopping Mall Renovation
+                    620000,   // Highway Expansion
+                    430000,   // Office Building Construction
+                    780000,   // Hospital Extension
+                    550000    // Bridge Construction
+                ]
+            },
+            {
+                name: 'Expense',
+                data: [
+                    820000,   // Residential Complex
+                    1250000,  // Shopping Mall Renovation
+                    600000,   // Highway Expansion
+                    450000,   // Office Building Construction
+                    750000,   // Hospital Extension
+                    570000    // Bridge Construction
+                ]
+            }
+        ],
+        colors: ["#e3915a", "#3acce6"], // Blue = Budget, Red = Expenses
+        xaxis: {
+            categories: [
+                "Residential Complex",
+                "Shopping Mall Renovation",
+                "Highway Expansion",
+                "Office Building Construction",
+                "Hospital Extension",
+                "Bridge Construction"
+            ],
+            axisBorder: { show: true, color: "rgba(119, 119, 142, 0.05)" },
+            axisTicks: { show: true, color: "rgba(119, 119, 142, 0.05)" },
+            labels: {
+                rotate: -45,
+                style: {
+                    colors: "#8c9097",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                },
+            },
+        },
+        yaxis: {
+            title: {
+                text: "Amount (₹)",
+                style: {
+                    color: "#adb5be",
+                    fontSize: "14px",
+                    fontFamily: "poppins, sans-serif",
+                    fontWeight: 600,
+                },
+            },
+            labels: {
+                formatter: function (val) {
+                    return "₹" + (val / 1000).toFixed(0) + "K";
+                }
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return "₹" + val.toLocaleString();
+                }
+            }
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#project-budget-expense-chart"), options);
+    chart.render();
+    /* End: Project-wise Budget vs Total Expense (Area Chart) */
+
+
+    /* Category-wise Budget vs Total Expense (Area Chart) */
+    var options = {
+        chart: {
+            type: 'area',
+            height: 400,
+            toolbar: { show: false },
+            stacked: false
+        },
+        series: [
+            {
+                name: 'Budget',
+                data: [500000, 300000, 250000, 200000, 400000, 150000] // Mason, Painting, Electrical, Plumbing, Interior, Carpentry
+            },
+            {
+                name: 'Expense',
+                data: [520000, 280000, 230000, 210000, 370000, 160000]
+            }
+        ],
+        colors: ["#0d6efd", "#dc3545"], // Blue = Budget, Red = Expense
+        stroke: {
+            curve: 'smooth',
+            width: 2
+        },
+        fill: {
+            type: 'solid',
+            opacity: 0.3
+        },
+        markers: {
+            size: 4
+        },
+        xaxis: {
+            categories: ["Mason", "Painting", "Electrical", "Plumbing", "Interior", "Carpentry"],
+            labels: {
+                rotate: -45,
+                style: {
+                    colors: "#8c9097",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: "Amount (₹)",
+                style: {
+                    color: "#adb5be",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                }
+            },
+            labels: {
+                formatter: function(val) {
+                    return "₹" + (val / 1000).toFixed(0) + "K";
+                }
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return "₹" + val.toLocaleString();
+                }
+            }
+        },
+        legend: {
+            show: true,
+            position: "top",
+            horizontalAlign: "center",
+            fontWeight: 600,
+            fontSize: "12px",
+            labels: { colors: "#74767c" },
+            markers: { size: 4, strokeWidth: 0, strokeColor: '#fff', radius: 5 },
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#category-budget-expense-chart"), options);
+    chart.render();
+    /* End: Category-wise Budget vs Total Expense (Area Chart) */
+
+
+    /* Project Timeline: Planned vs Actual */
+    var options = {
+        chart: {
+            type: 'bar',
+            height: 450,
+            toolbar: { show: false },
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                barHeight: '50%',
+                borderRadius: 5,
+                distributed: false, // grouped bars
+            }
+        },
+        series: [
+            {
+                name: 'Planned',
+                data: [30, 45, 25, 35, 40, 28] // Planned durations
+            },
+            {
+                name: 'Actual',
+                data: [32, 50, 20, 38, 42, 30] // Actual durations
+            }
+        ],
+        colors: ['#adb5bd', 'var(--secondary-color)'], // Planned & Actual
+        dataLabels: {
+            enabled: true,
+            formatter: function (val) { return val + " days"; },
+            style: { colors: ['#fff'] }
+        },
+        xaxis: {
+            categories: [
+                'Residential Complex',
+                'Shopping Mall Renovation',
+                'Highway Expansion',
+                'Office Building Construction',
+                'Hospital Extension',
+                'Bridge Construction'
+            ],
+            labels: {
+                style: {
+                    colors: "#8c9097",
+                    fontSize: '12px',
+                    fontWeight: 600,
+                }
+            }
+        },
+        yaxis: {
+            title: { text: 'Projects' }
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'center',
+            fontWeight: 600,
+            fontSize: '12px',
+            markers: { radius: 5 }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) { return val + " days"; }
+            }
+        },
+        grid: {
+            borderColor: '#e7e7e7',
+            row: { colors: ['#f8f9fa', 'transparent'], opacity: 0.5 }
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#project-timeline-chart"), options);
+    chart.render();
+    /* End: Project Timeline: Planned vs Actual */
+
+
+    /* Profit vs Loss Area Chart */
+    var options = {
+        chart: {
+            type: 'area',
+            height: 400,
+            toolbar: { show: false },
+            zoom: { enabled: false }
+        },
+        series: [
+            {
+                name: 'Profit / Loss',
+                data: [
+                    { x: 'Jan', y: 50000 },
+                    { x: 'Feb', y: -20000 },
+                    { x: 'Mar', y: 30000 },
+                    { x: 'Apr', y: -10000 },
+                    { x: 'May', y: 40000 },
+                    { x: 'Jun', y: -5000 }
+                ]
+            }
+        ],
+        stroke: {
+            curve: 'smooth',
+            width: 2
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 0.4,
+                opacityFrom: 0.8,
+                opacityTo: 0.1,
+                stops: [0, 90, 100]
+            }
+        },
+        colors: ['#28a745'], // Base color
+        markers: { size: 5 },
+        dataLabels: {
+            enabled: true,
+            formatter: function(val) {
+                return "₹" + val.toLocaleString();
+            },
+            style: { colors: ['#000'] }
+        },
+        xaxis: {
+            type: 'category',
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: {
+                style: { colors: "#8c9097", fontSize: '12px', fontWeight: 600 }
+            }
+        },
+        yaxis: {
+            title: { text: 'Amount (₹)' },
+            labels: {
+                formatter: function(val) { return "₹" + val.toLocaleString(); }
+            }
+        },
+        tooltip: {
+            y: { formatter: function(val) { return "₹" + val.toLocaleString(); } }
+        },
+        grid: {
+            borderColor: '#e7e7e7',
+            row: { colors: ['#f8f9fa', 'transparent'], opacity: 0.5 }
+        },
+        legend: { show: false }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#profit-loss-chart"), options);
+    chart.render();
+    /* End: Profit vs Loss Area Chart */
+
+</script>
+<script>
+    function updateClock() {
+        const now = new Date();
+
+        const options = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        };
+
+        document.getElementById("liveClock").innerHTML =
+            now.toLocaleString("en-IN", options);
+    }
+
+    // Update every 1 second
+    setInterval(updateClock, 1000);
+
+    // Initial call
+    updateClock();
+</script>
+
+{% endblock script %}

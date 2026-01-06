@@ -1,0 +1,114 @@
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #e1e5e9;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-select {
+    border-radius: 8px;
+    border: 1px solid #e1e5e9;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.select2-selection, .select2-container--default .select2-selection--multiple {
+    border-radius: 8px!important;
+    border: 1px solid #e1e5e9!important;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.select2-container--default .select2-selection--single {
+    padding: 0!important;
+    padding: 10px 15px;
+}
+
+.select2-selection__rendered, .select2-container--default .select2-selection--single .select2-selection__rendered {
+    border-radius: 8px!important;
+}
+
+.select2-selection .select2-search__field, .select2-container .select2-search--inline .select2-search__field {
+    padding: 0!important;
+    margin: 0!important;
+    margin-block-start: 0!important;
+}
+
+
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+/* Add Member Button */
+.blue-button {
+    background: linear-gradient(135deg, #9af2ff 0%, #74caff 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    color: #050506 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.blue-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.blue-card {
+    background: #e9fcff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.blue-card:hover {
+    transform: translateY(-3px);
+}
+
+.blue-card .card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: rgb(0, 0, 0);
+}
+.blue-card .card-title h6 {
+    margin: 0;
+    color: rgb(17, 15, 15);
+    font-weight: 600;
+}
+
+/* Members Section Styles */
+.blue-card > .card-content {
+    background: #e9fcff;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-header .title {
+        display: none;
+    }
+}

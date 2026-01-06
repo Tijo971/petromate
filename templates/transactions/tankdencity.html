@@ -1,0 +1,253 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-3">
+
+    <!-- Page Title -->
+    <h3 class="mb-4">Tank Density Details</h3>
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-7">
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    <h5 class="mb-0">Add Tank Density Details</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form class="row g-3">
+
+                        <!-- Tank Density Date -->
+                        <div class="col-md-2">
+                            <label class="form-label">Tank Density Date</label>
+                            <input type="date" class="form-control" value="{{today}}">
+                        </div>
+
+                        <!-- Tank Density Time -->
+                        <div class="col-md-2">
+                            <label class="form-label">Tank Density Time</label>
+                            <input type="time" class="form-control" value="{{now_time}}">
+                        </div>
+
+                        <!-- Staff Name -->
+                        <div class="col-md-2">
+                            <label class="form-label">Staff Name</label>
+                            <select class="form-select">
+                                <option>Select Staff</option>
+                                <option>Staff 1</option>
+                                <option>Staff 2</option>
+                            </select>
+                        </div>
+
+                        <!-- PURCHASE / DAY ROUTE -->
+                        <div class="col-md-2">
+                            <label class="form-label">PURCHASE / DAY ROUTE</label>
+                            <select class="form-select">
+                                <option>Select Option</option>
+                                <option>Purchase</option>
+                                <option>Day Route</option>
+                            </select>
+                        </div>
+
+                        <!-- Tank Name -->
+                        <div class="col-md-2">
+                            <label class="form-label">Tank Name</label>
+                            <select class="form-select">
+                                <option>Select Tank</option>
+                                <option>CNG</option>
+                                <option>Petrol</option>
+                                <option>Diesel</option>
+                            </select>
+                        </div>
+
+                        <!-- Product Name -->
+                        <div class="col-md-2">
+                            <label class="form-label">Product Name (Fuel)</label>
+                            <select class="form-select">
+                                <option>Select Product</option>
+                                <option>Petrol</option>
+                                <option>Diesel</option>
+                                <option>CNG</option>
+                            </select>
+                        </div>
+
+                        <!-- Purchase Number (Disabled) -->
+                        <div class="col-md-2">
+                            <label class="form-label">Purchase Number</label>
+                            <input type="text" class="form-control" placeholder="Purchase No" disabled>
+                        </div>
+
+                        <!-- Invoice Number (Disabled) -->
+                        <div class="col-md-2">
+                            <label class="form-label">Invoice Number</label>
+                            <input type="text" class="form-control" placeholder="Invoice No" disabled>
+                        </div>
+
+                        <!-- Invoice Date (Disabled) -->
+                        <div class="col-md-2">
+                            <label class="form-label">Invoice Date</label>
+                            <input type="date" class="form-control" disabled>
+                        </div>
+
+                        <!-- Density (Disabled) -->
+                        <div class="col-md-2">
+                            <label class="form-label">Density</label>
+                            <input type="text" class="form-control" placeholder="Density" disabled>
+                        </div>
+
+                        <!-- Measured Temperature -->
+                        <div class="col-md-2">
+                            <label class="form-label">Measured Temperature</label>
+                            <input type="number" class="form-control" placeholder="°C">
+                        </div>
+
+                        <!-- Measured Density -->
+                        <div class="col-md-2">
+                            <label class="form-label">Measured Density</label>
+                            <input type="text" class="form-control" placeholder="Measured Density">
+                        </div>
+
+                        <!-- Reading (Disabled) -->
+                        <div class="col-md-2">
+                            <label class="form-label">Reading</label>
+                            <input type="text" class="form-control" disabled>
+                        </div>
+
+                        <!-- Reading Difference (Disabled) -->
+                        <div class="col-md-2">
+                            <label class="form-label">Reading Difference</label>
+                            <input type="text" class="form-control" disabled>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-12 mt-3">
+                            <button class="btn btn-warning">Save</button>
+                            <button type="button" class="btn btn-danger-light">Cancel</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE TABLE -->
+        <div class="card shadow-sm mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Tank Density Details List</h5>
+            </div>
+
+            <div class="card-body">
+                
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="#" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="#" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" placeholder="Search...">
+                    </div>
+                </div>
+
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered table-striped text-nowrap">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Sl No</th>
+                                <th>PURCHASE / DAY ROUTE</th>
+                                <th>Measured Date & Time</th>
+                                <th>Staff</th>
+                                <th>Tank</th>
+                                <th>Product</th>
+                                <th>Prev Density</th>
+                                <th>Measured Temperature</th>
+                                <th>Measured Density</th>
+                                <th>Reading</th>
+                                <th>Reading Difference</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Purchase</td>
+                                <td>02/12/2025 - 10:30 AM</td>
+                                <td>John</td>
+                                <td>Petrol</td>
+                                <td>Petrol</td>
+                                <td>720</td>
+                                <td>25°C</td>
+                                <td>719</td>
+                                <td>100</td>
+                                <td>-1</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+                    <div class="d-flex align-items-center flex-wrap overflow-auto">
+                            <div class="mb-2 mb-sm-0">
+                                Showing <b>{{ categories.start_index }}</b> to <b>{{ categories.end_index }}</b> 
+                                of <b>{{ categories.paginator.count }}</b> Product Categories  
+                                <i class="bi bi-arrow-right ms-2 fw-medium"></i>
+                            </div>
+                            <div class="ms-auto">
+                                <ul class="pagination mb-0 overflow-auto">
+                                    {% if categories.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categories.previous_page_number }}">
+                                            <i class="ri-arrow-left-s-line align-middle"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            <i class="ri-arrow-left-s-line align-middle"></i>
+                                        </span>
+                                    </li>
+                                    {% endif %}
+
+                                    {% for i in categories.paginator.page_range %}
+                                        {% if categories.number == i %}
+                                            <li class="page-item active">
+                                                <a class="page-link" href="javascript:void(0);">{{ i }}</a>
+                                            </li>
+                                        {% elif i >= categories.number|add:'-2' and i <= categories.number|add:'2' %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if categories.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categories.next_page_number }}">
+                                            <i class="ri-arrow-right-s-line align-middle"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            <i class="ri-arrow-right-s-line align-middle"></i>
+                                        </span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

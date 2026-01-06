@@ -1,0 +1,338 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Sales Return</h3>
+
+        <div class="col-xl-4">
+            <div class="card custom-card">
+                <div class="card-header justify-content-between">
+                    <h5>{{ editing_category.pk|yesno:'Edit,Add'}} Sales Return</h5>
+                </div>
+                <div class="card-body">
+
+                        <!-- Product Category Form -->
+                    <form method="post" id="ProductCategoryForm" novalidate>
+                        {% csrf_token %}
+                        {% if editing_category %}
+                            <input type="hidden" name="category_id" value="{{ editing_category.pk }}">
+                        {% endif %}
+                            
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">
+Bill Number</label>
+                                    <input type="text" name="description" placeholder="
+Bill Number" class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                            rows="4" 
+                                              >{{ form.description.value|default:'' }}</input>
+                                    {% if form.description.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.description.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                
+                                
+                       
+
+                                
+                                <!-- Description -->
+
+                                
+                                <!-- Status -->
+                                <!-- <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch mb-2">
+                                        <input type="checkbox" 
+                                            name="is_active" 
+                                            class="form-check-input {% if form.is_active.errors %}is-invalid{% endif %}" 
+                                            id="is_active" 
+                                            value="true"
+                                            {% if editing_category %}
+                                                {% if editing_category.is_active %}checked{% endif %}
+                                            {% else %}
+                                                checked
+                                            {% endif %}>
+                                        <label class="form-check-label" for="is_active">Active</label>
+                                        {% if form.is_active.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.is_active.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div> -->
+                                
+                                <!-- Submit -->
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-warning btn-wave">
+                                        {{ editing_category.pk|yesno:'Update,Save' }}
+                                    </button>
+                                    <a href="#" class="btn btn-danger-light btn-wave">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category List Table -->
+            <div class="col-xl-8">
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <h5 class="mb-1">Sales Return List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                           
+                            <!-- <div class="">
+                            <a href="#" class="btn btn-success">
+                                <i class="ri-file-excel-2-line"></i> Export Excel
+                            </a>
+                            <a href="#" class="btn btn-danger">
+                                <i class="ri-file-pdf-line"></i> Export PDF
+                            </a>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="search" class="form-control search-table" data-target="#searchTable" placeholder="Search...">
+                            </div>  -->
+                        </div>
+                <div class="table-responsive mt-2">
+                    <table class="table table-bordered text-nowrap w-100" id="searchTable">
+                            <thead class="tableth">
+                                <tr>
+                                    
+		
+		
+		
+                                    <th>SL No</th>
+                                    <th>Action</th>
+                                    <th>Customer Name</th>
+                                    <th>Bill Number</th>
+                                    
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                <tr>
+                                    <td>{{ forloop.counter0|add:categories.start_index }}</td>
+                                    <td>
+                                        <!-- Edit -->
+                                        <a href="?edit={{ category.pk }}" class="text-info fs-14 lh-1" title="Edit">
+                                            <i class="ri-edit-line p-2"></i>
+                                        </a>
+                                        
+                                        <!-- Delete -->
+                                        {% if category.is_used %}
+                                            <!-- Locked delete button when category is in use -->
+                                            <a href="javascript:void(0);" class="text-warning fs-14 lh-1" title="Category is in use - Cannot delete">
+                                                <i class="ri-lock-line p-1"></i>
+                                            </a>
+                                        {% else %}
+                                            <!-- Normal delete button when category is not in use -->
+                                            <a href="javascript:void(0);" 
+                                            data-url="#" 
+                                            class="text-danger fs-14 lh-1 delete-btn" 
+                                            title="Delete">
+                                                <i class="ri-delete-bin-5-line"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ category.name|default:"N/A" }}</td>
+                                    <td>{{ category.description|default:"N/A"|truncatewords:10 }}</td>
+                                    <td>
+                                        {% if category.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">No Sales Return  found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    <div class="card-footer border-top-0">
+                        <!-- Pagination -->
+                        <div class="d-flex align-items-center flex-wrap overflow-auto">
+                            <div class="mb-2 mb-sm-0">
+                                Showing <b>{{ categories.start_index }}</b> to <b>{{ categories.end_index }}</b> 
+                                of <b>{{ categories.paginator.count }}</b> Sales Return 
+                                <i class="bi bi-arrow-right ms-2 fw-medium"></i>
+                            </div>
+                            <div class="ms-auto">
+                                <ul class="pagination mb-0 overflow-auto">
+                                    {% if categories.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categories.previous_page_number }}">
+                                            <i class="ri-arrow-left-s-line align-middle"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            <i class="ri-arrow-left-s-line align-middle"></i>
+                                        </span>
+                                    </li>
+                                    {% endif %}
+
+                                    {% for i in categories.paginator.page_range %}
+                                        {% if categories.number == i %}
+                                            <li class="page-item active">
+                                                <a class="page-link" href="javascript:void(0);">{{ i }}</a>
+                                            </li>
+                                        {% elif i >= categories.number|add:'-2' and i <= categories.number|add:'2' %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if categories.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categories.next_page_number }}">
+                                            <i class="ri-arrow-right-s-line align-middle"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            <i class="ri-arrow-right-s-line align-middle"></i>
+                                        </span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const form = document.getElementById("ProductCategoryForm");
+        if (form) {
+            form.addEventListener("submit", formValidation);
+        }
+        
+        // Delete buttons
+document.querySelectorAll(".delete-btn").forEach(el => {
+    el.addEventListener("click", function() {
+        const url = this.getAttribute('data-url');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a form and submit via POST - EXACTLY like Product delete
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+                
+                // Add CSRF token - EXACTLY like Product delete
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken.value;
+                    form.appendChild(csrfInput);
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+});
+        document.querySelectorAll(".search-table").forEach(el => el.addEventListener("input", searchTable));
+        
+        // Show messages with SweetAlert for success messages only
+        // Form errors are now displayed in the form itself
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ message|safe }}',
+                        background: '#ffffff',
+                        color: '#000000',
+                        confirmButtonColor: '#5bc0de',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            popup: 'shadow-lg rounded-3',
+                            title: 'fw-bold text-primary',
+                        }
+                    }).then((result) => {
+                        // Redirect to clear form after success
+                        if (result.isConfirmed && '{{ editing_category }}') {
+                            window.location.href = "#";
+                        }
+                    });
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        // Auto-hide form error alert after 5 seconds
+        const errorAlert = document.querySelector('.alert-danger');
+        if (errorAlert) {
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+    });
+    function formValidation(e) {
+        // Clear previous errors
+        document.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
+        
+        let isValid = true;
+        const form = e.target;
+        
+        // Validate category name
+        const nameField = form.querySelector('input[name="name"]');
+        if (!nameField.value.trim()) {
+            nameField.classList.add('is-invalid');
+            // Create or update error message
+            let errorDiv = nameField.nextElementSibling;
+            if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback';
+                nameField.parentNode.appendChild(errorDiv);
+            }
+            errorDiv.textContent = 'Category name is required.';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+        // If valid, let the form submit and server-side validation will handle duplicates
+    }
+
+
+</script>
+{% endblock %}

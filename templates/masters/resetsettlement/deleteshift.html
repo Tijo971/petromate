@@ -1,0 +1,117 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Page Title -->
+    <div class="mb-4">
+        <h3 class="mt-1 mb-4">Delete Shift</h3>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- LEFT SECTION -->
+        <div class="col-xl-4 col-lg-5 col-md-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Staff wise shift delete</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="mb-3">
+                        <!-- <label class="form-label fw-semibold">Staff Name</label> -->
+                        <select class="form-select" id="deleteStaffSelect" onchange="showShiftTable()">
+                            <option value selected disabled>-- Select Staff --</option>
+                            <option value="1">John Mathew</option>
+                            <option value="2">Anish Kumar</option>
+                            <option value="3">Krishna Devi</option>
+                            <option value="4">Rahul Nair</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SECTION — TABLE + PASSWORD + DELETE BUTTON -->
+        <div class="col-xl-8 col-lg-7 col-md-12">
+            <div class="card shadow-sm d-none" id="shiftDeleteCard">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Shift Details</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- TABLE -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped align-middle">
+                            <tbody id="deleteShiftTableBody">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Administrator Password</label>
+                        <input type="password" class="form-control" id="adminPassword">
+                    </div>
+
+                    <!-- DELETE BUTTON -->
+                    <button class="btn btn-danger w-100">
+                        Delete Shift
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const shiftDetails = {
+        opening: "16/06/2025 @ 0.00",
+        sales: "0.00",
+        expense: "0.00",
+        income: "0.00",
+        fueltest: "0.00",
+        denom: "0.00"
+    };
+
+    function showShiftTable() {
+        const card = document.getElementById("shiftDeleteCard");
+        const tableBody = document.getElementById("deleteShiftTableBody");
+
+        card.classList.remove("d-none");
+
+        tableBody.innerHTML = `
+            <tr>
+                <th width="40%">Opening Date @ Amount</th>
+                <td>${shiftDetails.opening}</td>
+            </tr>
+            <tr>
+                <th>Sales</th>
+                <td>${shiftDetails.sales}</td>
+            </tr>
+            <tr>
+                <th>Expence</th>
+                <td>${shiftDetails.expense}</td>
+            </tr>
+            <tr>
+                <th>Income</th>
+                <td>${shiftDetails.income}</td>
+            </tr>
+            <tr>
+                <th>Fuel Sample Test</th>
+                <td>${shiftDetails.fueltest}</td>
+            </tr>
+            <tr>
+                <th>Denomination</th>
+                <td>${shiftDetails.denom}</td>
+            </tr>
+        `;
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Group Master Manage</h3>
+
+    <div class="col-xl-4">
+        <div class="card custom-card">
+            <div class="card-header justify-content-between">
+                <h5>{{ editing_group.pk|yesno:'Edit,Add' }} Group Master</h5>
+            </div>
+            <div class="card-body">
+
+                <form method="post" id="GroupMasterForm" novalidate>
+                    {% csrf_token %}
+                    {% if editing_group %}
+                        <input type="hidden" name="group_id" value="{{ editing_group.pk }}">
+                    {% endif %}
+
+                    <div class="row">
+                        <!-- Under Group -->
+<div class="col-md-12 mb-4">
+    <label class="form-label">Select Under Group</label>
+    <select name="{{ form.under_group.name }}" class="form-select {% if form.under_group.errors %}is-invalid{% endif %}" required>
+        <option value="" disabled selected>Select a primary option</option>
+        {% for value, display in form.fields.under_group.choices %}
+            {% if value %}
+                <option value="{{ value }}" {% if form.under_group.value == value %}selected{% endif %}>{{ display }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    {% if form.under_group.errors %}
+        <div class="invalid-feedback d-block">
+            {% for error in form.under_group.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+
+                        <!-- Group Name -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Name of Group <span class="text-danger">*</span></label>
+                            {{ form.group_name }}
+                            {% if form.group_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.group_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-warning btn-wave">
+                                {{ editing_group.pk|yesno:'Update,Save' }}
+                            </button>
+                            <a href="{% url 'masters:groupmaster' %}" class="btn btn-danger-light btn-wave">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Group List Table -->
+    <div class="col-xl-8">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Group Master List</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="{% url 'masters:export_groupmaster' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:export_groupmaster' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#searchTable" placeholder="Search...">
+                    </div>
+                </div>
+
+                <div class="table-responsive mt-2">
+                    <table class="table table-bordered text-nowrap w-100" id="searchTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Action</th>
+                                <th>Group Name</th>
+                                <th>Under Group</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for group in groups %}
+                            <tr>
+                                <td>{{ forloop.counter0|add:groups.start_index }}</td>
+                                <td>
+                                    <a href="?edit={{ group.pk }}" class="text-info fs-14 lh-1" title="Edit">
+                                        <i class="ri-edit-line p-2"></i>
+                                    </a>
+
+                                    {% if group.is_used %}
+                                        <a href="javascript:void(0);" class="text-warning fs-14 lh-1" title="Group is in use">
+                                            <i class="ri-lock-line p-1"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="javascript:void(0);"
+                                           data-url="{% url 'masters:delete_groupmaster' group.pk %}"
+                                           class="text-danger fs-14 lh-1 delete-btn"
+                                           title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ group.group_name }}</td>
+                                <td>{{ group.get_under_group_display }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4">No Group Master found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="card-footer border-top-0">
+                <div class="d-flex align-items-center flex-wrap overflow-auto">
+                    <div class="mb-2 mb-sm-0">
+                        Showing <b>{{ groups.start_index }}</b> to <b>{{ groups.end_index }}</b>
+                        of <b>{{ groups.paginator.count }}</b> Group Masters
+                    </div>
+                    <div class="ms-auto">
+                        <ul class="pagination mb-0 overflow-auto">
+                            {% if groups.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ groups.previous_page_number }}">
+                                        <i class="ri-arrow-left-s-line"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for i in groups.paginator.page_range %}
+                                {% if groups.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                {% elif i >= groups.number|add:'-2' and i <= groups.number|add:'2' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if groups.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ groups.next_page_number }}">
+                                        <i class="ri-arrow-right-s-line"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.delete-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const deleteUrl = this.dataset.url;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create a POST form dynamically
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = deleteUrl;
+
+                    // Add CSRF token
+                    const csrfTokenInput = document.createElement('input');
+                    csrfTokenInput.type = 'hidden';
+                    csrfTokenInput.name = 'csrfmiddlewaretoken';
+                    csrfTokenInput.value = '{{ csrf_token }}';
+                    form.appendChild(csrfTokenInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+
+
+{% endblock %}

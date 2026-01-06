@@ -1,0 +1,450 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* Card */
+.form-card {
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  background: #fff;
+}
+
+/* Table */
+.form-card table th,
+.form-card table td {
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+/* Action buttons */
+.row-action {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  padding: 0 4px;
+}
+
+.row-action.add { color: #0d6efd; }
+.row-action.del { color: #dc3545; }
+
+/* Row loader */
+.row-loader {
+  display: none;
+}
+
+.saving .row-loader {
+  display: inline-block;
+}
+
+.saving input {
+  opacity: .6;
+  pointer-events: none;
+}
+
+/* Responsive */
+/* Increase input size for Qty and Type fields on mobile */
+/* Increase input size for Qty and Type fields on mobile */
+/* Mobile adjustments for Qty and Type fields */
+
+/* Fix responsive table scrolling on mobile */
+/* Fix responsive table scrolling on mobile */
+@media (max-width: 768px) {
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  }
+
+  /* Ensure tables have a minimum width to enable scrolling */
+  .table-responsive table {
+    width: max-content; /* lets table expand beyond container */
+    min-width: 700px;   /* adjust based on number of columns */
+  }
+
+  /* Optional: make inputs easier to tap on mobile */
+  .table-responsive table tbody input.form-control {
+    font-size: 16px !important;
+    padding: 0.5rem !important;
+    height: 2.5rem !important;
+  }
+}
+
+
+
+
+
+</style>
+
+
+
+
+<!-- HEADER -->
+<div class="card form-card mb-3">
+  <div class="card-body p-2">
+    <div class="row align-items-center g-2">
+      <!-- Logo -->
+      <div class="col-lg-4 col-md-12 d-flex align-items-center gap-2">
+        <img src="{% static 'web/img/PETROMATE NEW LOGO.png' %}" height="50" alt="Petromate" width="150">
+        <div>
+          <div class="fw-bold fs-5">PETROMATE</div>
+          <small class="text-muted">Your Fuelstation at your fingertip</small><br>
+          <small class="text-muted">www.petromate.in</small>
+        </div>
+      </div>
+
+
+      <!-- Title -->
+      <div class="col-lg-4 col-md-12 text-center">
+        <div class="fw-bold fs-5">DAILY TRANSACTION SLIP</div>
+      </div>
+
+      <!-- Staff Info -->
+      <div class="col-lg-4 col-md-12">
+        <div class="d-flex align-items-start gap-0 justify-content-lg-end">
+          <img src="{% static 'web/img/avathar.png' %}" class="rounded-circle" style="width:45px;height:45px;object-fit:cover;">
+          <div class="text-end ms-2">
+            <div class="fw-semibold">Staff: <span id="staffName">John Doe</span></div>
+            <small class="text-muted d-block">Mob: <span id="staffMobile">9876543210</span></small>
+            <small class="text-muted d-block"><i class="ri-time-line"></i> <span id="currentDateTime"></span></small>
+            <div class="mt-1 d-flex align-items-center justify-content-end gap-1">
+              <small class="fw-semibold">Advance:</small>
+              <input type="number" class="form-control form-control-sm text-end" placeholder="0.00" style="max-width:120px;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+                <div class="row">
+                    <div class="col-xxl-2 col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-top flex-wrap justify-content-between">
+                                    <div>
+                                        <div class="fw-medium fs-15 mb-1 lead-discovered">Opening Balance</div>
+                                        <span class=" badge bg-primary">$25,238</span>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-top flex-wrap justify-content-between">
+                                    <div>
+                                        <div class="fw-medium fs-15 mb-1 lead-qualified">Sales</div>
+                                        <span class=" badge bg-secondary">$32,453</span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-top flex-wrap justify-content-between">
+                                    <div>
+                                        <div class="fw-medium fs-15 mb-1 contact-initiated">Expense</div>
+                                        <span class=" badge bg-success">$13,756</span>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-top flex-wrap justify-content-between">
+                                    <div>
+                                        <div class="fw-medium fs-15 mb-1 need-identified">Income</div>
+                                        <span class=" badge bg-pink">$47,093</span>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-top flex-wrap justify-content-between">
+                                    <div>
+                                        <div class="fw-medium fs-15 mb-1 negotiation">Testing</div>
+                                        <span class=" badge bg-info">$26,146</span>
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-md-4">
+                        <div class="card custom-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-top flex-wrap justify-content-between">
+                                    <div>
+                                        <div class="fw-medium fs-15 mb-1 deal-finalized">Domination</div>
+                                        <span class=" badge bg-warning">$1,74,679</span>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<!-- TABLES -->
+<div class="row g-3">
+
+  <!-- Nozzle Sales -->
+  <div class="col-lg-6 col-md-12">
+    <div class="card form-card h-100">
+      <div class="card-header fw-bold">Nozzle Sales</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered text-center align-middle" id="nozzleTable">
+          <thead class="table-light">
+            <tr>
+              <th>Nozzle</th>
+              <th>Opn. & Closing Rdng</th>
+              <th>Qty</th>
+              <th>Rate</th>
+              <th>Amount</th>
+              <th width="90">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="form-control autosave" placeholder="Nozzle"></td>
+              <td><input class="form-control autosave" readonly placeholder="Opening - Closing"></td>
+              <td><input class="form-control autosave" placeholder="Qty"></td>
+              <td><input class="form-control autosave" placeholder="Rate"></td>
+              <td><input class="form-control" readonly placeholder="Amount"></td>
+              <td>
+                <button class="row-action add" onclick="addNozzleRow()"><i class="ri-add-circle-line"></i></button>
+                <button class="row-action del" onclick="deleteRow(this)"><i class="ri-delete-bin-line"></i></button>
+                <span class="row-loader spinner-border spinner-border-sm"></span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4" class="text-end">Total Sales Amount</th>
+              <th colspan="2"><input class="form-control fw-bold" readonly></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer / Vehicle Sales -->
+  <div class="col-lg-6 col-md-12">
+    <div class="card form-card h-100">
+      <div class="card-header fw-bold">Customer / Vehicle Sales</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered text-center align-middle" id="customerTable">
+          <thead class="table-light">
+            <tr>
+              <th>Customer / Mob</th>
+              <th>Product / Vehicle</th>
+              <th>Qty</th>
+              <th>Amount</th>
+              <th width="90">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="form-control autosave" placeholder="Customer / Mobile"></td>
+              <td><input class="form-control autosave" placeholder="Product / Vehicle"></td>
+              <td><input class="form-control autosave" placeholder="Qty"></td>
+              <td><input class="form-control" readonly placeholder="Amount"></td>
+              <td>
+                <button class="row-action add" onclick="addCustomerRow()"><i class="ri-add-circle-line"></i></button>
+                <button class="row-action del" onclick="deleteRow(this)"><i class="ri-delete-bin-line"></i></button>
+                <span class="row-loader spinner-border spinner-border-sm"></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Sale -->
+  <div class="col-lg-6 col-md-12">
+    <div class="card form-card h-100">
+      <div class="card-header fw-bold">Account Sale</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered text-center align-middle" id="accountSaleTable">
+          <thead class="table-light">
+            <tr>
+              <th>Account Head</th>
+              <th>Income</th>
+              <th>Expense</th>
+              <th width="90">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="form-control autosave" placeholder="Account Head"></td>
+              <td><input class="form-control autosave" placeholder="Income"></td>
+              <td><input class="form-control autosave" placeholder="Expense"></td>
+              <td>
+                <button class="row-action add" onclick="addAccountRow()"><i class="ri-add-circle-line"></i></button>
+                <button class="row-action del" onclick="deleteRow(this)"><i class="ri-delete-bin-line"></i></button>
+                <span class="row-loader spinner-border spinner-border-sm"></span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2" class="text-end">Total Sales Amount</th>
+              <th colspan="2"><input class="form-control fw-bold" readonly></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Denomination -->
+  <div class="col-lg-6 col-md-12">
+    <div class="card form-card h-100">
+      <div class="card-header fw-bold">Denomination</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered text-center align-middle" id="denominationTable">
+          <thead class="table-light">
+            <tr>
+              <th>Currency</th>
+              <th>Qty</th>
+              <th>Amount</th>
+              <th width="90">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="form-control autosave" placeholder="Currency"></td>
+              <td><input class="form-control autosave" placeholder="Qty"></td>
+              <td><input class="form-control" readonly placeholder="Amount"></td>
+              <td>
+                <button class="row-action add" onclick="addDenominationRow()"><i class="ri-add-circle-line"></i></button>
+                <button class="row-action del" onclick="deleteRow(this)"><i class="ri-delete-bin-line"></i></button>
+                <span class="row-loader spinner-border spinner-border-sm"></span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2" class="text-end">Total Sales Amount</th>
+              <th colspan="2"><input class="form-control fw-bold" readonly></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Creds / Cash -->
+  <div class="col-lg-12 col-md-12">
+    <div class="card form-card h-100">
+      <div class="card-header fw-bold">Creds / Cash</div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered text-center align-middle" id="credsCashTable">
+          <thead class="table-light">
+            <tr>
+              <th>Card</th>
+              <th>Card Number</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th width="90">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input class="form-control autosave" placeholder="Card"></td>
+              <td><input class="form-control autosave" placeholder="Card Number"></td>
+              <td><input class="form-control autosave" placeholder="Type"></td>
+              <td><input class="form-control" readonly placeholder="Amount"></td>
+              <td>
+                <button class="row-action add" onclick="addCredsRow()"><i class="ri-add-circle-line"></i></button>
+                <button class="row-action del" onclick="deleteRow(this)"><i class="ri-delete-bin-line"></i></button>
+                <span class="row-loader spinner-border spinner-border-sm"></span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="text-end">Total Credit Amount</th>
+              <th colspan="2"><input class="form-control fw-bold" readonly></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function updateDateTime() {
+  const now = new Date();
+  const options = {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  document.getElementById('currentDateTime').innerText =
+    now.toLocaleDateString('en-IN', options);
+}
+updateDateTime();
+
+// Autosave simulation
+document.addEventListener('input', function(e) {
+  if (!e.target.classList.contains('autosave')) return;
+  const row = e.target.closest('tr');
+  row.classList.add('saving');
+  setTimeout(() => row.classList.remove('saving'), 800);
+});
+
+// Delete row with at least 1 row remaining
+function deleteRow(btn) {
+  const table = btn.closest('table');
+  const tbody = table.querySelector('tbody');
+  if (tbody.rows.length > 1) btn.closest('tr').remove();
+  else alert("At least one row must remain!");
+}
+
+// Add row functions
+function addNozzleRow() {
+  const tbody = document.querySelector('#nozzleTable tbody');
+  tbody.insertAdjacentHTML('beforeend', tbody.rows[0].outerHTML);
+}
+function addCustomerRow() {
+  const tbody = document.querySelector('#customerTable tbody');
+  tbody.insertAdjacentHTML('beforeend', tbody.rows[0].outerHTML);
+}
+function addAccountRow() {
+  const tbody = document.querySelector('#accountSaleTable tbody');
+  tbody.insertAdjacentHTML('beforeend', tbody.rows[0].outerHTML);
+}
+function addDenominationRow() {
+  const tbody = document.querySelector('#denominationTable tbody');
+  tbody.insertAdjacentHTML('beforeend', tbody.rows[0].outerHTML);
+}
+function addCredsRow() {
+  const tbody = document.querySelector('#credsCashTable tbody');
+  tbody.insertAdjacentHTML('beforeend', tbody.rows[0].outerHTML);
+}
+</script>
+
+{% endblock %}

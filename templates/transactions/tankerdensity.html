@@ -1,0 +1,178 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Page Title -->
+    <h3 class="mb-4">Tanker Density Details</h3>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Add Tanker Density Details</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form class="row g-3">
+
+                <!-- Tank Density Date -->
+                <div class="col-md-2">
+                    <label class="form-label">Tank Density Date</label>
+                    <input type="date" class="form-control" value="{{today}}">
+                </div>
+
+                <!-- Tank Density Time -->
+                <div class="col-md-2">
+                    <label class="form-label">Tank Density Time</label>
+                    <input type="time" class="form-control" value="{{now_time}}">
+                </div>
+
+                <!-- Staff Name -->
+                <div class="col-md-3">
+                    <label class="form-label">Staff Name</label>
+                    <select class="form-select">
+                        <option>Select Staff</option>
+                        <option>Staff 1</option>
+                        <option>Staff 2</option>
+                    </select>
+                </div>
+
+                <!-- Tank Name -->
+                <div class="col-md-2">
+                    <label class="form-label">Tank Name</label>
+                    <select class="form-select">
+                        <option>Select Tank</option>
+                        <option>Tank 1</option>
+                        <option>Tank 2</option>
+                    </select>
+                </div>
+
+                <!-- Product Name -->
+                <div class="col-md-3">
+                    <label class="form-label">Product Name (Fuel)</label>
+                    <select class="form-select">
+                        <option>Select Product</option>
+                        <option>Petrol</option>
+                        <option>Diesel</option>
+                        <option>CNG</option>
+                    </select>
+                </div>
+
+                <!-- Purchase Number -->
+                <div class="col-md-2">
+                    <label class="form-label">Purchase Number</label>
+                    <input type="text" class="form-control" disabled placeholder="Purchase No">
+                </div>
+
+                <!-- Invoice Number -->
+                <div class="col-md-2">
+                    <label class="form-label">Invoice Number</label>
+                    <input type="text" class="form-control" disabled placeholder="Invoice No">
+                </div>
+
+                <!-- Invoice Date -->
+                <div class="col-md-2">
+                    <label class="form-label">Invoice Date</label>
+                    <input type="date" class="form-control" disabled>
+                </div>
+
+                <!-- Density -->
+                <div class="col-md-2">
+                    <label class="form-label">Density</label>
+                    <input type="text" class="form-control" disabled placeholder="Density">
+                </div>
+
+                <!-- Vehicle Name -->
+                <div class="col-md-2">
+                    <label class="form-label">Vehicle Name</label>
+                    <input type="text" class="form-control" disabled placeholder="Vehicle Name">
+                </div>
+
+            </form>
+
+            <!-- =============================
+                TABLE CARD
+            ============================== -->
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-success btn-sm" id="addRowBtn">
+                        Add Row
+                    </button>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0" id="densityTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Compartment No</th>
+                                    <th>Compartment Capacity</th>
+                                    <th>Measured Temperature</th>
+                                    <th>Measured Density</th>
+                                    <th>Measured Reading</th>
+                                    <th>Reading Difference</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="text" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td><input type="number" class="form-control"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm deleteRowBtn">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-4">
+                <button class="btn btn-warning">Save</button>
+                <button class="btn btn-danger-light btn-wave" type="reset">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- =============================
+    Add / Delete Row Script
+============================= -->
+<script>
+    document.getElementById("addRowBtn").addEventListener("click", function () {
+        let table = document.getElementById("densityTable").querySelector("tbody");
+        let newRow = `
+            <tr>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="text" class="form-control"></td>
+                <td><input type="number" class="form-control"></td>
+                <td><input type="number" class="form-control"></td>
+                <td><input type="number" class="form-control"></td>
+                <td><input type="number" class="form-control"></td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm deleteRowBtn">Delete</button>
+                </td>
+            </tr>
+        `;
+        table.insertAdjacentHTML("beforeend", newRow);
+    });
+
+    document.addEventListener("click", function (e) {
+        if (e.target && e.target.classList.contains("deleteRowBtn")) {
+            e.target.closest("tr").remove();
+        }
+    });
+</script>
+
+{% endblock %}

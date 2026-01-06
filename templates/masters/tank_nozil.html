@@ -1,0 +1,672 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .form-check-input:checked {
+        background-color: #5bc0de;
+        border-color: #5bc0de;
+    }
+    .card-body, .container, .row {
+        overflow-x: hidden !important;
+    }
+</style>
+
+<h3 class="mt-1 mb-4">Fuel / Nozzle Master</h3>
+
+<div class="row g-4">
+
+<!-- ================= LEFT FORM ================= -->
+<div class="col-xl-6 col-lg-6 col-md-12">
+    <div class="card custom-card">
+        <div class="card-header">
+            <h5>Fuel / Nozzle Master Form</h5>
+        </div>
+        <div class="card-body">
+
+<form method="POST" class="row g-3 mt-0">
+    {% csrf_token %}
+
+    {% if editing_entry %}
+        <input type="hidden" name="entry_id" value="{{ editing_entry.id }}">
+    {% endif %}
+
+    <!-- ENTRY TYPE -->
+    <div class="col-md-6">
+        <label class="form-label">Add Type</label>
+        {{ entry_form.fuelnozilentry }}
+    </div>
+
+    <!-- ================= FUEL FORM ================= -->
+    <div id="fuelFields"
+         class="row g-3 mt-2 {% if not editing_entry or editing_entry.fuelnozilentry != 'fuel' %}d-none{% endif %}">
+
+        <!-- Tank -->
+        <div class="col-md-4">
+            <label class="form-label">
+                Tank <span class="text-danger">*</span>
+            </label>
+            {{ fuel_form.tank }}
+        </div>
+
+        <!-- Fuel Type -->
+        <div class="col-md-4">
+            <label class="form-label">
+                Fuel Type <span class="text-danger">*</span>
+            </label>
+            {{ fuel_form.fuel_type }}
+        </div>
+
+        <!-- Tank Specify -->
+        <div class="col-md-4">
+            <label class="form-label">
+                Tank Specify <span class="text-danger">*</span>
+            </label>
+            {{ fuel_form.tank_specify }}
+        </div>
+
+        <!-- Is Active -->
+        <div class="col-md-2 mt-4">
+            <div class="form-check form-switch">
+                {{ fuel_form.is_active }}
+                <label class="form-check-label ms-1">
+                    Active
+                </label>
+            </div>
+        </div>
+
+        <!-- Is Used -->
+        <!-- <div class="col-md-2 mt-4">
+            <div class="form-check">
+                {{ fuel_form.is_used }}
+                <label class="form-check-label ms-1">
+                    Used
+                </label>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- ================= NOZZLE FORM ================= -->
+    <div id="nozzleFields"
+         class="row g-3 mt-2 {% if not editing_entry or editing_entry.fuelnozilentry != 'nozzle' %}d-none{% endif %}">
+
+<!-- Tank -->
+<!-- Tank -->
+<div class="col-md-4">
+    <label class="form-label">
+        Tank <span class="text-danger">*</span>
+    </label>
+    {{ nozzle_form.tank }}
+</div>
+
+<!-- Fuel Type -->
+<div class="col-md-4">
+    <label class="form-label">Fuel Type</label>
+    <input type="text" id="fuelType" class="form-control" readonly>
+</div>
+
+<!-- Tank Capacity -->
+<div class="col-md-4">
+    <label class="form-label">Tank Capacity</label>
+    <input type="text" id="tankCapacity" class="form-control" readonly>
+</div>
+
+
+
+        <!-- Nozzle Name -->
+        <div class="col-md-4">
+            <label class="form-label">
+                Nozzle Name <span class="text-danger">*</span>
+            </label>
+            {{ nozzle_form.nozzle_name }}
+        </div>
+
+        <!-- Serial -->
+        <div class="col-md-4">
+            <label class="form-label">
+                Serial <span class="text-danger">*</span>
+            </label>
+            {{ nozzle_form.serial }}
+        </div>
+
+        <!-- Close Reading -->
+        <div class="col-md-4">
+            <label class="form-label">
+                Close Reading <span class="text-danger">*</span>
+            </label>
+            {{ nozzle_form.close_reading }}
+        </div>
+
+        <!-- Is Active -->
+        <div class="col-md-2 mt-4">
+            <div class="form-check form-switch">
+                {{ nozzle_form.is_active }}
+                <label class="form-check-label ms-1">
+                    Active
+                </label>
+            </div>
+        </div>
+
+        <!-- Is Used -->
+        <!-- <div class="col-md-2 mt-4">
+            <div class="form-check">
+                {{ nozzle_form.is_used }}
+                <label class="form-check-label ms-1">
+                    Used
+                </label>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="mt-4">
+        <button type="submit" class="btn btn-warning btn-wave">
+            {% if editing_entry %}Update{% else %}Save{% endif %}
+        </button>
+        <button type="reset" class="btn btn-danger-light">
+            Cancel
+        </button>
+    </div>
+</form>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= RIGHT FUEL TABLE ================= -->
+<div class="col-xl-6 col-lg-6 col-md-12">
+    <div class="card custom-card flex-fill">
+        <div class="card-header">
+            <h5 class="mb-1">Fuel List</h5>
+        </div>
+        <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+
+                    <!-- Export -->
+                    <div>
+                        <a href="{% url 'masters:fuel_entry_report' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:fuel_entry_report' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+
+                    <!-- Search -->
+<div class="col-md-3">
+    <input type="search"
+           class="form-control search-table"
+           data-target="#fuelTable"
+           placeholder="Search Fuel Entries...">
+</div>
+                </div>
+            <div class="table-responsive mt-2">
+                
+             <table class="table table-bordered text-nowrap w-100" id="fuelTable">
+    <thead>
+        <tr>
+            <th>S.No</th>
+            <th>Action</th>
+            <th>Tank</th>
+            <th>Fuel Type</th>
+            <th>Capacity</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+            {% if entry.fuelnozilentry == 'fuel' and entry.fuel_entry %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="?edit={{ entry.id }}" class="text-info">
+                        <i class="ri-edit-line"></i>
+                    </a>
+                    <a href="javascript:void(0);"
+                       data-url="{% url 'masters:delete_fuel_entry' entry.fuel_entry.id %}"
+                       class="text-danger delete-btn ms-2">
+                        <i class="ri-delete-bin-5-line"></i>
+                    </a>
+                </td>
+                <td>{{ entry.fuel_entry.tank.tank_name }}</td>
+                <td>{{ entry.fuel_entry.fuel_type.product_name }}</td>
+                <td>{{ entry.fuel_entry.tank.tank_volume }}</td>
+                <td>
+                    {% if entry.fuel_entry.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    No fuel entries found
+                </td>
+            </tr>
+        {% endfor %}
+        <!-- No data found row for search -->
+        <tr id="noDataFuel" style="display:none;">
+            <td colspan="6" class="text-center text-danger">No data found</td>
+        </tr>
+    </tbody>
+</table>
+            </div>
+            <div class="d-flex align-items-center flex-wrap overflow-auto">
+    <div class="mb-2 mb-sm-0">
+        Showing <b>{{ fuel_entries.start_index }}</b> 
+        to <b>{{ fuel_entries.end_index }}</b>
+        of <b>{{ fuel_entries.paginator.count }}</b> Fuel Entries
+        <i class="bi bi-arrow-right ms-2 fw-medium"></i>
+    </div>
+
+    <div class="ms-auto">
+        <ul class="pagination mb-0 overflow-auto">
+
+            {% if fuel_entries.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?fuel_page={{ fuel_entries.previous_page_number }}">
+                    <i class="ri-arrow-left-s-line align-middle"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="ri-arrow-left-s-line align-middle"></i>
+                </span>
+            </li>
+            {% endif %}
+
+            {% for i in fuel_entries.paginator.page_range %}
+                {% if fuel_entries.number == i %}
+                    <li class="page-item active">
+                        <a class="page-link" href="javascript:void(0);">{{ i }}</a>
+                    </li>
+                {% elif i >= fuel_entries.number|add:'-2' and i <= fuel_entries.number|add:'2' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?fuel_page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if fuel_entries.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?fuel_page={{ fuel_entries.next_page_number }}">
+                    <i class="ri-arrow-right-s-line align-middle"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="ri-arrow-right-s-line align-middle"></i>
+                </span>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- ================= NOZZLE TABLE ================= -->
+<div class="card custom-card flex-fill mt-4">
+    <div class="card-header">
+        <h5>Nozzle List</h5>
+    </div>
+    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+
+                    <!-- Export -->
+                    <div>
+                        <a href="{% url 'masters:nozzle_fuel_report' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:nozzle_fuel_report' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+
+                    <!-- Search -->
+<div class="col-md-3">
+    <input type="search"
+           class="form-control search-table"
+           data-target="#nozzleTable"
+           placeholder="Search Nozzles...">
+</div>
+                </div>
+        <div class="table-responsive">
+<table class="table table-bordered text-nowrap w-100" id="nozzleTable">
+    <thead>
+        <tr>
+            <th>S.No</th>
+            <th>Action</th>
+            <th>Nozzle Name</th>
+            <th>Serial</th>
+            <th>Close Reading</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+            {% if entry.fuelnozilentry == 'nozzle' and entry.nozzle_entry %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="?edit={{ entry.id }}" class="text-info">
+                        <i class="ri-edit-line"></i>
+                    </a>
+                    <a href="javascript:void(0);"
+                       data-url="{% url 'masters:delete_fuel_nozzle' entry.id %}"
+                       class="text-danger delete-btn ms-2">
+                        <i class="ri-delete-bin-5-line"></i>
+                    </a>
+                </td>
+                <td>{{ entry.nozzle_entry.nozzle_name }}</td>
+                <td>{{ entry.nozzle_entry.serial }}</td>
+                <td>{{ entry.nozzle_entry.close_reading }}</td>
+                <td>
+                    {% if entry.nozzle_entry.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    No nozzle entries found
+                </td>
+            </tr>
+        {% endfor %}
+
+        <!-- No data found row for search -->
+        <tr class="noDataRow" style="display:none;">
+            <td colspan="6" class="text-center text-danger">No data found</td>
+        </tr>
+    </tbody>
+</table>
+
+        </div>
+        <div class="d-flex align-items-center flex-wrap overflow-auto mt-3">
+    <div class="mb-2 mb-sm-0">
+        Showing <b>{{ nozzle_entries.start_index }}</b>
+        to <b>{{ nozzle_entries.end_index }}</b>
+        of <b>{{ nozzle_entries.paginator.count }}</b> Nozzle Entries
+    </div>
+
+    <div class="ms-auto">
+        <ul class="pagination mb-0 overflow-auto">
+
+            {% if nozzle_entries.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?nozzle_page={{ nozzle_entries.previous_page_number }}">
+                    <i class="ri-arrow-left-s-line"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="ri-arrow-left-s-line"></i>
+                </span>
+            </li>
+            {% endif %}
+
+            {% for i in nozzle_entries.paginator.page_range %}
+                {% if nozzle_entries.number == i %}
+                <li class="page-item active">
+                    <a class="page-link">{{ i }}</a>
+                </li>
+                {% elif i >= nozzle_entries.number|add:'-2' and i <= nozzle_entries.number|add:'2' %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?nozzle_page={{ i }}">{{ i }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if nozzle_entries.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?nozzle_page={{ nozzle_entries.next_page_number }}">
+                    <i class="ri-arrow-right-s-line"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="ri-arrow-right-s-line"></i>
+                </span>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<!-- ================= TOGGLE SCRIPT ================= -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const typeSelect = document.getElementById("fuelTypeSelect");
+    const fuelDiv = document.getElementById("fuelFields");
+    const nozzleDiv = document.getElementById("nozzleFields");
+
+    if (!typeSelect || !fuelDiv || !nozzleDiv) {
+        console.error("Toggle elements missing");
+        return;
+    }
+
+    function toggleForms() {
+        const value = typeSelect.value;
+
+        if (value === "fuel") {
+            fuelDiv.classList.remove("d-none");
+            nozzleDiv.classList.add("d-none");
+
+            fuelDiv.querySelectorAll("input, select").forEach(el => el.disabled = false);
+            nozzleDiv.querySelectorAll("input, select").forEach(el => el.disabled = true);
+
+        } else if (value === "nozzle") {
+            nozzleDiv.classList.remove("d-none");
+            fuelDiv.classList.add("d-none");
+
+            nozzleDiv.querySelectorAll("input, select").forEach(el => el.disabled = false);
+            fuelDiv.querySelectorAll("input, select").forEach(el => el.disabled = true);
+
+        } else {
+            fuelDiv.classList.add("d-none");
+            nozzleDiv.classList.add("d-none");
+        }
+    }
+
+    typeSelect.addEventListener("change", toggleForms);
+    toggleForms(); // runs on load + edit
+});
+</script>
+
+
+<!-- ================= MESSAGES ================= -->
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+        Swal.fire({
+            icon: '{{ message.tags }}' === 'error' ? 'error' : 'success',
+            title: '{{ message.tags|title }}',
+            text: '{{ message }}',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    {% endfor %}
+});
+</script>
+{% endif %}
+
+<script>
+document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+        const url = this.dataset.url;
+
+        Swal.fire({
+            title: "Are you sure?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then(result => {
+            if (result.isConfirmed) {
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = url;
+
+                const csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrf) {
+                    const token = document.createElement("input");
+                    token.type = "hidden";
+                    token.name = "csrfmiddlewaretoken";
+                    token.value = csrf.value;
+                    form.appendChild(token);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const tankSelect = document.getElementById("tankSelect");
+    const fuelType = document.getElementById("fuelType");
+    const tankCapacity = document.getElementById("tankCapacity");
+
+    if (!tankSelect) {
+        console.error("Tank select not found");
+        return;
+    }
+
+    function fetchTankDetails(tankId) {
+        fetch(`/masters/tank-details/${tankId}/`)
+            .then(res => res.json())
+            .then(data => {
+                fuelType.value = data.fuel_type || '';
+                tankCapacity.value = data.capacity || '';
+            })
+            .catch(err => {
+                console.error(err);
+                fuelType.value = '';
+                tankCapacity.value = '';
+            });
+    }
+
+    // 🔥 On change
+    tankSelect.addEventListener("change", function () {
+        if (this.value) {
+            fetchTankDetails(this.value);
+        } else {
+            fuelType.value = '';
+            tankCapacity.value = '';
+        }
+    });
+
+    // 🔥 Auto-load in EDIT mode
+    if (tankSelect.value) {
+        fetchTankDetails(tankSelect.value);
+    }
+
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[data-target="#fuelTable"]');
+    const table = document.querySelector('#fuelTable');
+    const rows = table.querySelectorAll('tbody tr:not(#noDataFuel)');
+    const noDataRow = document.getElementById('noDataFuel');
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        let hasMatch = false;
+
+        rows.forEach(row => {
+           
+            if (row.querySelector('.text-muted')) return;
+
+            const rowText = row.textContent.toLowerCase();
+            if (rowText.includes(query)) {
+                row.style.display = '';
+                hasMatch = true;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Show "No data found" if nothing matches
+        noDataRow.style.display = hasMatch ? 'none' : '';
+    });
+});
+</script>
+
+
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInputs = document.querySelectorAll('.search-table');
+
+    searchInputs.forEach(input => {
+        const table = document.querySelector(input.getAttribute('data-target'));
+        const rows = table.querySelectorAll('tbody tr:not(.noDataRow)');
+        const noDataRow = table.querySelector('.noDataRow');
+
+        input.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            let hasMatch = false;
+
+            rows.forEach(row => {
+                // Skip Django empty rows
+                if (row.querySelector('.text-muted')) return;
+
+                const rowText = row.textContent.toLowerCase();
+                if (rowText.includes(query)) {
+                    row.style.display = '';
+                    hasMatch = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (noDataRow) {
+                noDataRow.style.display = hasMatch ? 'none' : '';
+            }
+        });
+    });
+});
+</script>
+
+
+{% endblock %}

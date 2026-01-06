@@ -1,0 +1,264 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Customers Out Standing Report</h3>
+
+    <!-- ============================
+            LEFT FILTER FORM
+    ============================ -->
+    <div class="col-xl-4 col-lg-5 col-md-12">
+        <div class="card custom-card">
+           
+
+            <div class="card-body">
+
+                <form id="SearchForm">
+
+                    <!-- ========== ROW 1 : REPORT TYPE RADIO BUTTONS ========== -->
+                    <div class="row mb-4">
+                       
+
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="report_type" id="summary" value="summary" checked>
+                                <label class="form-check-label" for="summary">Summary</label>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="report_type" id="detailed" value="detailed">
+                                <label class="form-check-label" for="detailed">Detailed</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== ROW 2 : FROM DATE + TO DATE ========== -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">From Date </label>
+                            <input type="date" class="form-control" id="from_date">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">To Date </label>
+                            <input type="date" class="form-control" id="to_date">
+                        </div>
+                    </div>
+
+                    <!-- ========== ROW 3 : CREDIT CUSTOMER DROPDOWN ========== -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label">Select Credit Customer</label>
+                            <select class="form-select" id="credit_customer">
+                                <option value="all" selected>All Customers</option>
+                                <option value="1">Customer A</option>
+                                <option value="2">Customer B</option>
+                                <option value="3">Customer C</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- ========== ROW 4 : SHOW BUTTON ========== -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" id="showBtn" class="btn btn-warning btn-wave w-100">
+                                Show
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================
+            RIGHT TABLE RESULT
+    ============================ -->
+    <div class="col-xl-8 col-lg-7 col-md-12">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Report Result</h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="#" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="#" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#ResultTable" placeholder="Search...">
+                    </div>
+                </div>
+
+                <div class="table-responsive mt-3">
+
+                    <!-- SUMMARY TABLE -->
+                    <table class="table table-bordered text-nowrap w-100" id="summaryTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl.No</th>
+                                <th>Customer Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Customer A</td><td>2300</td></tr>
+                            <tr><td>2</td><td>Customer B</td><td>1800</td></tr>
+                            <tr><td>3</td><td>Customer C</td><td>2500</td></tr>
+                        </tbody>
+                    </table>
+
+                    <!-- DETAILED TABLE -->
+                    <table class="table table-bordered text-nowrap w-100 d-none" id="detailedTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl.No</th>
+                                <th>Customer Name</th>
+                                <th>Invoice Date</th>
+                                <th>Vehicle No</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Customer A</td><td>2025-01-10</td><td>KL07 AB1234</td><td>2300</td></tr>
+                            <tr><td>2</td><td>Customer A</td><td>2025-01-12</td><td>KL07 CD5678</td><td>1200</td></tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const summaryTable = document.getElementById("summaryTable");
+    const detailedTable = document.getElementById("detailedTable");
+
+    // Switch table based on radio selection
+    document.querySelectorAll("input[name='report_type']").forEach(r => {
+        r.addEventListener("change", function() {
+            if (this.value === "summary") {
+                summaryTable.classList.remove("d-none");
+                detailedTable.classList.add("d-none");
+            } else {
+                summaryTable.classList.add("d-none");
+                detailedTable.classList.remove("d-none");
+            }
+        });
+    });
+
+    // Search table
+    document.querySelectorAll(".search-table").forEach(el => el.addEventListener("input", function() {
+        let value = this.value.toLowerCase();
+        let tableId = this.dataset.target;
+        document.querySelectorAll(tableId + " tbody tr").forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+        });
+    }));
+
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const summaryTable = document.getElementById("summaryTable");
+    const detailedTable = document.getElementById("detailedTable");
+
+    const showBtn = document.getElementById("showBtn");
+    const fromDate = document.getElementById("from_date");
+    const toDate = document.getElementById("to_date");
+    const customerSelect = document.getElementById("credit_customer");
+
+    // SWITCH TABLE BASED ON RADIO
+    document.querySelectorAll("input[name='report_type']").forEach(r => {
+        r.addEventListener("change", function() {
+            toggleTables(this.value);
+        });
+    });
+
+    // TOGGLE TABLE FUNCTION
+    function toggleTables(type) {
+        if (type === "summary") {
+            summaryTable.classList.remove("d-none");
+            detailedTable.classList.add("d-none");
+        } else {
+            summaryTable.classList.add("d-none");
+            detailedTable.classList.remove("d-none");
+        }
+    }
+
+    // SHOW BUTTON ACTION
+    showBtn.addEventListener("click", function() {
+
+        let type = document.querySelector("input[name='report_type']:checked").value;
+        let fDate = fromDate.value.trim();
+        let tDate = toDate.value.trim();
+        let customer = customerSelect.value;
+
+        // VALIDATION
+        if (!fDate || !tDate) {
+            alert("Please select both From Date and To Date");
+            return;
+        }
+
+        if (new Date(fDate) > new Date(tDate)) {
+            alert("From Date cannot be greater than To Date");
+            return;
+        }
+
+        // APPLY FILTERING (FRONTEND ONLY)
+        toggleTables(type);
+
+        // Optional: simple alert (Can remove if not required)
+        // alert("Showing " + type.toUpperCase() + " report");
+
+        // AUTO SCROLL TO TABLE
+        setTimeout(() => {
+            document.getElementById("summaryTable").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+            document.getElementById("detailedTable").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }, 300);
+
+    });
+
+    // SEARCH FEATURE
+    document.querySelectorAll(".search-table").forEach(el =>
+        el.addEventListener("input", function () {
+            let value = this.value.toLowerCase();
+            let tableId = this.dataset.target;
+            document.querySelectorAll(tableId + " tbody tr").forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+            });
+        })
+    );
+
+});
+</script>
+
+
+
+{% endblock %}

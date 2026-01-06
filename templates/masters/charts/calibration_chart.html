@@ -1,0 +1,453 @@
+{% extends "masters/base.html" %} {% load static %} {% block content %}
+
+<style>
+  .form-check-input:checked {
+    background-color: #5bc0de !important;
+    border-color: #5bc0de !important;
+  }
+</style>
+
+<h3 class="mt-1 mb-4">Calibration Chart</h3>
+
+<div class="row mt-3">
+  <!-- LEFT SIDE — FORM -->
+  <div class="col-12 col-xl-7">
+    <div class="card custom-card">
+      <div class="card-header">
+        <h5>
+          {% if editing_chart %} Edit Calibration Chart {% else %} Add
+          Calibration Chart {% endif %}
+        </h5>
+      </div>
+
+      <div class="card-body">
+        <form class="row g-3" method="post">
+          {% csrf_token %} {% if editing_chart %}
+          <input type="hidden" name="chart_id" value="{{ editing_chart.id }}" />
+          {% endif %}
+
+          <!-- SELECT TANK -->
+          <div class="col-12 col-md-4">
+            <label class="form-label">Select Tank</label>
+            <select id="selectTank" class="form-select form-select-lg">
+              <option value="">Select Tank</option>
+              {% for c in charts %}
+              <option value="{{ c.id }}">{{ c.tank_volume }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- FORM FIELDS -->
+          <div id="tankFields" class="row g-3 mt-1">
+            <div class="col-12 col-md-4">
+              <label class="form-label"
+                >{{ form.tank_volume.label }}
+                <span class="text-danger">*</span></label
+              >
+              {{ form.tank_volume }}
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label"
+                >{{ form.tank_capacity.label }}<span class="text-danger"
+                  >*</span
+                ></label
+              >
+              {{ form.tank_capacity }}
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label"
+                >{{ form.length.label }}<span class="text-danger"
+                  >*</span
+                ></label
+              >
+              {{ form.length }}
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label"
+                >{{ form.diameter.label }}<span class="text-danger"
+                  >*</span
+                ></label
+              >
+              {{ form.diameter }}
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label"
+                >{{ form.radious.label }}<span class="text-danger"
+                  >*</span
+                ></label
+              >
+              {{ form.radious }}
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label"
+                >{{ form.difference.label }}<span class="text-danger"
+                  >*</span
+                ></label
+              >
+              {{ form.difference }}
+            </div>
+          </div>
+
+          <!-- DIP TABLE -->
+          <div class="row mt-3">
+            <h5>DIP Table</h5>
+
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dipTable">
+                <thead>
+                  <tr>
+                    <th>DIP(CM)</th>
+                    <th>Volume(LTS)</th>
+                    <th>Difference(LTR/MM)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody id="dipTableBody">
+                  {% if entries %} {% for e in entries %}
+                  <tr>
+                    <td>
+                      <input
+                        type="number"
+                        step="any"
+                        name="dip[]"
+                        value="{{ e.dip }}"
+                        class="form-control"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="any"
+                        name="volume[]"
+                        value="{{ e.volume }}"
+                        class="form-control"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        step="any"
+                        name="difference[]"
+                        value="{{ e.difference }}"
+                        class="form-control"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-danger btn-sm deleteRow"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                  {% endfor %} {% endif %}
+                </tbody>
+              </table>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-primary btn-sm mt-2"
+              id="addDipRow"
+            >
+              Add Row
+            </button>
+          </div>
+
+          <div class="mt-4">
+            <button class="btn btn-warning btn-wave">Save</button>
+            <a
+              href="{% url 'masters:calibrationchart' %}"
+              class="btn btn-danger-light"
+              >Cancel</a
+            >
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE TABLE -->
+  <div class="col-12 col-xl-5" id="rightTableCard" style="display: none">
+    <div class="card custom-card">
+      <div class="card-body">
+        <h5 class="fw-bold">DIP Entries</h5>
+
+        <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
+          <div>
+            <a id="exportExcelBtn" href="#" class="btn btn-success">
+              <i class="ri-file-excel-2-line"></i> Export Excel
+            </a>
+            <a id="exportPdfBtn" href="#" class="btn btn-danger">
+              <i class="ri-file-pdf-line"></i> Export PDF
+            </a>
+          </div>
+          <div class="col-12 col-md-4">
+            <input
+              type="search"
+              class="form-control search-table"
+              data-target="#entries_table_body"
+              placeholder="Search..."
+            />
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Dip(CM)</th>
+                <th>Volume(LTS)</th>
+                <th>Difference(LTR/MM)</th>
+              </tr>
+            </thead>
+            <tbody id="entries_table_body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST TABLE -->
+  <div class="col-12">
+    <div class="card custom-card">
+      <div class="card-body">
+        <div class="card-header">
+          <h5 class="mb-1">Chart List</h5>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
+          <div>
+            <a
+              href="{% url 'masters:export_calibration_chart' 'excel' %}"
+              class="btn btn-success"
+            >
+              <i class="ri-file-excel-2-line"></i> Export Excel
+            </a>
+            <a
+              href="{% url 'masters:export_calibration_chart' 'pdf' %}"
+              class="btn btn-danger"
+            >
+              <i class="ri-file-pdf-line"></i> Export PDF
+            </a>
+          </div>
+          <div class="col-12 col-md-3">
+            <input
+              type="search"
+              class="form-control search-table"
+              data-target="#ledgerTable"
+              placeholder="Search..."
+            />
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered datatable">
+            <thead class="table-primary">
+              <tr>
+                <th>Slno</th>
+                <th>Action</th>
+                <th>Tank Volume</th>
+                <th>Tank Capacity</th>
+                <th>Length</th>
+                <th>Diameter</th>
+                <th>Radious</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for obj in charts %}
+              <tr>
+                <td>{{ forloop.counter0|add:charts.start_index }}</td>
+                <td>
+                  <a href="?edit={{ obj.pk }}" class="text-info fs-14 lh-1">
+                    <i class="ri-edit-line p-2"></i>
+                  </a>
+                  {% if not obj.is_used %}
+                  <a
+                    href="javascript:void(0);"
+                    data-url="{% url 'masters:delete_calibrationchart' obj.pk %}"
+                    class="text-danger fs-14 lh-1 delete-btn"
+                  >
+                    <i class="ri-delete-bin-5-line"></i>
+                  </a>
+                  {% endif %}
+                </td>
+                <td>{{ obj.tank_volume }}</td>
+                <td>{{ obj.tank_capacity }}</td>
+                <td>{{ obj.length }}</td>
+                <td>{{ obj.diameter }}</td>
+                <td>{{ obj.radious }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7" class="text-center py-4">
+                  No Calibration Values found
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const addBtn = document.getElementById("addDipRow");
+    const body = document.getElementById("dipTableBody");
+
+    addBtn.addEventListener("click", function () {
+      body.insertAdjacentHTML(
+        "beforeend",
+        `
+            <tr>
+                <td><input type="number" step="any" name="dip[]" class="form-control" required></td>
+                <td><input type="number" step="any" name="volume[]" class="form-control" required></td>
+                <td><input type="number" step="any" name="difference[]" class="form-control"></td>
+                <td><button type="button" class="btn btn-danger btn-sm deleteRow">Delete</button></td>
+            </tr>
+        `
+      );
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("deleteRow")) {
+        e.target.closest("tr").remove();
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tankSelect = document.getElementById("selectTank");
+    const rightTableCard = document.getElementById("rightTableCard");
+    const tableBody = document.getElementById("entries_table_body");
+
+    if (!tankSelect) {
+      console.error("selectTank not found");
+      return;
+    }
+
+    tankSelect.addEventListener("change", function () {
+      const chartId = this.value;
+
+      if (!chartId) {
+        rightTableCard.style.display = "none";
+        tableBody.innerHTML = "";
+        return;
+      }
+
+      fetch("{% url 'masters:get_dip_by_tank_volume' %}?chart_id=" + chartId)
+        .then((res) => res.json())
+        .then((res) => {
+          tableBody.innerHTML = "";
+
+          if (!res.data.length) {
+            tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">
+                                No DIP entries found
+                            </td>
+                        </tr>`;
+          } else {
+            res.data.forEach((r) => {
+              tableBody.innerHTML += `
+                            <tr>
+                                <td>${r.dip}</td>
+                                <td>${r.volume}</td>
+                                <td>${r.difference}</td>
+                            </tr>`;
+            });
+          }
+
+          rightTableCard.style.display = "block";
+        })
+        .catch((err) => {
+          console.error(err);
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-danger text-center">
+                            Error loading data
+                        </td>
+                    </tr>`;
+          rightTableCard.style.display = "block";
+        });
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-btn").forEach((el) => {
+      el.addEventListener("click", function () {
+        const url = this.getAttribute("data-url");
+        if (!url) return;
+
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = url;
+
+            const csrfToken = document.querySelector(
+              "[name=csrfmiddlewaretoken]"
+            );
+            if (csrfToken) {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = "csrfmiddlewaretoken";
+              input.value = csrfToken.value;
+              form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tankSelect = document.getElementById("selectTank");
+    const exportExcelBtn = document.getElementById("exportExcelBtn");
+    const exportPdfBtn = document.getElementById("exportPdfBtn");
+
+    tankSelect.addEventListener("change", function () {
+      const chartId = this.value;
+
+      if (chartId) {
+        exportExcelBtn.href = `/masters/calibration-chart/${chartId}/export/excel/`;
+        exportPdfBtn.href = `/masters/calibration-chart/${chartId}/export/pdf/`;
+      } else {
+        exportExcelBtn.href = "#";
+        exportPdfBtn.href = "#";
+      }
+    });
+  });
+</script>
+
+{% endblock %}

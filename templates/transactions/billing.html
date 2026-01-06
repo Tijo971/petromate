@@ -1,0 +1,119 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h3 class="mb-4 ">Cash Billing</h3>
+
+    <div class="card p-4">
+
+        <div class="row">
+
+            <!-- ==========================
+                 KEYPAD (LEFT SIDE)
+            ============================= -->
+            <div class="col-md-4">
+
+                <div class="row g-2">
+
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">1</button></div>
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">2</button></div>
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">3</button></div>
+
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">4</button></div>
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">5</button></div>
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">6</button></div>
+
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">7</button></div>
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">8</button></div>
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">9</button></div>
+
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">0</button></div>
+                    <div class="col-4"><button class="btn btn-primary w-100 py-3">.</button></div>
+                    <div class="col-4"><button class="btn btn-danger w-100 py-3">C</button></div>
+
+                </div>
+
+            </div>
+
+            <!-- ==========================
+                 BILLING FORM (RIGHT SIDE)
+            ============================= -->
+            <div class="col-md-8">
+
+                <form class="row g-3">
+
+                    <!-- Bill Date -->
+                    <div class="col-md-12">
+                        <label class="form-label">Bill Date</label>
+                        <input type="date" class="form-control" id="billDate">
+                    </div>
+
+                    <!-- Vehicle Number -->
+                    <div class="col-md-12">
+                        <label class="form-label">Vehicle Number</label>
+                        <input type="text" class="form-control" placeholder="Enter Vehicle Number">
+                    </div>
+
+                    <!-- Product -->
+                    <div class="col-md-6">
+                        <label class="form-label">Product</label>
+                        <select class="form-select">
+                            <option>PETROL</option>
+                            <option>DIESEL</option>
+                            <option>EXTRA PREMIUM</option>
+                        </select>
+                    </div>
+
+                    <!-- Rate -->
+                    <div class="col-md-6">
+                        <label class="form-label">Rate</label>
+                        <input type="text" class="form-control" value="96.34" disabled>
+                    </div>
+
+                    <!-- Qty + Net Amount -->
+                    <div class="col-md-6">
+                        <label class="form-label">Qty</label>
+                        <input type="number" class="form-control" value="0">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Net Amount</label>
+                        <input type="text" class="form-control" value="563" readonly>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="col-md-12 mt-2">
+                        <button class="btn btn-warning w-100">
+                            Save Bill and Get Print Out
+                        </button>
+                    </div>
+
+                </form>
+
+                <hr>
+
+                <!-- Note -->
+                <p class="text-danger fw-bold">
+                    Note: Only for cash bill, it will not affect stock or accounts.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // Set today's date automatically
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("billDate").value =
+            new Date().toISOString().split("T")[0];
+    });
+</script>
+
+
+{% endblock %}

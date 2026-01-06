@@ -1,0 +1,297 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<h3 class="mt-1 mb-4">Generate Bill</h3>
+
+<div class="row mt-3">
+
+    <!-- LEFT FORM -->
+    <div class="col-xl-6">
+        <div class="card custom-card">
+            <div class="card-body">
+
+                <form class="row g-3">
+
+                    <!-- FROM DATE -->
+                    <div class="col-md-3">
+                        <label class="form-label">From Date</label>
+                        <input type="date" class="form-control">
+                    </div>
+
+                    <!-- TO DATE -->
+                    <div class="col-md-3">
+                        <label class="form-label">To Date</label>
+                        <input type="date" class="form-control">
+                    </div>
+
+                    <!-- SELECT CUSTOMER -->
+                    <div class="col-md-4">
+                        <label class="form-label">Select Customer</label>
+                        <select id="selectCustomer" class="form-select form-select-lg">
+                            <option value="">-- Select --</option>
+                            <option>Customer 1</option>
+                            <option>Customer 2</option>
+                            <option>Customer 3</option>
+                        </select>
+                    </div>
+
+                    <!-- SHOW BUTTON -->
+                    <div class="col-md-2 mt-3">
+                        <button type="button" id="showBill" class="btn btn-primary btn-wave mt-4 w-100">Show</button>
+                    </div>
+
+                    <!-- INVOICE NUMBER -->
+                    <div class="col-md-5">
+                        <label class="form-label">Invoice Number</label>
+                        <input type="text" class="form-control" placeholder="Invoice Number">
+                    </div>
+
+                    <!-- PRINT -->
+                    <div class="col-md-3 mt-3">
+                        <button type="button" class="btn btn-success btn-wave mt-4 w-100">Print</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT TABLE (HIDE INITIALLY) -->
+    <div class="col-xl-6" id="rightTableCard" style="display:none;">
+        <div class="card custom-card">
+
+            <div class="card-header">
+                <h5>Bill Details</h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Customer Name</th>
+                                <th>Bill Date</th>
+                                <th>Bill Number</th>
+                                <th>Product Name</th>
+                                <th>Vehicle Name / Ref No</th>
+                                <th>Amount</th>
+                               
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>ABC Traders</td>
+                                <td>29/11/2025</td>
+                                <td>BILL-1022</td>
+                                <td>Diesel</td>
+                                <td>KL-07-8899</td>
+                                <td>₹15,000</td>
+                            
+                            </tr>
+                            
+                        </tbody>
+                        
+                        
+
+                    </table>
+                   
+                </div>
+                 <div class="text-end align-bottom">
+                            <button class="btn btn-warning btn-sm">Generate Invoice</button>
+
+                        </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BILL LIST TABLE -->
+    <div class="col-xl-12 mt-4">
+
+        <div class="card custom-card">
+
+            <div class="card-header justify-content-between">
+                <div class="card-title"><i class="bi bi-table"></i> Bill List</div>
+
+                
+            </div>
+
+<div class="card-body">
+
+    <!-- WRAP EVERYTHING PROPERLY -->
+    <div class="table-responsive">
+
+        <!-- ===========================
+             DATE-WISE SEARCH FILTER
+        ============================ -->
+        <div class="card p-3 mb-3 bg-light border">
+
+            <div class="row g-3">
+
+                <!-- From Date -->
+                <div class="col-md-3 col-12">
+                    <label class="form-label">From Date</label>
+                    <input type="date" class="form-control" id="searchFromDate">
+                </div>
+
+                <!-- To Date -->
+                <div class="col-md-3 col-12">
+                    <label class="form-label">To Date</label>
+                    <input type="date" class="form-control" id="searchToDate">
+                </div>
+
+                <!-- Select Customer -->
+                <div class="col-md-3 col-12">
+                    <label class="form-label">Select Customer</label>
+                    <select class="form-select" id="searchCustomer">
+                        <option value="">-- Select --</option>
+                        <option>ABC Traders</option>
+                        <option>XYZ Petroleum</option>
+                        <option>Global Fuels</option>
+                    </select>
+                </div>
+
+                <!-- Show Button -->
+                <div class="col-md-3 col-12">
+                    <label class="form-label d-block">&nbsp;</label>
+                    <button class="btn btn-primary w-100" id="filterShowBtn">Show</button>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===========================
+             EXPORT + SEARCH BAR
+        ============================ -->
+        <div class="row align-items-center mb-2 g-2">
+
+            <!-- Export Buttons -->
+            <div class="col-lg-6 col-md-6 col-12 d-flex gap-2">
+                <a href="#" class="btn btn-success w-25 w-md-auto">
+                    <i class="ri-file-excel-2-line"></i> Export Excel
+                </a>
+
+                <a href="#" class="btn btn-danger w-25 w-md-auto">
+                    <i class="ri-file-pdf-line"></i> Export PDF
+                </a>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="col-lg-6 col-md-6 col-12">
+                <input type="search" class="form-control search-table"
+                    data-target="#companyTable" placeholder="Search...">
+            </div>
+
+        </div>
+
+
+        <!-- ===========================
+             MAIN BILL TABLE
+        ============================ -->
+        <div class="table-responsive">
+            <table class="table table-bordered text-nowrap">
+                <thead class="table-primary">
+                    <tr>
+                        <th>SL No</th>
+                        <th>Action</th>
+                        <th>Customer Name</th>
+                        <th>From Billdate</th>
+                        <th>To Billdate</th>
+                        <th>Invoice Number</th>
+                        <th>Invoice Date</th>
+                        <th>Invoice Amount</th>
+                    </tr>
+                </thead>
+
+                <tbody id="companyTable">
+                    <tr>
+                        <td>1</td>
+
+                        <td>
+                            <div class="hstack gap-2 fs-15">
+                                <a class="btn btn-icon btn-sm btn-info-transparent rounded-pill">
+                                    <i class="ri-edit-line"></i>
+                                </a>
+
+                                <a class="btn btn-icon btn-sm btn-danger-transparent rounded-pill">
+                                    <i class="ri-delete-bin-line"></i>
+                                </a>
+
+                                <a class="btn btn-icon btn-sm btn-warning-transparent rounded-pill">
+                                    <i class="ri-printer-line"></i>
+                                </a>
+                            </div>
+                        </td>
+
+                        <td>ABC Traders</td>
+                        <td>01/11/2025</td>
+                        <td>29/11/2025</td>
+                        <td>BILL-1022</td>
+                        <td>29/11/2025</td>
+                        <td>₹15,000</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-end">
+                <li class="page-item disabled"><a class="page-link">Prev</a></li>
+                <li class="page-item active"><a class="page-link">1</a></li>
+                <li class="page-item"><a class="page-link">2</a></li>
+                <li class="page-item"><a class="page-link">3</a></li>
+                <li class="page-item"><a class="page-link">Next</a></li>
+            </ul>
+        </nav>
+
+    </div> <!-- table-responsive end -->
+
+</div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const showBillBtn = document.getElementById("showBill");
+    const rightTableCard = document.getElementById("rightTableCard");
+
+    showBillBtn.addEventListener("click", function () {
+        rightTableCard.style.display = "block";
+    });
+
+});
+</script>
+
+<script>
+document.getElementById("filterShowBtn").addEventListener("click", function () {
+
+    let fromDate = document.getElementById("searchFromDate").value;
+    let toDate = document.getElementById("searchToDate").value;
+    let customer = document.getElementById("searchCustomer").value;
+
+    console.log("Filter Applied:");
+    console.log("From:", fromDate);
+    console.log("To:", toDate);
+    console.log("Customer:", customer);
+
+});
+</script>
+
+{% endblock %}

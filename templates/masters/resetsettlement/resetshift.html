@@ -1,0 +1,54 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Reset Shift</h5>
+        </div>
+
+        <div class="card-body">
+            <form>
+
+                <div class="row g-3">
+
+                    <!-- Current Date -->
+                    <div class="col-md-4">
+                       
+                        <input type="text" class="form-control" id="currentDate" readonly>
+                    </div>
+
+                    <!-- Staff Name -->
+                    <div class="col-md-4">
+                        
+                        <select class="form-select">
+                            <option selected >---Select Staff---</option>
+                            <option value="1">John</option>
+                            <option value="2">Michael</option>
+                            <option value="3">Anna</option>
+                            <option value="4">David</option>
+                        </select>
+                    </div>
+
+                    <!-- Shift Details Button -->
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="button" class="btn btn-info w-100">
+                            Shift Details
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Auto Fill Date Script -->
+<script>
+    document.getElementById("currentDate").value = new Date().toISOString().split('T')[0];
+</script>
+
+
+{% endblock %}

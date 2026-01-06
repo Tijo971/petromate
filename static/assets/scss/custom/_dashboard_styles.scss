@@ -1,0 +1,1066 @@
+@use "../variables";
+/* Start::dashboard_styles */
+/* Sales Dashboard */
+.card.custom-card.main-banner-img {
+  position: relative;
+  z-index: 0;
+}
+#visitors-report {
+  .apexcharts-text.apexcharts-yaxis-label tspan, .apexcharts-text.apexcharts-xaxis-label tspan  {
+    fill: #fff;
+  }
+  .apexcharts-gridline {
+    stroke: transparent;
+  }
+  .apexcharts-xaxis line, .apexcharts-grid-borders line {
+    stroke: transparent;
+  }
+}
+.recent-transactions-list {
+  margin-block-end: 0;
+  li {
+    margin-block-end: 1.25rem;
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+}
+ul.upcoming-sales-list {
+  position: relative;
+  margin-block-end: 0;
+  &::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    border-inline-start: 1px dashed var(--default-border);
+    inset-inline-start: 20%;
+  }
+  li {
+    position: relative;
+    margin-block-end: 1.33rem;
+    &:last-child {
+      margin-block-end: 0;
+    }
+    &::before {
+      content: "";
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      inset-inline-end: 78%;
+      inset-block-start: 20px;
+      background-color: var(--custom-white);
+    }
+    &:nth-child(1):before {
+      border: 2px solid variables.$primary;
+    }
+    &:nth-child(2):before {
+      border: 2px solid variables.$orange;
+    }
+    &:nth-child(3):before {
+      border: 2px solid variables.$pink;
+    }
+    &:nth-child(4):before {
+      border: 2px solid variables.$info;
+    }
+    &:nth-child(5):before {
+      border: 2px solid variables.$success;
+    }
+  }
+}
+ul.recent-subscriptions-list {
+  margin-block-end: 0;
+  li {
+    margin-block-end: 1.25rem;
+    &:last-child {
+      margin-block-end: 0;
+    }
+    .subscriber-country img {
+      height: 10px;
+      border-radius: 2px;
+      margin-inline-start: 0.25rem;
+    }
+  }
+}
+#sales-locations {
+  height: 12.5rem;
+}
+#sales-locations #jvm-regions-group path {
+  fill: rgb(var(--light-rgb)) !important;
+  stroke: rgba(0, 0, 0, 0.1);
+  stroke-width: 0.75;
+}
+#sales-locations #jvm-markers-group circle {
+  fill: var(--primary-color);
+}
+[data-theme-mode=dark] #sales-locations #jvm-regions-group path {
+  stroke: rgba(255, 255, 255, 0.2);
+}
+ul.sales-locations-list {
+  margin-block-end: 0;
+  margin-top: 2rem;
+}
+ul.sales-locations-list li {
+  margin-block-end: 1rem;
+}
+ul.sales-locations-list li:last-child {
+  margin-block-end: 0;
+}
+ul.top-country-sales-list {
+  margin-block-end: 0;
+  li {
+    margin-block-end: 1.25rem;
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+}
+ul.top-countries-list {
+  margin-block-end: 0;
+}
+ul.top-countries-list li {
+  margin-block-end: 1.38rem;
+}
+ul.top-countries-list li:last-child {
+  margin-block-end: 0;
+}
+#sales-summary {
+  .apexcharts-pie text {
+    fill: transparent !important;
+  }
+}
+#orders-summary{
+.apexcharts-pie line, .apexcharts-pie circle {
+  stroke: transparent !important;
+}
+.apexcharts-pie text {
+  fill: variables.$default-text-color !important;
+}
+}
+
+#visitors-report{
+  .apexcharts-text{
+    stroke: #fff !important;
+    stroke-width: 0 !important;
+    fill: rgba(231, 231, 231, 0.91) !important;
+  }
+}
+.border-card{
+  border: 2px dashed var(--default-border);
+}
+.ecommerce-img{
+  position: absolute;
+  inset-inline-start: 220px;
+  height: 190px;
+  width: 190px;
+  top:35px;
+}
+.app-sidebar{
+  .search-sidebar::-webkit-input-placeholder {
+    color:#fff !important;
+  }
+}
+ 
+
+.handwritten-notes {
+  width:2rem;
+  height:2rem;
+}
+.main-banner-img{
+  position: relative;
+  &:before {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/media/backgrounds/6.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    opacity: 0.1;
+    z-index: -1;
+  }
+}
+.dash-img{
+  position: absolute;
+}
+@media (min-width: 1400px) {
+  [data-width="boxed"] {
+    .dash-img {
+      display: none;
+    }
+  }
+}
+/* Sales Dashboard */
+
+/* Analytics Dashboard */
+.analytics-activity {
+  li {
+    margin-block-end: 1.25rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+} 
+#subscribers {
+  .apexcharts-pie circle {
+    stroke: transparent;
+  }
+  .apexcharts-datalabels-group text {
+    fill: var(--default-text-color) !important;
+  }
+}
+/* Analytics Dashboard */
+
+/* Ecommerce Dashboard */
+.ecommerce-transactions-list {
+  margin-block-end: 0rem;
+  li {
+    margin-block-end: 1.53rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+/* Ecommerce Dashboard */
+
+/* CRM Dashboard */
+.crm-deals-status li {
+  position: relative;
+  margin-block-end: 1rem;
+  margin-inline-start: 1rem;
+  &:last-child {
+    margin-block-end: 0rem;
+  }
+}
+.crm-top-leads li {
+  margin-block-end: 0.95rem;
+  &:last-child {
+    margin-block-end: 0rem;
+  }
+}
+/* CRM Dashboard */
+
+/* Crypto Dashboard */
+
+.crypto-wallet .chart-circle-value {
+  position: absolute;
+  font-size: 3rem;
+  line-height: 70px;
+  border: 2px dashed variables.$primary;
+  border-radius: 50%;
+  text-align: center;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  margin: auto;
+  inset-block-start: 0px;
+  inset-inline-end: 0px;
+  inset-block-end: 0px;
+  inset-inline-start: 0px;
+}
+.crypto-wallet .donut-value {
+  margin: auto;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.crypto-wallet {
+  position: relative;
+  margin: auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.market-cap-list li {
+  margin-block-end: .95rem;
+  &:last-child {
+    margin-block-end: 0rem;
+  }
+}
+/* Crypto Dashboard */
+
+/* NFT Dashboard */
+.nft-banner-card {
+  min-height: 250px;
+  z-index: 1;
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/nft-images/16.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0.5;
+    z-index: -1;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(var(--primary-rgb), .8);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+}
+[dir="rtl"] {
+  .nft-main-banner-image {
+    transform: scaleX(-1);
+  }
+}
+/* NFT Dashboard */
+
+/* projects Dashboard */
+
+#earnings-report1 {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  top: 4.5rem;
+}
+
+#earnings-report {
+  margin-block-start: -1px;
+}
+
+.earnings-card {
+  z-index: 1;
+}
+
+.earnings-card .card-body {
+  padding-top: 1rem !important;
+}
+.projects-maintask-card {
+  li {
+    margin-block-end: 1.02rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+.projects-recent-activity {
+  li {
+    margin-block-end: 1.45rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+/* projects Dashboard */
+/* jobs Dashboard */
+#candidates-chart {
+  .apexcharts-datalabels-group text {
+    fill: variables.$default-text-color !important;
+  }
+}
+.recent-jobs-list {
+  li {
+    margin-block-end: 1.2rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+/* jobs Dashboard */
+
+/* HRM Dashboard */
+.hrm-events-list {
+  li {
+    margin-block-end: 1.2rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+.recruitment-pipeline-list {
+  li {
+    margin-block-end: 1.15rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+.schedule-list {
+  li {
+    margin-block-end: 1.1rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+
+.card.custom-card.hrm-cards {
+  z-index: 1;
+
+  &:before {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    content: "";
+    background-color: variables.$primary-01;
+    inset-inline-end: -1rem;
+    inset-block-start: -1rem;
+    border-radius: .25rem;
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+  }
+  &:after {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    content: "";
+    background-color: variables.$primary;
+    inset-inline-end: -1rem;
+    inset-block-start: -1rem;
+    border-radius: .25rem;
+    z-index: -1;
+  }
+  &.secondary {
+    &:before {
+      background-color: rgba(var(--secondary-rgb), 0.1);
+      border: 1px solid rgba(var(--secondary-rgb), 0.1);
+    }
+    &:after {
+      background-color: variables.$secondary;
+    }
+  }
+  &.success {
+    &:before {
+      background-color: rgba(var(--success-rgb), 0.1);
+      border: 1px solid rgba(var(--success-rgb), 0.1);
+    }
+    &:after {
+      background-color: variables.$success;
+    }
+  }
+  &.pink {
+    &:before {
+      background-color: rgba(var(--pink-rgb), 0.1);
+      border: 1px solid rgba(var(--pink-rgb), 0.1);
+    }
+    &:after {
+      background-color: variables.$pink;
+    }
+  }
+}
+
+.hrm-cards-icon {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  inset-block-start: 10px;
+  inset-inline-end: 10px;
+}
+
+.timeline-widget {
+  position: relative;
+
+  &:before {
+    position: absolute;
+    content: "";
+    width: 0.125rem;
+    height: 100%;
+    background-color: variables.$default-border;
+    inset-block-start: 0;
+    inset-inline-start: 3rem;
+  }
+
+  .timeline-widget-list {
+    margin-block-end: 1.5rem;
+    position: relative;
+
+    &:before {
+      content: "";
+      position: absolute;
+      width: 0.75rem;
+      height: 0.75rem;
+      inset-inline-start: 2.688rem;
+      top: 0.25rem;
+      border-radius: 3.125rem;
+      border: 0.125rem solid variables.$default-border;
+      background-color: variables.$custom-white;
+    }
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+}
+.timeline-widget1 {
+  position: relative;
+  overflow-x: auto;
+}
+.timeline-widget1:before {
+  position: absolute;
+  content: "";
+  width: 1px;
+  height: 86%;
+  background-color: var(--default-border);
+  inset-block-start: 8px;
+  inset-block-end: 1rem;
+  inset-inline-start: 3rem;
+}
+.timeline-widget1 .timeline-widget-list {
+  margin-block-end: 1.45rem;
+  position: relative;
+  font-weight: 500;
+}
+.timeline-widget1 .timeline-widget-list {
+  &:before {
+    content: "";
+    position: absolute;
+    width: 0.35rem;
+    height: 1.75rem;
+    inset-inline-start: 2.9rem;
+    top: 0.25rem;
+    border-radius: 3.125rem;
+    background-color: var(--custom-white);
+  }
+  &:first-child:before {
+    border: 0.125rem solid variables.$primary-08;
+  }
+  &:nth-child(2):before {
+    border: 0.125rem solid rgba(var(--secondary-rgb), 0.8);
+  }
+  &:nth-child(3):before {
+    border: 0.125rem solid rgba(var(--success-rgb), 0.8);
+  }
+  &:nth-child(4):before {
+    border: 0.125rem solid rgba(var(--warning-rgb), 0.8);
+  }
+  &:nth-child(5):before {
+    border: 0.125rem solid rgba(var(--info-rgb), 0.8);
+  }
+  &:nth-child(6):before {
+    border: 0.125rem solid rgba(var(--danger-rgb), 0.8);
+  }
+}
+.timeline-widget1 .timeline-widget-list:last-child {
+  margin-block-end: 0;
+}
+.timeline-widget1 .timeline-widget-list .timeline-widget-content {
+  max-width: 14rem;
+}
+
+#gender-equity {
+
+  .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-center,
+  .apexcharts-legend.apx-legend-position-top.apexcharts-align-center {
+    padding-inline: 0 !important;
+    inset-inline-start: 0 !important;
+  }
+}
+
+
+#gender-equity {
+
+  .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-center,
+  .apexcharts-legend.apx-legend-position-top.apexcharts-align-center {
+    padding-inline: 0 !important;
+    inset-inline-start: 0 !important;
+  }
+}
+/* HRM Dashboard */
+/* Courses Dashboard */
+.courses-instructors {
+  li {
+    margin-block-end: 1.1rem;
+    &:last-child {
+      margin-block-end: 0rem;
+    }
+  }
+}
+
+.courses-banner-card {
+  position: relative;
+  z-index: 1;
+
+  &:before {
+    position: absolute;
+    content: "";
+    width: 200px;
+    height: 200px;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    inset-inline-end: -4rem;
+    transform: rotate(180deg);
+    z-index: -1;
+    border: 38px solid #fff;
+    top: -5rem;
+    border-radius: 50%;
+  }
+
+  &:after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/media/backgrounds/3.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+    opacity: 0.075;
+  }
+
+  img {
+    bottom: 8px;
+    inset-inline-start: 24px;
+  }
+}
+/* Courses Dashboard */
+/* stocks Dashboard */
+
+#statistics .apexcharts-pie text {
+  fill: var(--default-text-color) !important;
+}
+/* stocks Dashboard */
+
+
+
+/* Medical Dashboard */
+.medical-main-card {
+  z-index: 1;
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 95px;
+    height: 95px;
+    inset-inline-end: -13px;
+    inset-block-end: -10px;
+    border-radius: 50%;
+    z-index: -1;
+  }
+
+  &.total-pateints:before {
+    background: linear-gradient(to bottom right, variables.$primary-02, transparent);
+  }
+
+  &.appointments:before {
+    background: linear-gradient(to bottom right, rgba(var(--secondary-rgb), 0.2), transparent);
+  }
+
+  &.available-doctors:before {
+    background: linear-gradient(to bottom right, rgba(var(--success-rgb), 0.2), transparent);
+  }
+
+  &.available-rooms:before {
+    background: linear-gradient(to bottom right, rgba(var(--pink-rgb), 0.2), transparent);
+  }
+}
+
+.doctors-list {
+  margin-block-end: 0;
+
+  li {
+    margin-block-end: 1.2rem;
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+}
+
+.card.custom-card.medical-banner-card {
+  z-index: 1;
+  box-shadow: none;
+  border: 0;
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: variables.$primary-09;
+    z-index: -1;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/media/backgrounds/6.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    z-index: -1;
+    opacity: 0.1;
+  }
+}
+.medical-img {
+  height: 11rem;
+  position: absolute;
+  bottom: 0;
+  inset-inline-end: 0;
+  transform: scalex(-1);
+}
+[dir="rtl"] {
+  .medical-img {
+    transform: scalex(-1);
+  }
+}
+.upcoming-shedule .nav {
+  justify-content: space-between;
+}
+.upcoming-shedule .sh-link {
+  padding: 0.6rem;
+  border-radius: 3px !important;
+  min-width: 65px;
+  max-width: 65px;
+  transition: all ease 0.3s;
+  background-color: variables.$primary-01;
+}
+.upcoming-shedule .sh-shedule {
+  position: relative;
+  padding-inline-start: 3rem;
+}
+.upcoming-shedule .sh-shedule::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 11px;
+  top: 5px;
+  height: 0.25rem;
+  width: 1.25rem;
+  border-radius: 0.25rem;
+  background-color: var(--primary-color);
+}
+.upcoming-shedule .sh-shedule-container li {
+  margin-block-end: 1.377rem;
+}
+.upcoming-shedule .sh-shedule-container li:last-child {
+  margin-block-end: 0;
+}
+.upcoming-shedule .sh-shedule-container > .list-item:nth-child(2) .sh-shedule::before {
+  background-color: rgb(var(--secondary-rgb));
+}
+.upcoming-shedule .sh-shedule-container > .list-item:nth-child(3) .sh-shedule::before {
+  background-color: rgb(var(--success-rgb));
+}
+.upcoming-shedule .sh-shedule-container > .list-item:nth-child(4) .sh-shedule::before {
+  background-color: rgb(var(--pink-rgb));
+}
+.upcoming-shedule .sh-shedule-container > .list-item:nth-child(5) .sh-shedule::before {
+  background-color: rgb(var(--info-rgb));
+}
+/* Medical Dashboard */
+
+/* pos-system Dashboard */
+.pos-category .card.custom-card.active {
+  border-inline-start: 3px solid var(--primary-color) !important;
+  background-color: variables.$primary-01;
+  border-color: rgba(var(--primary-rgb), 0.29);
+  transition: 0.3s ease;
+}
+/* pos-system Dashboard */
+
+/* Podcast Dashboard */
+.podcast-banner-card {
+  min-height: 316px;
+  z-index: 1;
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/media/media-7.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0.5rem;
+    z-index: -1;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to right, rgba(var(--primary-rgb), .90) 30%, rgba(var(--secondary-rgb), .90));
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+}
+
+.avatar.podcast-playing-now-avatar {
+  width: 8rem;
+  height: 8rem;
+}
+
+.podcast-playing-progress {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+  &.progress-custom .progress-bar:after {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    box-shadow: 0 0.313rem 0.313rem rgba(var(--success-rgb), 0.2);
+    background: #fff;
+    position: absolute;
+    inset-inline-end: -0.375rem;
+    inset-block-start: -4px;
+    border: 0.25rem solid rgb(var(--success-rgb));
+  }
+}
+
+.podcast-recently-played-list {
+  margin-block-end: 0;
+  li {
+    margin-block-end: 1.25rem;
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+    a.text-gray-3:hover {
+      color: variables.$danger;
+    }
+  }
+}
+
+#new-joinings {
+
+  .apexcharts-pie line,
+  .apexcharts-pie circle {
+    stroke: var(--default-border);
+  }
+}
+
+/* Podcast Dashboard */
+
+/* School Dashboard */
+.overall-attendance-list {
+  li {
+    padding-inline-start: 2.5rem;
+
+    &:before {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      inset-inline-start: 20px;
+      inset-block-start: 20px;
+    }
+
+    &.boys:before {
+      background-color: variables.$primary-09;
+    }
+
+    &.girls:before {
+      background-color: rgba(var(--secondary-rgb), 0.9);
+    }
+  }
+}
+
+.notice-board-list {
+  margin-block-end: 0;
+
+  li {
+    margin-block-end: 1.5rem;
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+}
+
+.upcoming-assignments-list {
+  margin-block-end: 0;
+
+  li {
+    margin-block-end: 1.5rem;
+    padding-inline-start: 1.85rem;
+    position: relative;
+
+    &:before {
+      content: "";
+      width: 11px;
+      border-radius: 10px;
+      height: 15%;
+      position: absolute;
+      inset-inline-start: 3px;
+      inset-block-start: 6px;
+    }
+
+    &:nth-child(1):before {
+      background-color: variables.$primary-09;
+    }
+
+    &:nth-child(2):before {
+      background-color: rgba(var(--secondary-rgb), 0.9);
+    }
+
+    &:nth-child(3):before {
+      background-color: rgba(var(--success-rgb), 0.9);
+    }
+
+    &:nth-child(4):before {
+      background-color: rgba(var(--orange-rgb), 0.9);
+    }
+
+    &:nth-child(5):before {
+      background-color: rgba(var(--info-rgb), 0.9);
+    }
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+}
+/* School Dashboard */
+
+/* Social Media */
+.audience-reached-list li,
+.revenue-earned-list li {
+  position: relative;
+  padding-inline-start: 2rem;
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    inset-inline-start: 1rem;
+    inset-block-start: 15px;
+  }
+
+  &:nth-child(1):before {
+    background-color: variables.$primary-09;
+  }
+
+  &:nth-child(2):before {
+    background-color: rgba(var(--secondary-rgb), 0.9);
+  }
+
+  &:nth-child(3):before {
+    background-color: rgba(var(--success-rgb), 0.9);
+  }
+
+  &:nth-child(4):before {
+    background-color: rgba(var(--orange-rgb), 0.9);
+  }
+}
+
+#visitors-countries {
+  height: 18.6rem;
+
+  #jvm-regions-group path {
+    fill: variables.$light;
+  }
+
+  #jvm-markers-labels-group {
+    display: none;
+  }
+}
+
+#visitors-countries circle:nth-child(1) {
+  fill: variables.$primary;
+  stroke: variables.$primary-03;
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(2) {
+  fill: variables.$secondary;
+  stroke: rgba(var(--secondary-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(3) {
+  fill: variables.$danger;
+  stroke: rgba(var(--danger-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(4) {
+  fill: variables.$info;
+  stroke: rgba(var(--info-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(5) {
+  fill: variables.$orange;
+  stroke: rgba(var(--orange-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(6) {
+  fill: variables.$warning;
+  stroke: rgba(var(--warning-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(7) {
+  fill: variables.$success;
+  stroke: rgba(var(--success-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(8) {
+  fill: variables.$pink;
+  stroke: rgba(var(--pink-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(9) {
+  fill: variables.$dark;
+  stroke: rgba(var(--dark-rgb), 0.2);
+  stroke-width: 20;
+}
+
+#visitors-countries circle:nth-child(10) {
+  fill: variables.$indigo;
+  stroke: rgba(variables.$indigo, 0.2);
+  stroke-width: 20;
+}
+
+#revenue-earned {
+  .apexcharts-radialbar-track.apexcharts-track path {
+    stroke: transparent;
+  }
+}
+#audience-reached {
+  .apexcharts-pie text {
+    fill: variables.$default-text-color !important;
+  }
+}
+.social-requests-list {
+  margin-block-end: 0;
+  >li {
+    margin-block-end: 1.6rem;
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+}
+/* Social Media */
+/* End::dashboard_styles */

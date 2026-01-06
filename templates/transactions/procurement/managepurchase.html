@@ -1,0 +1,295 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <!-- ================= MAIN PARENT CARD ================= -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Purchase Entry</h4>
+        </div>
+
+        <div class="card-body">
+
+            <!-- ================= STAFF & SUPPLIER SECTION ================= -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Staff Name & Supplier Details</strong>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Staff Name</label>
+                                    <select class="form-select">
+                                        <option>--SELECT STAFF DETAILS--</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Suppliers Details</label>
+                                    <select class="form-select">
+                                        <option>--SELECT SUPPLIERS DETAILS--</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Folio No</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Mobile</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Credit Days</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">GST</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= DATE / INVOICE SECTION ================= -->
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <strong>Purchase Details</strong>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Purchase Date</label>
+                                    <input type="date" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Purchase Time</label>
+                                    <input type="time" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Invoice Amount</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Invoice Date</label>
+                                    <input type="date" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Invoice No</label>
+                                    <input type="number" class="form-control" placeholder="Amount">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Mode of Pay</label>
+                                    <select class="form-select">
+                                        <option>Credit</option>
+                                        <option>Cash</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Payment Date</label>
+                                    <input type="date" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Vehicle Number</label>
+                                    <select class="form-select">
+                                        <option>--SELECT VEHICLE NUMBER--</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">New Vehicle Number</label>
+                                    <input class="form-control" placeholder="New Vehicle Number">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PRODUCT SELECTION ================= -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <strong>Product Selection</strong>
+                </div>
+
+                <div class="card-body">
+                    <div class="row g-3">
+
+                        <div class="col-md-2">
+                            <label class="form-label">Type</label>
+                            <select class="form-select">
+                                <option>--SELECT TYPES--</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Product Name</label>
+                            <select class="form-select">
+                                <option>--SELECT PRODUCT NAME--</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Company Name</label>
+                            <input class="form-control" type="text">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">HSN Code</label>
+                            <input class="form-control" type="text">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">GST</label>
+                            <select class="form-select">
+                                <option>Non Tax</option>
+                                <option>Tax</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">GST %</label>
+                            <input class="form-control" type="text">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PRODUCT TABLE ================= -->
+            <div class="card mb-3">
+                <div class="card-header bg-light"><strong>Product Details</strong></div>
+
+                <div class="card-body p-0">
+                    <table class="table table-bordered table-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Remove</th>
+                                <th>Product Name</th>
+                                <th>Total Price</th>
+                                <th>Quantity</th>
+                                <th>Free</th>
+                                <th>Cost Price</th>
+                                <th>Landing Cost</th>
+                                <th>Discount Type</th>
+                                <th>Amount</th>
+                                <th>MRP</th>
+                                <th>Selling Price</th>
+                                <th>CGST</th>
+                                <th>SGST</th>
+                                <th>IGST</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td><button class="btn btn-danger btn-sm">X</button></td>
+                                <td colspan="14" class="text-center">No Products Added</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ================= TOTAL SECTION ================= -->
+            <div class="card mb-3">
+                <div class="card-header bg-light"><strong>Total Details</strong></div>
+
+                <div class="card-body">
+                    <div class="row g-3">
+
+                        <div class="col-md-2">
+                            <label class="form-label">Quantity</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Free</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">CGST</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">SGST</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">IGST</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Total Amount</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Discount</label>
+                            <input class="form-control">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Other Charge Amount</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Invoice Amount</label>
+                            <input class="form-control">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Net Amount</label>
+                            <input class="form-control" value="0">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= BUTTONS ================= -->
+        <div class="card-footer bg-light d-flex gap-2">
+            <button class="btn btn-warning">Save Purchase</button>
+            <button class="btn btn-danger-light">Reset</button>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

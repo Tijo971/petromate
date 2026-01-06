@@ -1,0 +1,249 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Page Title -->
+    <div class="mb-4">
+        <h3 class="fw-bold">Nozzle Staff Allocation</h3>
+     
+    </div>
+
+
+    <div class="row g-4">
+
+        <!-- ==========================
+             LEFT SECTION — ALLOCATION FORM
+        =========================== -->
+<div class="col-xl-4 col-lg-5 col-md-12 allocation-fixed">
+    <div class="card shadow-sm h-100 allocation-card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Allocation Form</h5>
+        </div>
+
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Select Staff</label>
+                    <select class="form-select" id="staffSelect" required onchange="loadStaffDetails()">
+                        <option value selected>-- Choose Staff --</option>
+                        <option value="all-staffs">All Staffs</option>
+                        <option value="1">John Mathew</option>
+                        <option value="2">Anish Kumar</option>
+                        <option value="3">Krishna Devi</option>
+                        <option value="4">Rahul Nair</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+        <!-- ==========================
+             RIGHT TOP — STAFF DETAILS TABLE
+        =========================== -->
+        <div class="col-xl-8 col-lg-7 col-md-12">
+            <div class="card shadow-sm d-none" id="detailsCard">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Staff Allocation Details</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Staff Name</th>
+                                    <th>Tank Name</th>
+                                    <th>Nozzle Name</th>
+                                    <th class="text-center">Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================
+                 RIGHT BOTTOM — EDIT FORM
+            =========================== -->
+            <div class="card shadow-sm mt-4 d-none" id="editFormCard">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Already Allocated Tank And Nozzle</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- TABLE -->
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="bg-primary text-white">
+                                <tr>
+                                    <th>PRODUCT NAME</th>
+                                    <th>TANK NAME</th>
+                                    <th>NOZZLE NAME</th>
+                                    <th>DELETE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editAllocatedBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- DATE AND TIME -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Date</label>
+                            <input type="date" class="form-control" id="editDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Time</label>
+                            <input type="time" class="form-control" id="editTime">
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mb-3">Change Tank And Nozzle</h5>
+
+                    <!-- CHANGE TABLE -->
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="bg-primary text-black">
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Tank Name</th>
+                                    <th>Nozzle Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editChangeBody">
+                                <tr>
+                                    <td>
+                                        <select class="form-select" id="editProduct">
+                                            <option>SPEED 1 TST FUEL</option>
+                                            <option>DIESEL</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" id="editTank">
+                                            <option>TANK A</option>
+                                            <option>TANK B</option>
+                                            <option>TANK C</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" id="editNozzle">
+                                            <option>Select All Nozzle</option>
+                                            <option>Nozzle 1</option>
+                                            <option>Nozzle 2</option>
+                                            <option>Nozzle 3</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-success rounded-circle" style="width:50px;height:50px;">
+                            <i class="ri-add-line fs-3"></i>
+                        </button>
+
+                        <button class="btn btn-danger rounded-circle" style="width:50px;height:50px;">
+                            <i class="ri-delete-bin-5-line fs-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-warning w-100">Save</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div> <!-- END RIGHT SIDE -->
+
+    </div> <!-- END ROW -->
+
+
+
+<!-- JS SECTION -->
+<script>
+
+    // Dummy staff allocation list
+    const staffData = [
+        { id: 1, name: "John Mathew", product:"Speed 1 Fuel", tank: "Tank A", nozzle: "Nozzle 1" },
+        { id: 2, name: "Anish Kumar", product:"Diesel", tank: "Tank B", nozzle: "Nozzle 3" },
+        { id: 3, name: "Krishna Devi", product:"Speed 1 Fuel", tank: "Tank A", nozzle: "Nozzle 2" },
+        { id: 4, name: "Rahul Nair", product:"Diesel", tank: "Tank C", nozzle: "Nozzle 1" }
+    ];
+
+    function loadStaffDetails() {
+        const selectedStaff = document.getElementById("staffSelect").value;
+        const detailsCard = document.getElementById("detailsCard");
+        const tableBody = document.getElementById("staffTableBody");
+
+        tableBody.innerHTML = "";
+        if (!selectedStaff) return;
+
+        detailsCard.classList.remove("d-none");
+
+        let filtered = staffData;
+
+        if (selectedStaff !== "all-staffs") {
+            filtered = staffData.filter(s => s.id == selectedStaff);
+        }
+
+        filtered.forEach(staff => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${staff.name}</td>
+                    <td>${staff.tank}</td>
+                    <td>${staff.nozzle}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning btn-sm"
+                                onclick="openEditForm(${staff.id})">
+                                Edit
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function openEditForm(staffId) {
+        const card = document.getElementById("editFormCard");
+        const table = document.getElementById("editAllocatedBody");
+
+        let staff = staffData.find(s => s.id == staffId);
+        table.innerHTML = `
+            <tr>
+                <td>${staff.product}</td>
+                <td>${staff.tank}</td>
+                <td>${staff.nozzle}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm">
+                        <i class="ri-delete-bin-line"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+
+        // Populate edit inputs
+        document.getElementById("editProduct").value = staff.product;
+        document.getElementById("editTank").value = staff.tank;
+        document.getElementById("editNozzle").value = staff.nozzle;
+
+        // auto date time
+        document.getElementById("editDate").value = new Date().toISOString().split("T")[0];
+        document.getElementById("editTime").value = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        card.classList.remove("d-none");
+    }
+
+</script>
+
+{% endblock %}

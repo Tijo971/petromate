@@ -1,0 +1,1161 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    .form-check-input:checked {
+        background-color: #5bc0de !important;
+        border-color: #5bc0de !important;
+    }
+</style>
+
+<div>
+   <h3 class="mt-1 mb-4">Product Master</h3>
+</div>
+
+<div class="row mt-3">
+
+    <!-- LEFT SIDE — FORM -->
+    <div class="col-xl-7">
+        <div class="card custom-card">
+
+<div class="card-header justify-content-between">
+    <div class="card-title">
+       
+<h5>
+    {% if editing_entry %}
+        Edit Product Master
+    {% else %}
+        Add Product Master
+    {% endif %}
+</h5>
+
+       
+    </div>
+</div>
+
+<div class="card-body">
+    {% if product_form.errors %}
+<div class="alert alert-danger">
+    {{ product_form.errors }}
+</div>
+{% endif %}
+
+{% if stock_form.errors %}
+<div class="alert alert-danger">
+    {{ stock_form.errors }}
+</div>
+{% endif %}
+
+<form method="POST" class="row g-3 mt-0" enctype="multipart/form-data" novalidate> 
+    {% csrf_token %} 
+    {% if editing_entry %} 
+    <input type="hidden" name="entry_id" value="{{ editing_entry.id }}">
+     {% endif %}
+      <!-- ============================= -->
+        <!-- ADD TYPE --> 
+         <!-- ============================= -->
+           <div class="row g-3 mt-1"> <div class="col-md-6">
+             <label class="form-label">Add Type</label>
+              {{ entry_form.entry_type }} 
+            </div> 
+        </div> 
+        <!-- ============================= --> 
+         <!-- COMPANY FORM --> 
+          <!-- ============================= --> 
+           <div id="companyFields" class="row g-3 mt-1 d-none">
+             <div class="col-md-6"> 
+                <label class="form-label">Company Name<span class="text-danger">*</span></label>
+                 {{ company_form.company_name }} 
+                </div> 
+                <div class="col-md-6">
+                    <label class="form-label">Short Name</label>
+                     {{ company_form.short_name }} 
+                    </div> 
+                    <div class="col-md-6"> <label class="form-label">Address</label> 
+                        {{ company_form.address }} 
+                    </div>
+                    <div class="col-md-6"> 
+                        <label class="form-label">Website</label> 
+                        {{ company_form.website }} 
+                    </div> 
+                    <div class="mb-3"> 
+                        <div class="form-check form-switch"> 
+                            <label class="form-label">Mark As Supplier</label> 
+                            {{ company_form.is_supplier }} 
+                        </div> 
+                    </div> 
+                </div> 
+                <!-- ============================= -->
+                  <!-- PRODUCT FORM -->
+                <!-- ============================= --> 
+                 <div id="productFields" class="row g-3 mt-1 d-none"> 
+                    <div class="row g-3 mt-2"> 
+                        <!-- COMPANY SELECT -->
+                        <div class="col-md-3"> 
+                            <label class="form-label">Select Company</label>
+                             <select name="company" id="productCompanySelect" class="form-select"> 
+                                <option value="">-- Select Company --</option>
+                                 {% for company in product_form.fields.company.queryset %} 
+                                 <option value="{{ company.id }}" 
+                                 {% if product_form.instance.company_id == company.id %}
+                                 selected
+                                 {% endif %}
+                                  data-short="{{ company.short_name|default:'' }}"
+                                   data-address="{{ company.address|default:'' }}"
+                                    data-website="{{ company.website|default:'' }}" >
+                                     {{ company.company_name }} </option> {% endfor %} 
+                                </select> 
+                            </div> 
+                            <!-- SHORT NAME --> 
+                             <div class="col-md-3 d-none" id="companyShortDiv"> 
+                                <label class="form-label">Short Name</label> 
+                                <input type="text" class="form-control" id="companyShort" readonly> 
+                            </div> 
+                            <!-- ADDRESS -->
+                            <div class="col-md-3 d-none" id="companyAddressDiv">
+                                <label class="form-label">Address</label> 
+                                <input type="text" class="form-control" id="companyAddress" readonly> 
+                            </div>
+                            <!-- WEBSITE -->
+                            <div class="col-md-3 d-none" id="companyWebsiteDiv">
+                                <label class="form-label">Website</label>
+                                <input type="text" class="form-control" id="companyWebsite" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4"> 
+                            <label class="form-label">Bill Code<span class="text-danger">*</span></label> 
+                            {{ product_form.bill_code }} 
+                        </div> 
+                        <div class="col-md-4">
+                            <label class="form-label">Product Name<span class="text-danger">*</span></label>
+                            {{ product_form.product_name }} 
+                        </div> <div class="col-md-4">
+                            <label class="form-label">Pack</label>
+                             {{ product_form.pack }} 
+                            </div> 
+                            <div class="col-md-4">
+                                <label class="form-label">HSN Code</label>
+                                 {{ product_form.hsn_code }}
+                                </div> <div class="col-md-4"> 
+                            <label class="form-label">Re-Order Level</label>
+                            {{ product_form.reorder_level }} 
+                        </div> 
+                        <div class="col-md-4">
+                            <label class="form-label">Product Type<span class="text-danger">*</span></label>
+                            {{ product_form.product_type }} 
+                        </div> <div class="col-md-4"> 
+                        <label class="form-label">Category<span class="text-danger">*</span></label>
+                        {{ product_form.category }} 
+                    </div> 
+                    <div class="col-md-4"> 
+                    <label class="form-label">Sales GST</label> 
+                    {{ product_form.sales_gst }} 
+                </div> 
+                <div class="col-md-4">
+                    <label class="form-label">Purchase GST</label>
+                     {{ product_form.purchase_gst }} 
+                    </div> <div class="col-md-4 d-flex align-items-center">
+                        {{ product_form.tank_applicable }} 
+                        <label class="form-check-label ms-2">Tank Applicable</label>
+                     </div> 
+                     <div class="col-md-4"> 
+                        <label class="form-label">Multiple Tank</label> 
+                        {{ product_form.multiple_tank }} </div>
+                         <div class="col-md-4">
+                             <label class="form-label">Tank</label> 
+                             {{ product_form.tank }} 
+                            </div> <div class="col-md-4"> 
+                                {{ product_form.rate_change_fully }} 
+                                <label class="form-check-label ms-2">Rate Change Fully</label> 
+                            </div> 
+                            <div class="col-md-4">
+                                 {{ product_form.set_stock }} 
+                                 <label for="{{ product_form.set_stock.id_for_label }}" class="form-check-label ms-2"> Set Stock </label>
+                                 </div> 
+                                 <div class="col-md-4"> 
+                                    <label class="form-label">Initial Stock Date</label>
+                                     {{ product_form.initial_stock_date }} 
+                                    </div> <div class="col-md-4"> 
+                                        <label class="form-label">ST%</label> 
+                                        {{ product_form.st_percent }} 
+                                    </div> 
+                                    <div id="stockSection" class="col-12 mt-3 d-none"> 
+                                        <div class="row"> 
+                                            <div class="col-12">
+                                                 <div class="row">
+                                                     <div class="col-md-4">
+                                                         {{ stock_form.stock_qty.label_tag }} {{ stock_form.stock_qty }}
+                                                         </div> 
+                                                         <div class="col-md-4">
+                                                             {{ stock_form.loose_qty.label_tag }} {{ stock_form.loose_qty }}
+                                                             </div>
+                                                              <div class="col-md-4"> 
+                                                                {{ stock_form.cost_price.label_tag }} {{ stock_form.cost_price }}
+                                                             </div>
+                                                             </div>
+                                                              <div class="row mt-2"> 
+                                                                <div class="col-md-4">
+                                                                     {{ stock_form.landing_cost.label_tag }} {{ stock_form.landing_cost }}
+                                                                     </div> <div class="col-md-4"> 
+                                                                        {{ stock_form.mrp.label_tag }} {{ stock_form.mrp }} 
+                                                                    </div> 
+                                                                    <div class="col-md-4">
+                                                                         {{ stock_form.selling_price.label_tag }} {{ stock_form.selling_price }}
+                                                                         </div>
+                                                                         </div>
+                                                                         </div>
+                                                                         </div>
+                                                                         </div>
+                                                                        <div class="row mt-3 d-none" id="multipleTankSection">
+                                                                            <h5>Multiple Tank Allocation</h5>
+                                                                            <table class="table table-bordered" id="tankTable">
+                                                                                <thead>
+                                                                                     <tr>
+                                                                                        <th>Tank Name</th>
+                                                                                        <th>Stock</th>
+                                                                                        <th>Action</th>
+                                                                                    </tr>
+                                                                                </thead> 
+                                                                                <tbody id="tankTableBody">
+                                                                                     {% if editing_entry and tank_stocks %} {% for ts in tank_stocks %}
+                                                                                      <tr> 
+                                                                                        <td> 
+                                                                                            <select name="tank[]" class="form-select" required> 
+                                                                                                <option value="">Select Tank</option> 
+                                                                                                {% for tank in tank_list %} 
+                                                                                                <option value="{{ tank.id }}" {% if tank.id == ts.tank_id %}selected{% endif %}> {{ tank.tank_name }} </option> 
+                                                                                                {% endfor %} 
+                                                                                            </select> 
+                                                                                        </td> 
+                                                                                        <td> 
+                                                                                            <input type="number" name="stock[]" class="form-control" value="{{ ts.stock }}" step="0.01" required>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <!-- Delete individual tank row via backend -->
+                                                                                              <td>
+                                                                                                <form method="post" action="{% url 'masters:tank_delete' ts.id %}" style="display:inline;">
+                                                                                                     {% csrf_token %}
+                                                                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this tank row?')"> 
+                                                                                                        Delete 
+                                                                                                    </button>
+                                                                                                </form>
+                                                                                             </td>
+                                                                                            </td> 
+                                                                                        </tr> 
+                                                                                        {% endfor %} 
+                                                                                        {% endif %} 
+                                                                                    </tbody> 
+                                                                                </table>
+                                                                                 <button type="button" id="addRow" class="btn btn-primary btn-sm">
+                                                                                    Add Row
+                                                                                </button>
+                                                                             </div>
+                                                                             </div>
+                                                                              <div class="mt-4">
+                                                                                <button class="btn btn-warning btn-wave" type="submit">
+                                                                                    {% if editing_entry %} Update {% else %} Save {% endif %}
+                                                                                 </button>
+                                                                                  <button type="reset" class="btn btn-danger-light">Cancel</button> 
+                                                                                </div> 
+                                                                            </form>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE — COMPANY TABLE -->
+<div class="col-xl-5">
+    <div class="card custom-card">
+        <div class="card-header justify-content-between">
+            <div class="card-title">
+                <i class="bi bi-table"></i> Company List
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Actions + Search -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+<div>
+    <a href="{% url 'masters:export_companies' 'excel' %}" class="btn btn-success btn-sm">
+        <i class="ri-file-excel-2-line"></i> Export Excel
+    </a>
+    <a href="{% url 'masters:export_companies' 'pdf' %}" class="btn btn-danger btn-sm">
+        <i class="ri-file-pdf-line"></i> Export PDF
+    </a>
+</div>
+
+
+                <div class="col-md-4">
+                    <input type="search"
+                           id="tableSearch"
+                           class="form-control"
+                           placeholder="Search...">
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered text-nowrap" id="entryTable">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>S.No</th>
+                            <th>Action</th>
+                            <th>Company Name</th>
+                        </tr>
+                    </thead>
+<tbody>
+{% for company in companies %}
+<tr>
+    <td>{{ forloop.counter }}</td>
+
+    <td>
+        <div class="hstack gap-2 fs-15">
+
+            <!-- EDIT -->
+            <a href="?edit={{ company.entry.id }}"
+               class="text-info fs-14 lh-1">
+                <i class="ri-edit-line p-2"></i>
+            </a>
+
+            <!-- DELETE -->
+            <a href="javascript:void(0);"
+               class="text-danger fs-14 lh-1 delete-btn"
+               onclick="deleteEntry({{ company.entry.id }})">
+                <i class="ri-delete-bin-5-line"></i>
+            </a>
+
+        </div>
+    </td>
+
+    <!-- ✅ COMPANY NAME ONLY -->
+    <td>{{ company.company_name }}</td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="3" class="text-center">No records found</td>
+</tr>
+{% endfor %}
+<tr id="noRecordsRow" class="d-none">
+    <td colspan="3" class="text-center">No records found</td>
+</tr>
+</tbody>
+
+
+
+                </table>
+
+                <!-- Pagination -->
+
+<div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            Showing {{ companies.start_index }} to {{ companies.end_index }}
+            of {{ companies.paginator.count }}
+        </div>
+
+        <ul class="pagination mb-0">
+
+            {% if companies.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page_companies={{ companies.previous_page_number }}">
+                        <i class="ri-arrow-left-s-line align-middle"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="ri-arrow-left-s-line align-middle"></i>
+                    </span>
+                </li>
+            {% endif %}
+
+            {% for i in companies.paginator.page_range %}
+                {% if companies.number == i %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                {% elif i >= companies.number|add:'-2' and i <= companies.number|add:'2' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page_companies={{ i }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if companies.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page_companies={{ companies.next_page_number }}">
+                        <i class="ri-arrow-right-s-line align-middle"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="ri-arrow-right-s-line align-middle"></i>
+                    </span>
+                </li>
+            {% endif %}
+
+        </ul>
+    </div>
+</div>
+
+            </div>
+
+            
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+
+    <!-- =======================
+            PRODUCT TABLE
+    ======================== -->
+    <div class="col-xl-12">
+
+        <div class="card custom-card">
+
+            <div class="card-header justify-content-between">
+                <div class="card-title"><i class="bi bi-table"></i> Product List</div>
+
+  
+            </div>
+
+            <div class="card-body">
+                                                        <div class="d-flex justify-content-between">
+                            <!-- Export Buttons -->
+                            <div class="">
+                            <a href="{% url 'masters:export_products' 'excel' %}" class="btn btn-success">
+                                <i class="ri-file-excel-2-line"></i> Export Excel
+                            </a>
+                            <a href="{% url 'masters:export_products' 'pdf' %}" class="btn btn-danger">
+                                <i class="ri-file-pdf-line"></i> Export PDF
+                            </a>
+                            </div>
+                            <div class="col-md-3">
+                                 <input type="text" id="productSearch" class="form-control" placeholder="Search products...">
+                            </div> 
+                        </div><br>
+                <div class="table-responsive">
+<table class="table text-nowrap table-bordered" id="productTable">
+    <thead class="table-primary">
+        <tr>
+            <th>S.No</th>
+            <th>Action</th>
+            <th>Bill Code</th>
+            <th>Product Name</th>
+            <th>HSN Code</th>
+            <th>Pack</th>
+            <th>MRP</th>
+            <th>Selling Price</th>
+        </tr>
+    </thead>
+    <tbody id="productTableBody">
+        {% for entry in entries %}
+            {% if entry.entry_type == "product" and entry.product %}
+                {% with product=entry.product %}
+                {% with stock=product.stock_entries.first %}
+                <tr>
+                    <td>{{ forloop.counter|add:products.start_index|add:'-1' }}</td>
+                    <td>
+                        <div class="hstack gap-2 fs-15">
+                            <a href="?edit={{ entry.id }}" class="text-info fs-14 lh-1">
+                                <i class="ri-edit-line p-2"></i>
+                            </a>
+                            <a href="javascript:void(0);" class="text-danger fs-14 lh-1 delete-btn"
+                               onclick="deleteProduct({{ product.id }})">
+                               <i class="ri-delete-bin-5-line"></i>
+                            </a>
+                        </div>
+                    </td>
+                    <td>{{ product.bill_code|default:"-" }}</td>
+                    <td>{{ product.product_name|default:"-" }}</td>
+                    <td>{{ product.hsn_code|default:"-" }}</td>
+                    <td>{{ product.pack|default:"-" }}</td>
+                    <td>{{ stock.mrp|default:"-" }}</td>
+                    <td>{{ stock.selling_price|default:"-" }}</td>
+                </tr>
+                {% endwith %}
+                {% endwith %}
+            {% endif %}
+        {% empty %}
+            <tr id="noProductRow">
+                <td colspan="8" class="text-center text-muted">No products found</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+                    <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            Showing {{ products.start_index }} to {{ products.end_index }}
+            of {{ products.paginator.count }}
+        </div>
+
+        <ul class="pagination mb-0">
+
+            {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page_products={{ products.previous_page_number }}">
+                        <i class="ri-arrow-left-s-line align-middle"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="ri-arrow-left-s-line align-middle"></i>
+                    </span>
+                </li>
+            {% endif %}
+
+            {% for i in products.paginator.page_range %}
+                {% if products.number == i %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                {% elif i >= products.number|add:'-2' and i <= products.number|add:'2' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page_products={{ i }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page_products={{ products.next_page_number }}">
+                        <i class="ri-arrow-right-s-line align-middle"></i>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="ri-arrow-right-s-line align-middle"></i>
+                    </span>
+                </li>
+            {% endif %}
+
+        </ul>
+    </div>
+</div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const salesGST = document.getElementById("salesGST");
+    const purchaseGST = document.getElementById("purchaseGST");
+    const stDiv = document.getElementById("stDiv");
+
+    salesGST.addEventListener("change", function () {
+
+        let val = this.value.trim();
+
+        if (val === "Inclusive" || val === "Exclusive") {
+            // Auto set purchase GST
+            purchaseGST.value = val;
+
+            // Show ST%
+            stDiv.style.display = "block";
+
+        } else {
+            // Non Tax case
+            purchaseGST.value = "Non Tax";
+
+            // Hide ST%
+            stDiv.style.display = "none";
+        }
+
+    });
+
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const addType = document.getElementById("addType");
+    const companyFields = document.getElementById("companyFields");
+    const productFields = document.getElementById("productFields");
+
+    const productRequired = [
+        "id_company",
+        "id_bill_code",
+        "id_product_name",
+        "id_product_type",
+        "id_category"
+    ];
+
+    function toggleRequired(enable) {
+        productRequired.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                enable
+                    ? el.setAttribute("required", "required")
+                    : el.removeAttribute("required");
+            }
+        });
+    }
+
+    function toggleForms() {
+    const productInputs = document.querySelectorAll(
+        "#productFields select, #productFields input"
+    );
+
+    if (addType.value === "product") {
+        companyFields.classList.add("d-none");
+        productFields.classList.remove("d-none");
+
+        productInputs.forEach(el => el.disabled = false);
+
+    } else {
+        productFields.classList.add("d-none");
+        companyFields.classList.remove("d-none");
+
+        productInputs.forEach(el => el.disabled = true);
+    }
+}
+
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    const companySelect = document.getElementById("productCompanySelect");
+    if (companySelect && companySelect.value) {
+        companySelect.dispatchEvent(new Event("change"));
+    }
+});
+
+
+    addType.addEventListener("change", toggleForms);
+    toggleForms(); // initial load
+});
+</script>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ----- COMPANY DETAILS DISPLAY -----
+    const companySelect = document.getElementById("productCompanySelect");
+    const shortDiv = document.getElementById("companyShortDiv");
+    const addressDiv = document.getElementById("companyAddressDiv");
+    const websiteDiv = document.getElementById("companyWebsiteDiv");
+
+    const shortInput = document.getElementById("companyShort");
+    const addressInput = document.getElementById("companyAddress");
+    const websiteInput = document.getElementById("companyWebsite");
+
+    if(companySelect){
+        companySelect.addEventListener("change", function () {
+            const selectedOption = this.selectedOptions[0];
+
+            if (!selectedOption.value) {
+                // Hide details if no company selected
+                shortDiv.classList.add("d-none");
+                addressDiv.classList.add("d-none");
+                websiteDiv.classList.add("d-none");
+
+                shortInput.value = "";
+                addressInput.value = "";
+                websiteInput.value = "";
+                return;
+            }
+
+            // Show and populate fields
+            shortDiv.classList.remove("d-none");
+            addressDiv.classList.remove("d-none");
+            websiteDiv.classList.remove("d-none");
+
+            shortInput.value = selectedOption.dataset.short || "";
+            addressInput.value = selectedOption.dataset.address || "";
+            websiteInput.value = selectedOption.dataset.website || "";
+        });
+    }
+
+    // ----- PRODUCT & STOCK FIELDS TOGGLE -----
+    const productFields = document.getElementById('productFields');
+    const stockSection = document.getElementById('stockSection');
+    const setStockCheckbox = document.getElementById('{{ product_form.set_stock.id_for_label }}');
+
+    function toggleFieldsVisibility(section, show) {
+        if (show) {
+            section.classList.remove('d-none');
+            section.querySelectorAll('input[required], select[required]').forEach(input => {
+                input.setAttribute('required', 'required');
+            });
+        } else {
+            section.classList.add('d-none');
+            section.querySelectorAll('input[required], select[required]').forEach(input => {
+                input.removeAttribute('required');
+            });
+        }
+    }
+
+    // Toggle stock section based on Set Stock checkbox
+    if(setStockCheckbox){
+        toggleFieldsVisibility(stockSection, setStockCheckbox.checked);
+        setStockCheckbox.addEventListener('change', function() {
+            toggleFieldsVisibility(stockSection, this.checked);
+        });
+    }
+
+    // Example: toggle product fields if you have a product/company toggle
+    // Call this function when switching type
+    // toggleFieldsVisibility(productFields, true); // show product fields
+    // toggleFieldsVisibility(productFields, false); // hide product fields
+
+});
+</script>
+
+
+<script>
+function deleteEntry(id) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This record will be permanently deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/masters/entry/delete/${id}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            }).then(() => window.location.reload());
+        }
+    });
+}
+</script>
+
+
+<script>
+document.getElementById("tableSearch").addEventListener("keyup", function () {
+    let value = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#entryTable tbody tr:not(#noRecordsRow)");
+    let noRecordsRow = document.getElementById("noRecordsRow");
+
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        if (row.innerText.toLowerCase().includes(value)) {
+            row.style.display = "";
+            visibleCount++;
+        } else {
+            row.style.display = "none";
+        }
+    });
+
+    // Show / Hide "No Records Found"
+    if (visibleCount === 0) {
+        noRecordsRow.classList.remove("d-none");
+    } else {
+        noRecordsRow.classList.add("d-none");
+    }
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const entryType = document.getElementById("addType")?.value;
+
+    if (entryType === "company") {
+        document.getElementById("companyFields")?.classList.remove("d-none");
+    }
+    if (entryType === "product") {
+        document.getElementById("productFields")?.classList.remove("d-none");
+    }
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const setStockCheckbox = document.querySelector('input[name="set_stock"]');
+    const stockSection = document.getElementById("stockSection");
+
+    if (!setStockCheckbox || !stockSection) return;
+
+    function toggleStockSection() {
+        if (setStockCheckbox.checked) {
+            stockSection.classList.remove("d-none");
+        } else {
+            stockSection.classList.add("d-none");
+        }
+    }
+
+    setStockCheckbox.addEventListener("change", toggleStockSection);
+    toggleStockSection(); // initial load
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const costPriceInput = document.getElementById("id_cost_price");
+    const landingCostInput = document.getElementById("id_landing_cost");
+
+    const mrpInput = document.getElementById("id_mrp");
+    const sellingPriceInput = document.getElementById("id_selling_price");
+
+    if(costPriceInput && landingCostInput){
+        costPriceInput.addEventListener("input", function(){
+            landingCostInput.value = costPriceInput.value;
+        });
+    }
+
+    if(mrpInput && sellingPriceInput){
+        mrpInput.addEventListener("input", function(){
+            sellingPriceInput.value = mrpInput.value;
+        });
+    }
+});
+</script>
+
+
+<script>
+function deleteProduct(productId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/masters/product-delete/${productId}/`; // URL pattern
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+            form.appendChild(csrfToken);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    })
+}
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ===============================
+       SAFE ELEMENT FETCH
+    =============================== */
+
+    const productType =
+        document.getElementById("id_product_type") ||
+        document.getElementById("selectType");
+
+    const tankApplicable =
+        document.getElementById("id_tank_applicable") ||
+        document.getElementById("tankApplicable");
+
+    const multipleTank =
+        document.getElementById("id_multiple_tank") ||
+        document.getElementById("multipleTank");
+
+    const tankApplicableDiv = document.getElementById("tankApplicableDiv");
+    const rateChangeDiv = document.getElementById("rateChangeDiv");
+    const multipleTankDiv = document.getElementById("multipleTankDiv");
+
+    const multipleTankSection = document.getElementById("multipleTankSection");
+    const tankTableBody = document.querySelector("#tankTable tbody");
+    const addRowBtn = document.getElementById("addRow");
+
+    if (!productType || !tankApplicable || !multipleTank) {
+        console.error("❌ Required elements not found");
+        return;
+    }
+
+    const multipleTankWrapper =
+        multipleTank.closest(".col-md-2, .col-md-3, .col-md-4") || multipleTankDiv;
+
+    /* ===============================
+       HELPERS
+    =============================== */
+
+    function isFuelSelected() {
+        const text =
+            productType.options[productType.selectedIndex]?.text ||
+            productType.value ||
+            "";
+        return text.toLowerCase() === "fuel";
+    }
+
+    function getSelectedTankIds() {
+        return Array.from(
+            tankTableBody.querySelectorAll("select[name='tank[]']")
+        ).map(s => s.value).filter(Boolean);
+    }
+
+    function addTankRow(tankId = "", stock = "") {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                <select name="tank[]" class="form-select tank-select" required>
+                    <option value="">Select Tank</option>
+                    ${window.tankOptionsHTML || ""}
+                </select>
+            </td>
+            <td>
+                <input type="number"
+                       name="stock[]"
+                       class="form-control"
+                       min="0"
+                       value="${stock}"
+                       required>
+            </td>
+            <td>
+                <button type="button"
+                        class="btn btn-danger btn-sm deleteRow">
+                    Delete
+                </button>
+            </td>
+        `;
+
+        tankTableBody.appendChild(row);
+
+        if (tankId) {
+            row.querySelector("select").value = tankId;
+        }
+
+        preventDuplicateTanks();
+    }
+
+    function clearTankTable() {
+        tankTableBody.innerHTML = "";
+    }
+
+    function preventDuplicateTanks() {
+        const selected = getSelectedTankIds();
+
+        tankTableBody.querySelectorAll("select[name='tank[]']").forEach(select => {
+            const current = select.value;
+
+            Array.from(select.options).forEach(opt => {
+                if (!opt.value) return;
+                opt.disabled = selected.includes(opt.value) && opt.value !== current;
+            });
+        });
+    }
+
+    function validateTankBeforeSubmit() {
+        if (
+            isFuelSelected() &&
+            multipleTank.value.toLowerCase() === "yes" &&
+            tankTableBody.children.length === 0
+        ) {
+            alert("❌ Fuel product requires at least one tank.");
+            return false;
+        }
+        return true;
+    }
+
+    /* ===============================
+       CORE LOGIC
+    =============================== */
+
+    function handleProductTypeChange() {
+
+        if (isFuelSelected()) {
+
+            tankApplicableDiv && (tankApplicableDiv.style.display = "flex");
+            rateChangeDiv && (rateChangeDiv.style.display = "flex");
+            multipleTankWrapper && multipleTankWrapper.classList.remove("d-none");
+
+            tankApplicable.checked = true;
+            rateChangeDiv?.querySelector("input") &&
+                (rateChangeDiv.querySelector("input").checked = true);
+
+            handleMultipleTankChange();
+
+        } else {
+
+            tankApplicable.checked = false;
+            multipleTank.value = "";
+
+            tankApplicableDiv && (tankApplicableDiv.style.display = "none");
+            rateChangeDiv && (rateChangeDiv.style.display = "none");
+            multipleTankWrapper && multipleTankWrapper.classList.add("d-none");
+
+            multipleTankSection.classList.add("d-none");
+            clearTankTable();
+        }
+    }
+
+    function handleMultipleTankChange() {
+
+        const value = multipleTank.value.toLowerCase();
+
+        if (isFuelSelected() && value === "yes") {
+
+            multipleTankSection.classList.remove("d-none");
+
+            if (tankTableBody.children.length === 0) {
+                addTankRow();
+            }
+
+        } else {
+            multipleTankSection.classList.add("d-none");
+            clearTankTable();
+        }
+    }
+
+    /* ===============================
+       EVENTS
+    =============================== */
+
+    productType.addEventListener("change", handleProductTypeChange);
+    multipleTank.addEventListener("change", handleMultipleTankChange);
+
+    tankApplicable.addEventListener("change", function () {
+        if (!this.checked) {
+            multipleTankSection.classList.add("d-none");
+            clearTankTable();
+        }
+    });
+
+    addRowBtn?.addEventListener("click", function () {
+        addTankRow();
+    });
+
+    document.addEventListener("change", function (e) {
+        if (e.target.classList.contains("tank-select")) {
+            preventDuplicateTanks();
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("deleteRow")) {
+            e.target.closest("tr").remove();
+            preventDuplicateTanks();
+        }
+    });
+
+    /* ===============================
+       EDIT MODE LOAD
+    =============================== */
+
+    if (Array.isArray(window.existingTankData) && window.existingTankData.length) {
+        multipleTankSection.classList.remove("d-none");
+        clearTankTable();
+
+        window.existingTankData.forEach(row => {
+            addTankRow(row.tank_id, row.stock);
+        });
+    }
+
+    /* ===============================
+       FORM SUBMIT VALIDATION
+    =============================== */
+
+    document.querySelector("form")?.addEventListener("submit", function (e) {
+        if (!validateTankBeforeSubmit()) {
+            e.preventDefault();
+        }
+    });
+
+    /* ===============================
+       INITIAL LOAD
+    =============================== */
+
+    handleProductTypeChange();
+
+});
+</script>
+
+<script>
+window.tankOptionsHTML = `
+{% for tank in tank_list %}
+<option value="{{ tank.id }}">{{ tank.tank_name }}</option>
+{% endfor %}
+`;
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("productSearch");
+    const table = document.getElementById("productTable");
+    const tbody = document.getElementById("productTableBody");
+
+    // Store all rows initially
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    searchInput.addEventListener("keyup", function() {
+        const query = this.value.toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            if (text.includes(query)) {
+                row.style.display = "";
+                visibleCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        // Handle "No results" row
+        let noResultRow = document.getElementById("noResultRow");
+        if (!noResultRow) {
+            noResultRow = document.createElement("tr");
+            noResultRow.id = "noResultRow";
+            noResultRow.innerHTML = `<td colspan="8" class="text-center text-muted">No matching results found</td>`;
+            tbody.appendChild(noResultRow);
+        }
+
+        if (visibleCount === 0) {
+            noResultRow.style.display = "";
+        } else {
+            noResultRow.style.display = "none";
+        }
+    });
+});
+</script>
+
+
+{% endblock %}

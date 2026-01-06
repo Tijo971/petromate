@@ -1,0 +1,234 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Tax Master Manage</h3>
+
+    <div class="col-xl-4">
+        <div class="card custom-card">
+            <div class="card-header justify-content-between">
+                <h5>{{ editing_tax.pk|yesno:'Edit,Add' }} Tax Master</h5>
+            </div>
+            <div class="card-body">
+                <!-- Tax Master Form -->
+                <form method="post" id="TaxMasterForm" novalidate>
+                    {% csrf_token %}
+                    {% if editing_tax %}
+                        <input type="hidden" name="tax_id" value="{{ editing_tax.pk }}">
+                    {% endif %}
+                        
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Tax value<span class="text-danger">*</span></label>
+                            {{ form.tax_value }}
+                            {% if form.tax_value.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.tax_value.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-warning btn-wave">
+                                {{ editing_tax.pk|yesno:'Update,Save' }}
+                            </button>
+                            <a href="{% url 'masters:taxmaster' %}" class="btn btn-danger-light btn-wave">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax List Table -->
+    <div class="col-xl-8">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Tax List</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <!-- Export Buttons -->
+                    <div class="">
+                        <a href="{% url 'masters:export_taxmaster' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:export_taxmaster' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#searchTable" placeholder="Search...">
+                    </div> 
+                </div>
+                <div class="table-responsive mt-2">
+                    <table class="table table-bordered text-nowrap w-100" id="searchTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Action</th>
+                                <th>Tax Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tax in taxes %}
+                            <tr>
+                                <td>{{ forloop.counter0|add:taxes.start_index }}</td>
+                                <td>
+                                    <!-- Edit -->
+                                    <a href="?edit={{ tax.pk }}" class="text-info fs-14 lh-1" title="Edit">
+                                        <i class="ri-edit-line p-2"></i>
+                                    </a>
+
+                                    <!-- Delete -->
+                                    <a href="javascript:void(0);" 
+                                        data-url="{% url 'masters:delete_taxmaster' tax.pk %}" 
+                                        class="text-danger fs-14 lh-1 delete-btn" 
+                                        title="Delete">
+                                        <i class="ri-delete-bin-5-line"></i>
+                                    </a>
+                                </td>
+                                <td>{{ tax.tax_value|default:"N/A" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center py-4">No Tax found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer border-top-0">
+                <!-- Pagination -->
+                <div class="d-flex align-items-center flex-wrap overflow-auto">
+                    <div class="mb-2 mb-sm-0">
+                        Showing <b>{{ taxes.start_index }}</b> to <b>{{ taxes.end_index }}</b> 
+                        of <b>{{ taxes.paginator.count }}</b> Taxes 
+                        <i class="bi bi-arrow-right ms-2 fw-medium"></i>
+                    </div>
+                    <div class="ms-auto">
+                        <ul class="pagination mb-0 overflow-auto">
+                            {% if taxes.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ taxes.previous_page_number }}">
+                                        <i class="ri-arrow-left-s-line align-middle"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="ri-arrow-left-s-line align-middle"></i>
+                                    </span>
+                                </li>
+                            {% endif %}
+
+                            {% for i in taxes.paginator.page_range %}
+                                {% if taxes.number == i %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="javascript:void(0);">{{ i }}</a>
+                                    </li>
+                                {% elif i >= taxes.number|add:'-2' and i <= taxes.number|add:'2' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if taxes.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ taxes.next_page_number }}">
+                                        <i class="ri-arrow-right-s-line align-middle"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <i class="ri-arrow-right-s-line align-middle"></i>
+                                    </span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Delete buttons
+    document.querySelectorAll(".delete-btn").forEach(el => {
+        el.addEventListener("click", function() {
+            const url = this.getAttribute('data-url');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = url;
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                    if (csrfToken) {
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = 'csrfmiddlewaretoken';
+                        csrfInput.value = csrfToken.value;
+                        form.appendChild(csrfInput);
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // Search table
+    document.querySelectorAll(".search-table").forEach(el => el.addEventListener("input", function() {
+        const targetId = el.dataset.target;
+        const table = document.querySelector(targetId);
+        const filter = el.value.toLowerCase();
+        Array.from(table.tBodies[0].rows).forEach(row => {
+            row.style.display = Array.from(row.cells).some(cell => cell.textContent.toLowerCase().includes(filter)) ? "" : "none";
+        });
+    }));
+
+    // SweetAlert for success messages
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{{ message|safe }}',
+                    background: '#ffffff',
+                    color: '#000000',
+                    confirmButtonColor: '#5bc0de',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'shadow-lg rounded-3',
+                        title: 'fw-bold text-primary',
+                    }
+                });
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+});
+</script>
+
+{% endblock %}

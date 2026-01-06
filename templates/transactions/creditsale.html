@@ -1,0 +1,174 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<!--
+  Staff Sale Open - Redesigned to match screenshot
+  - Bootstrap 5 required (CDN included below if base doesn't already include it)
+  - Replace static references or form handling with your Django forms as needed
+-->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="container-fluid mt-3">
+  <!-- TOP BAR: avatar, staff select, Individual Entry button, phone icon -->
+  <div class="d-flex align-items-center bg-white p-2 rounded shadow-sm">
+    <div class="d-flex align-items-center gap-3 flex-grow-1">
+      <img src="https://cdn-icons-png.flaticon.com/512/194/194938.png" width="44" class="rounded" alt="avatar">
+      <select class="form-select w-50" aria-label="Select staff">
+        <option selected>!--SELECT STAFF--!</option>
+        <option>staff 1</option>
+        <option>staff 2</option>
+        <option>staff 3</option>
+      </select>
+      <a href="{% url 'transactions:individualsale' %}" class="btn btn-primary ms-3" style="min-width:140px;">Individual Entry</a>
+    </div>
+
+ 
+  </div>
+
+  <!-- MAIN FORM CARD -->
+  <div class="card mt-3 shadow-sm">
+    <div class="card-body">
+
+      <!-- Top row: Date | Time | Book No | Leaf No | Show -->
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Date</label>
+          <!-- visually like the screenshot: readonly input, grey background -->
+          <input id="displayDate" type="text" class="form-control bg-light" readonly>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Time</label>
+          <div class="input-group">
+            <input id="displayTime" type="text" class="form-control bg-light" readonly>
+            <span class="input-group-text bg-white"><i class="bi bi-clock"></i></span>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label small text-muted">Book No</label>
+          <input id="bookNo" type="text" class="form-control" value="54321">
+        </div>
+
+        <div class="col-md-1">
+          <label class="form-label small text-muted">Leaf No</label>
+          <input id="leafNo" type="text" class="form-control" value="35">
+        </div>
+
+        <div class="col-md-1 d-grid">
+          <label class="form-label small text-muted">&nbsp;</label>
+          <button class="btn btn-primary">Show</button>
+        </div>
+      </div>
+
+      <!-- second row: Select Credit Customer | Select Vehicle -->
+      <div class="row g-3 mt-2">
+        <div class="col-md-6">
+          <label class="form-label small text-muted">Select Credit Customer</label>
+          <select class="form-select bg-white">
+            <option selected>!--Select Customer--!</option>
+            <!-- populate dynamically -->
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small text-muted">Select Vehicle</label>
+          <select class="form-select bg-white">
+            <option selected>!--Select Vehicle--!</option>
+            <!-- populate dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Added Details heading -->
+      <div class="mt-4">
+        <h5 class="fw-bold">Added Details</h5>
+
+        <div class="table-responsive">
+          <table class="table table-borderless align-middle">
+            <thead>
+              <tr class="text-muted small">
+                <th style="width:70px">Remove</th>
+                <th>Customer Name</th>
+                <th>Vehicle Name</th>
+                <th>Product (Fuel)</th>
+                <th>Tank Name</th>
+                <th>Qty</th>
+                <th>Amount</th>
+                <th>Book No</th>
+                <th>Leaf No</th>
+                <th>Ref. No</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Example: empty state similar to screenshot -->
+              <tr>
+                <td colspan="10" class="text-muted py-4">No details added yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- total row aligned right -->
+        <div class="d-flex justify-content-end align-items-center mt-3">
+          <div class="me-3 text-end small text-muted">Total</div>
+          <input id="totalAmount" type="text" class="form-control bg-light" style="max-width:300px" readonly>
+        </div>
+      </div>
+
+      <!-- Save button bottom-left like screenshot -->
+      <div class="mt-4">
+        <button id="saveBtn" class="btn btn-warning btn-wave">Save</button>
+        <button id="saveBtn" class="btn btn-danger-light btn-wave">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- small stylesheet here to match spacing & subtle look in screenshot -->
+<style>
+  .card { border-radius: 6px; }
+  .bg-light { background-color: #f2f3f4 !important; }
+  .form-control[readonly] { cursor: default; }
+  .table thead th { border-bottom: 1px solid #eee; }
+  .table tbody td { border-top: none; }
+  /* make the top row elements visually similar to screenshot */
+  @media (min-width: 768px) {
+    .container-fluid > .d-flex img { box-shadow: 0 1px 0 rgba(0,0,0,0.04); }
+  }
+</style>
+
+<!-- Auto-date/time script (dd/mm/yyyy and 12-hour time with AM/PM) -->
+<script>
+  function format12Hour(h, m) {
+    const period = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12; // 0 -> 12
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + period;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const h = now.getHours();
+    const min = now.getMinutes();
+
+    document.getElementById('displayDate').value = dd + '/' + mm + '/' + yyyy;
+    document.getElementById('displayTime').value = format12Hour(h, String(min).padStart(2, '0'));
+    document.getElementById('totalAmount').value = ''; // empty initially
+
+    // If you want to auto-fill right side header (like original design) you can:
+    // document.getElementById('rightDateTime').textContent = dd + '/' + mm + '/' + yyyy + ' - ' + format12Hour(h, min);
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

@@ -1,0 +1,248 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Ledger Master</h3>
+
+    <!-- Ledger Form -->
+    <div class="col-xl-6">
+        <div class="card custom-card">
+            <div class="card-header justify-content-between">
+                <h5>{{ editing_ledger.pk|yesno:'Edit,Add' }} Ledger Master</h5>
+            </div>
+
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% if editing_ledger %}
+                        <input type="hidden" name="ledger_id" value="{{ editing_ledger.pk }}">
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Ledger Name</label>
+                            {{ form.ledger_name }}
+                            {% if form.ledger_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.ledger_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Opening Balance</label>
+                            {{ form.opening_balance }}
+                            {% if form.opening_balance.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.opening_balance.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Dr / Cr</label>
+                            {{ form.dr_cr }}
+                            {% if form.dr_cr.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.dr_cr.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+<div class="col-md-6 mb-4">
+    <label class="form-label">Select Under Group</label>
+    <select name="{{ form.under_group.name }}" class="form-select {% if form.under_group.errors %}is-invalid{% endif %}" required>
+        <option value="" disabled selected>Select a Group</option>
+        {% for value, display in form.fields.under_group.choices %}
+            {% if value %}
+                <option value="{{ value }}" {% if form.under_group.value == value %}selected{% endif %}>{{ display }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    {% if form.under_group.errors %}
+        <div class="invalid-feedback d-block">
+            {% for error in form.under_group.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Date</label>
+                            {{ form.date }}
+                            {% if form.date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.date.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mt-3">
+                        <button type="submit" class="btn btn-warning btn-wave">
+                            {{ editing_ledger.pk|yesno:'Update,Save' }}
+                        </button>
+                        <a href="{% url 'masters:ledgermaster' %}" class="btn btn-danger-light btn-wave">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ledger List Table -->
+    <div class="col-xl-6">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Ledger Master List</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <a href="{% url 'masters:export_ledgermaster' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:export_ledgermaster' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#ledgerTable" placeholder="Search...">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap w-100" id="ledgerTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Action</th>
+                                <th>Ledger Name</th>
+                                <th>Opening Balance</th>
+                                <th>Dr/Cr</th>
+                                <th>Under Group</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ledger in ledgers %}
+                            <tr>
+                                <td>{{ forloop.counter0|add:ledgers.start_index }}</td>
+                                <td>
+                                    <a href="?edit={{ ledger.pk }}" class="text-info fs-14 lh-1" title="Edit">
+                                        <i class="ri-edit-line p-2"></i>
+                                    </a>
+                                    {% if ledger.is_used %}
+                                        <a href="javascript:void(0);" class="text-warning fs-14 lh-1" title="Ledger in use">
+                                            <i class="ri-lock-line p-1"></i>
+                                        </a>
+                                    {% else %}
+<form id="delete-form-{{ ledger.pk }}"
+      method="POST"
+      action="{% url 'masters:delete_ledger_master' ledger.pk %}"
+      style="display:inline;">
+    {% csrf_token %}
+    <a href="javascript:void(0);"
+       class="text-danger fs-14 lh-1"
+       title="Delete"
+       onclick="confirmDelete('delete-form-{{ ledger.pk }}')">
+        <i class="ri-delete-bin-5-line"></i>
+    </a>
+</form>
+
+
+
+
+
+
+                                    {% endif %}
+                                </td>
+                                <td>{{ ledger.ledger_name }}</td>
+                                <td>{{ ledger.opening_balance }}</td>
+                                <td>{{ ledger.get_dr_cr_display }}</td>
+                                <td>{{ ledger.under_group.get_under_group_display }}</td>
+                                <td>{{ ledger.date }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4">No Ledger Master found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="card-footer border-top-0">
+                <div class="d-flex align-items-center flex-wrap overflow-auto">
+                    <div class="mb-2 mb-sm-0">
+                        Showing <b>{{ ledgers.start_index }}</b> to <b>{{ ledgers.end_index }}</b> of <b>{{ ledgers.paginator.count }}</b> Ledger Masters
+                    </div>
+                    <div class="ms-auto">
+                        <ul class="pagination mb-0 overflow-auto">
+                            {% if ledgers.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ ledgers.previous_page_number }}">
+                                        <i class="ri-arrow-left-s-line align-middle"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% for i in ledgers.paginator.page_range %}
+                                {% if ledgers.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                {% elif i >= ledgers.number|add:'-2' and i <= ledgers.number|add:'2' %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if ledgers.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ ledgers.next_page_number }}">
+                                        <i class="ri-arrow-right-s-line align-middle"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This ledger will be permanently deleted!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('delete-form-' + id);
+            if (form) {
+                form.submit();
+            }
+        }
+    });
+}
+
+</script>
+
+
+{% endblock %}
+
+
+

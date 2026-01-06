@@ -1,0 +1,244 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Vehicle Type Allocation</h3>
+
+    <!-- ================= FORM ================= -->
+    <div class="col-xl-4">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5>{{ editing_vehicle_type.pk|yesno:"Edit,Add" }} Vehicle Type</h5>
+            </div>
+
+            <div class="card-body">
+                <form method="post" id="VehicleTypeForm" novalidate>
+                    {% csrf_token %}
+
+                    {% if editing_vehicle_type %}
+                        <input type="hidden" name="vehicle_type_id" value="{{ editing_vehicle_type.pk }}">
+                    {% endif %}
+
+                    <!-- Vehicle Type -->
+                    <div class="mb-3">
+                        <label class="form-label">Vehicle Type</label>
+                        {{ form.vehicle_type }}
+                        {% if form.vehicle_type.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.vehicle_type.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Active Status -->
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            {{ form.is_active }}
+                            <label class="form-check-label">Active</label>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning btn-wave">
+                            {{ editing_vehicle_type.pk|yesno:"Update,Save" }}
+                        </button>
+                        <a href="{% url 'masters:vehicle_type_master' %}" class="btn btn-danger-light btn-wave">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= LIST ================= -->
+    <div class="col-xl-8">
+        <div class="card custom-card">
+            <div class="card-header d-flex justify-content-between">
+                <h5 class="mb-0">Vehicle Type List</h5>
+            </div>
+
+            <div class="card-body">
+                <!-- Export + Search -->
+              <div class="d-flex justify-content-between">
+                    <!-- Export Buttons -->
+                    <div class="">
+                        <a href="{% url 'masters:export_vehicle_type_master' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:export_vehicle_type_master' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#searchTable" placeholder="Search...">
+                    </div> 
+                </div><br>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap w-100" id="searchTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Action</th>
+                                <th>Vehicle Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for vt in vehicle_types %}
+                            <tr>
+                                <td>{{ forloop.counter0|add:vehicle_types.start_index }}</td>
+                                <td>
+                                    <a href="?edit={{ vt.id }}" class="text-info">
+                                        <i class="ri-edit-line"></i>
+                                    </a>
+
+                                    {% if vt.is_used %}
+                                        <span class="text-warning ms-2" title="In use">
+                                            <i class="ri-lock-line"></i>
+                                        </span>
+                                    {% else %}
+                                        <a href="javascript:void(0);"
+                                           data-url="{% url 'masters:delete_vehicle_type' vt.id %}"
+                                           class="text-danger delete-btn ms-2">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ vt.vehicle_type }}</td>
+                                <td>
+                                    {% if vt.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4">No vehicle types found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="card-footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        Showing {{ vehicle_types.start_index }} to {{ vehicle_types.end_index }}
+                        of {{ vehicle_types.paginator.count }}
+                    </div>
+
+<ul class="pagination mb-0">
+
+    {% if vehicle_types.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ vehicle_types.previous_page_number }}">
+                <i class="ri-arrow-left-s-line align-middle"></i>
+            </a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">
+                <i class="ri-arrow-left-s-line align-middle"></i>
+            </span>
+        </li>
+    {% endif %}
+
+    {% for i in vehicle_types.paginator.page_range %}
+        {% if vehicle_types.number == i %}
+            <li class="page-item active">
+                <span class="page-link">{{ i }}</span>
+            </li>
+        {% elif i >= vehicle_types.number|add:'-2' and i <= vehicle_types.number|add:'2' %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+
+    {% if vehicle_types.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ vehicle_types.next_page_number }}">
+                <i class="ri-arrow-right-s-line align-middle"></i>
+            </a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">
+                <i class="ri-arrow-right-s-line align-middle"></i>
+            </span>
+        </li>
+    {% endif %}
+
+</ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // DELETE CONFIRMATION
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const url = this.dataset.url;
+
+            Swal.fire({
+                title: 'Are you sure?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = url;
+
+                    const csrf = document.querySelector('[name=csrfmiddlewaretoken]').cloneNode();
+                    form.appendChild(csrf);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // SEARCH
+    document.querySelector(".search-table").addEventListener("input", function () {
+        const value = this.value.toLowerCase();
+        document.querySelectorAll("#searchTable tbody tr").forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(value) ? "" : "none";
+        });
+    });
+
+    // SUCCESS MESSAGE
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ message }}'
+            });
+        {% endif %}
+    {% endfor %}
+});
+</script>
+
+{% endblock %}

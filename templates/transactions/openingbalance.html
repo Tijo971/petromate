@@ -1,0 +1,131 @@
+{% extends "masters/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+  <div class="d-flex align-items-center bg-white p-2 rounded shadow-sm">
+    <div class="d-flex align-items-center gap-3 flex-grow-1">
+      <img src="https://cdn-icons-png.flaticon.com/512/194/194938.png" width="44" class="rounded" alt="avatar">
+      <select class="form-select w-50" aria-label="Select staff">
+        <option selected>!--SELECT STAFF--!</option>
+        <option>staff 1</option>
+        <option>staff 2</option>
+        <option>staff 3</option>
+      </select>
+     
+    </div>
+
+    <div class="ms-auto">
+      <div class="d-flex justify-content-end p-3 pb-0">
+                    <span class="fw-bold" id="rightDateTime" style="font-size:14px;"></span>
+                </div>
+    </div><br>
+  </div><br>
+    <div class="row">
+
+        <!-- LEFT SIDE FORM -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-4">
+
+                <!-- Staff Selection -->
+
+
+                <div class="row">
+                    <!-- Date -->
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold">Date</label>
+                        <input type="date" id="currentDate" class="form-control">
+                    </div>
+
+                    <!-- Time -->
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold">Time</label>
+                        <div class="input-group">
+                            <input type="time" id="currentTime" class="form-control">
+                            <span class="input-group-text">
+                                <i class="bi bi-clock"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opening Balance -->
+                <div class="form-group mb-4">
+                    <label class="fw-bold">Opening Balance</label>
+                    <input type="number" class="form-control" value="0">
+                </div>
+
+                <button class="btn btn-primary px-4">Save</button>
+
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+
+                <!-- TOP RIGHT DATE & TIME -->
+                
+
+                <div class="card-body">
+
+                    <h4 class="mb-4 fw-bold">Staff Sale open Details</h4>
+
+                    <!-- SAMPLE STAFF BLOCK -->
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" width="55" class="me-3">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1 fw-bold">staff 2</h6>
+                            <small class="text-muted">
+                                <i class="bi bi-check-circle text-primary"></i> Not Opened yet
+                            </small>
+                        </div>
+                        <button class="btn btn-danger btn-sm">OPEN NOW</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .bg-purple { background-color: #a64ca6 !important; color: #fff; }
+</style>
+
+<!-- AUTO DATE & TIME SCRIPT -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        let today = new Date();
+
+        // ===== LEFT SIDE AUTO DATE =====
+        let date = today.toISOString().split("T")[0];
+        document.getElementById("currentDate").value = date;
+
+        // ===== LEFT SIDE AUTO TIME =====
+        let hours = String(today.getHours()).padStart(2, "0");
+        let mins = String(today.getMinutes()).padStart(2, "0");
+        document.getElementById("currentTime").value = `${hours}:${mins}`;
+
+        // ===== RIGHT SIDE DATE & TIME DISPLAY =====
+        let formattedDate =
+            today.getDate().toString().padStart(2, "0") + "/" +
+            (today.getMonth() + 1).toString().padStart(2, "0") + "/" +
+            today.getFullYear();
+
+        let formattedTime =
+            today.getHours().toString().padStart(2, "0") + ":" +
+            today.getMinutes().toString().padStart(2, "0");
+
+        document.getElementById("rightDateTime").innerHTML =
+            formattedDate + " - " + formattedTime;
+    });
+</script>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,700 @@
+{% extends "masters/base.html" %} {% load static %} {% block content %}
+
+<style>
+  /* keep the offcanvas list compact */
+  .toc-list {
+    max-height: 60vh;
+    overflow: auto;
+  }
+  /* nicer active page button */
+  .pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+  }
+  /* small scroll hint inside table wrapper */
+  .table-responsive {
+    position: relative;
+  }
+  .scroll-hint {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+  /* ensure th alignment when we measure offsets */
+  table.table th,
+  table.table td {
+    white-space: nowrap;
+  }
+</style>
+
+<div class="row mb-2">
+  <div class="col-8">
+    <h5 class="mb-0">Density Chart</h5>
+  </div>
+
+  <div class="col-4 text-end">
+    <!-- TOC trigger -->
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card custom-card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <!-- Export Buttons -->
+          <div class="">
+            <a href="#" class="btn btn-success">
+              <i class="ri-file-excel-2-line"></i> Export Excel
+            </a>
+            <a href="#" class="btn btn-danger">
+              <i class="ri-file-pdf-line"></i> Export PDF
+            </a>
+          </div>
+          <div class="col-md-3">
+            <input
+              type="search"
+              class="form-control search-table"
+              data-target="#searchTable"
+              placeholder="Search..."
+            />
+          </div>
+        </div>
+        <br />
+
+        <!-- small hint shown over the table -->
+
+        <!-- Bootstrap responsive wrapper -->
+        <div id="tableWrapper" class="table-responsive">
+          <table
+            id="mainTable"
+            class="table table-bordered table-sm align-middle text-nowrap"
+          >
+            <thead class="table-light">
+              <tr>
+                <th data-col="density">Density_id</th>
+                <th data-col="temperature">Temperature</th>
+
+                <!-- Fixed hard-coded columns -->
+                <th data-col="700">700</th>
+                <th data-col="701">701</th>
+                <th data-col="702">702</th>
+                <th data-col="703">703</th>
+                <th data-col="704">704</th>
+                <th data-col="705">705</th>
+                <th data-col="706">706</th>
+                <th data-col="707">707</th>
+                <th data-col="708">708</th>
+                <th data-col="709">709</th>
+                <th data-col="710">710</th>
+                <th data-col="711">711</th>
+                <th data-col="712">712</th>
+                <th data-col="713">713</th>
+                <th data-col="714">714</th>
+                <th data-col="715">715</th>
+                <th data-col="716">716</th>
+                <th data-col="717">717</th>
+                <th data-col="718">718</th>
+                <th data-col="719">719</th>
+                <th data-col="720">720</th>
+                <th data-col="721">721</th>
+                <th data-col="722">722</th>
+                <th data-col="723">723</th>
+                <th data-col="724">724</th>
+                <th data-col="725">725</th>
+                <th data-col="726">726</th>
+                <th data-col="727">727</th>
+                <th data-col="728">728</th>
+                <th data-col="729">729</th>
+                <th data-col="730">730</th>
+                <th data-col="731">731</th>
+                <th data-col="732">732</th>
+                <th data-col="733">733</th>
+                <th data-col="734">734</th>
+                <th data-col="735">735</th>
+                <th data-col="736">736</th>
+                <th data-col="737">737</th>
+                <th data-col="738">738</th>
+                <th data-col="739">739</th>
+                <th data-col="740">740</th>
+                <th data-col="741">741</th>
+                <th data-col="742">742</th>
+                <th data-col="743">743</th>
+                <th data-col="744">744</th>
+                <th data-col="745">745</th>
+                <th data-col="746">746</th>
+                <th data-col="747">747</th>
+                <th data-col="748">748</th>
+                <th data-col="749">749</th>
+                <th data-col="750">750</th>
+                <th data-col="751">751</th>
+                <th data-col="752">752</th>
+                <th data-col="753">753</th>
+                <th data-col="754">754</th>
+                <th data-col="755">755</th>
+                <th data-col="756">756</th>
+                <th data-col="757">757</th>
+                <th data-col="758">758</th>
+                <th data-col="759">759</th>
+                <th data-col="760">760</th>
+                <th data-col="761">761</th>
+                <th data-col="762">762</th>
+                <th data-col="763">763</th>
+                <th data-col="764">764</th>
+                <th data-col="765">765</th>
+                <th data-col="766">766</th>
+                <th data-col="767">767</th>
+                <th data-col="768">768</th>
+                <th data-col="769">769</th>
+                <th data-col="770">770</th>
+                <th data-col="771">771</th>
+                <th data-col="772">772</th>
+                <th data-col="773">773</th>
+                <th data-col="774">774</th>
+                <th data-col="775">775</th>
+                <th data-col="776">776</th>
+                <th data-col="777">777</th>
+                <th data-col="778">778</th>
+                <th data-col="779">779</th>
+                <th data-col="780">780</th>
+                <th data-col="781">781</th>
+                <th data-col="782">782</th>
+                <th data-col="783">783</th>
+                <th data-col="784">784</th>
+                <th data-col="785">785</th>
+                <th data-col="786">786</th>
+                <th data-col="787">787</th>
+                <th data-col="788">788</th>
+                <th data-col="789">789</th>
+                <th data-col="790">790</th>
+                <th data-col="791">791</th>
+                <th data-col="792">792</th>
+                <th data-col="793">793</th>
+                <th data-col="794">794</th>
+                <th data-col="795">795</th>
+                <th data-col="796">796</th>
+                <th data-col="797">797</th>
+                <th data-col="798">798</th>
+                <th data-col="799">799</th>
+                <th data-col="800">800</th>
+                <th data-col="801">801</th>
+                <th data-col="802">802</th>
+                <th data-col="803">803</th>
+                <th data-col="804">804</th>
+                <th data-col="805">805</th>
+                <th data-col="806">806</th>
+                <th data-col="807">807</th>
+                <th data-col="808">808</th>
+                <th data-col="809">809</th>
+                <th data-col="810">810</th>
+                <th data-col="811">811</th>
+                <th data-col="812">812</th>
+                <th data-col="813">813</th>
+                <th data-col="814">814</th>
+                <th data-col="815">815</th>
+                <th data-col="816">816</th>
+                <th data-col="817">817</th>
+                <th data-col="818">818</th>
+                <th data-col="819">819</th>
+                <th data-col="820">820</th>
+                <th data-col="821">821</th>
+                <th data-col="822">822</th>
+                <th data-col="823">823</th>
+                <th data-col="824">824</th>
+                <th data-col="825">825</th>
+                <th data-col="826">826</th>
+                <th data-col="827">827</th>
+                <th data-col="828">828</th>
+                <th data-col="829">829</th>
+                <th data-col="830">830</th>
+                <th data-col="831">831</th>
+                <th data-col="832">832</th>
+                <th data-col="833">833</th>
+                <th data-col="834">834</th>
+                <th data-col="835">835</th>
+                <th data-col="836">836</th>
+                <th data-col="837">837</th>
+                <th data-col="838">838</th>
+                <th data-col="839">839</th>
+                <th data-col="840">840</th>
+                <th data-col="841">841</th>
+                <th data-col="842">842</th>
+                <th data-col="843">843</th>
+                <th data-col="844">844</th>
+                <th data-col="845">845</th>
+                <th data-col="846">846</th>
+                <th data-col="847">847</th>
+                <th data-col="848">848</th>
+                <th data-col="849">849</th>
+                <th data-col="850">850</th>
+                <th data-col="851">851</th>
+                <th data-col="852">852</th>
+                <th data-col="853">853</th>
+                <th data-col="854">854</th>
+                <th data-col="855">855</th>
+                <th data-col="856">856</th>
+                <th data-col="857">857</th>
+                <th data-col="858">858</th>
+                <th data-col="859">859</th>
+                <th data-col="860">860</th>
+                <th data-col="861">861</th>
+                <th data-col="862">862</th>
+                <th data-col="863">863</th>
+                <th data-col="864">864</th>
+                <th data-col="865">865</th>
+                <th data-col="866">866</th>
+                <th data-col="867">867</th>
+                <th data-col="868">868</th>
+                <th data-col="869">869</th>
+                <th data-col="870">870</th>
+                <th data-col="871">871</th>
+                <th data-col="872">872</th>
+                <th data-col="873">873</th>
+                <th data-col="874">874</th>
+                <th data-col="875">875</th>
+                <th data-col="876">876</th>
+                <th data-col="877">877</th>
+                <th data-col="878">878</th>
+                <th data-col="879">879</th>
+                <th data-col="880">880</th>
+                <th data-col="881">881</th>
+                <th data-col="882">882</th>
+                <th data-col="883">883</th>
+                <th data-col="884">884</th>
+                <th data-col="885">885</th>
+                <th data-col="886">886</th>
+                <th data-col="887">887</th>
+                <th data-col="888">888</th>
+                <th data-col="889">889</th>
+                <th data-col="890">890</th>
+                <th data-col="891">891</th>
+                <th data-col="892">892</th>
+                <th data-col="893">893</th>
+                <th data-col="894">894</th>
+                <th data-col="895">895</th>
+                <th data-col="896">896</th>
+                <th data-col="897">897</th>
+                <th data-col="898">898</th>
+                <th data-col="899">899</th>
+                <th data-col="900">900</th>
+              </tr>
+            </thead>
+
+            <tbody id="tableBody">
+              <tr>
+                <td>702</td>
+                <td>703</td>
+                <td>704</td>
+                <td>705</td>
+                <td>706</td>
+                <td>707</td>
+                <td>708</td>
+                <td>709</td>
+                <td>710</td>
+                <td>711</td>
+                <td>712</td>
+                <td>713</td>
+                <td>714</td>
+                <td>715</td>
+                <td>716</td>
+                <td>717</td>
+                <td>718</td>
+                <td>719</td>
+                <td>720</td>
+                <td>721</td>
+                <td>722</td>
+                <td>723</td>
+                <td>724</td>
+                <td>725</td>
+                <td>726</td>
+                <td>727</td>
+                <td>728</td>
+                <td>729</td>
+                <td>730</td>
+                <td>731</td>
+                <td>732</td>
+                <td>733</td>
+                <td>734</td>
+                <td>735</td>
+                <td>736</td>
+                <td>737</td>
+                <td>738</td>
+                <td>739</td>
+                <td>740</td>
+                <td>741</td>
+                <td>742</td>
+                <td>743</td>
+                <td>744</td>
+                <td>745</td>
+                <td>746</td>
+                <td>747</td>
+                <td>748</td>
+                <td>749</td>
+                <td>750</td>
+                <td>751</td>
+                <td>752</td>
+                <td>753</td>
+                <td>754</td>
+                <td>755</td>
+                <td>756</td>
+                <td>757</td>
+                <td>758</td>
+                <td>759</td>
+                <td>760</td>
+                <td>761</td>
+                <td>762</td>
+                <td>763</td>
+                <td>764</td>
+                <td>765</td>
+                <td>766</td>
+                <td>767</td>
+                <td>768</td>
+                <td>769</td>
+                <td>770</td>
+                <td>771</td>
+                <td>772</td>
+                <td>773</td>
+                <td>774</td>
+                <td>775</td>
+                <td>776</td>
+                <td>777</td>
+                <td>778</td>
+                <td>779</td>
+                <td>780</td>
+                <td>781</td>
+                <td>782</td>
+                <td>783</td>
+                <td>784</td>
+                <td>785</td>
+                <td>786</td>
+                <td>787</td>
+                <td>788</td>
+                <td>789</td>
+                <td>790</td>
+                <td>791</td>
+                <td>792</td>
+                <td>793</td>
+                <td>794</td>
+                <td>795</td>
+                <td>796</td>
+                <td>797</td>
+                <td>798</td>
+                <td>799</td>
+                <td>800</td>
+                <td>801</td>
+                <td>802</td>
+                <td>803</td>
+                <td>804</td>
+                <td>805</td>
+                <td>806</td>
+                <td>807</td>
+                <td>808</td>
+                <td>809</td>
+                <td>810</td>
+                <td>811</td>
+                <td>812</td>
+                <td>813</td>
+                <td>814</td>
+                <td>815</td>
+                <td>816</td>
+                <td>817</td>
+                <td>818</td>
+                <td>819</td>
+                <td>820</td>
+                <td>821</td>
+                <td>822</td>
+                <td>823</td>
+                <td>824</td>
+                <td>825</td>
+                <td>826</td>
+                <td>827</td>
+                <td>828</td>
+                <td>829</td>
+                <td>830</td>
+                <td>831</td>
+                <td>832</td>
+                <td>833</td>
+                <td>834</td>
+                <td>835</td>
+                <td>836</td>
+                <td>837</td>
+                <td>838</td>
+                <td>839</td>
+                <td>840</td>
+                <td>841</td>
+                <td>842</td>
+                <td>843</td>
+                <td>844</td>
+                <td>845</td>
+                <td>846</td>
+                <td>847</td>
+                <td>848</td>
+                <td>849</td>
+                <td>850</td>
+                <td>851</td>
+                <td>852</td>
+                <td>853</td>
+                <td>854</td>
+                <td>855</td>
+                <td>856</td>
+                <td>857</td>
+                <td>858</td>
+                <td>859</td>
+                <td>860</td>
+                <td>861</td>
+                <td>862</td>
+                <td>863</td>
+                <td>864</td>
+                <td>865</td>
+                <td>866</td>
+                <td>867</td>
+                <td>868</td>
+                <td>869</td>
+                <td>870</td>
+                <td>871</td>
+                <td>872</td>
+                <td>873</td>
+                <td>874</td>
+                <td>875</td>
+                <td>876</td>
+                <td>877</td>
+                <td>878</td>
+                <td>879</td>
+                <td>880</td>
+                <td>881</td>
+                <td>882</td>
+                <td>883</td>
+                <td>884</td>
+                <td>885</td>
+                <td>886</td>
+                <td>887</td>
+                <td>888</td>
+                <td>889</td>
+                <td>890</td>
+                <td>891</td>
+                <td>892</td>
+                <td>893</td>
+                <td>894</td>
+                <td>895</td>
+                <td>896</td>
+                <td>897</td>
+                <td>898</td>
+                <td>899</td>
+                <td>900</td>
+              </tr>
+              <!-- you can add more <tr> rows here; pagination will work -->
+            </tbody>
+          </table>
+        </div>
+        <!-- /table-responsive -->
+
+        <!-- Pagination controls -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div class="d-flex align-items-center gap-2">
+            <label class="mb-0">Rows per page</label>
+            <select
+              id="rowsPerPage"
+              class="form-select form-select-sm"
+              style="width: 80px"
+            >
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+
+          <nav aria-label="Table pagination">
+            <ul id="pagination" class="pagination mb-0">
+              <!-- pagination items injected by JS -->
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Offcanvas for Table of Contents -->
+<div
+  class="offcanvas offcanvas-start"
+  tabindex="-1"
+  id="tocOffcanvas"
+  aria-labelledby="tocOffcanvasLabel"
+>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="tocOffcanvasLabel">
+      Table of Contents — Columns
+    </h5>
+    <button
+      type="button"
+      class="btn-close text-reset"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body">
+    <p class="small text-muted">
+      Click a column to scroll the table horizontally so that column becomes
+      visible.
+    </p>
+    <div class="toc-list list-group" id="tocList" style="font-size: 14px">
+      <!-- items injected by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // --------------------------
+    // Pagination (client-side)
+    // --------------------------
+    const tableBody = document.getElementById("tableBody");
+    const allRows = Array.from(tableBody.querySelectorAll("tr"));
+    const rowsPerPageSelect = document.getElementById("rowsPerPage");
+    const paginationEl = document.getElementById("pagination");
+
+    let rowsPerPage = parseInt(rowsPerPageSelect.value, 10);
+    let currentPage = 1;
+
+    function renderPagination() {
+      const totalRows = allRows.length;
+      const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+
+      // clamp currentPage
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      // clear and show needed rows
+      allRows.forEach((r, i) => {
+        const pageOfRow = Math.floor(i / rowsPerPage) + 1;
+        r.style.display = pageOfRow === currentPage ? "" : "none";
+      });
+
+      // build pagination buttons
+      paginationEl.innerHTML = "";
+
+      // prev
+      const prevLi = document.createElement("li");
+      prevLi.className = "page-item" + (currentPage === 1 ? " disabled" : "");
+      prevLi.innerHTML = `<button class="page-link">Previous</button>`;
+      prevLi.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderPagination();
+        }
+      });
+      paginationEl.appendChild(prevLi);
+
+      // simple page numbers (if many pages, show a window)
+      const maxButtons = 7;
+      const total = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+      let start = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+      let end = start + maxButtons - 1;
+      if (end > total) {
+        end = total;
+        start = Math.max(1, end - maxButtons + 1);
+      }
+
+      for (let p = start; p <= end; p++) {
+        const li = document.createElement("li");
+        li.className = "page-item" + (p === currentPage ? " active" : "");
+        li.innerHTML = `<button class="page-link">${p}</button>`;
+        li.addEventListener("click", () => {
+          currentPage = p;
+          renderPagination();
+        });
+        paginationEl.appendChild(li);
+      }
+
+      // next
+      const nextLi = document.createElement("li");
+      nextLi.className =
+        "page-item" + (currentPage === total ? " disabled" : "");
+      nextLi.innerHTML = `<button class="page-link">Next</button>`;
+      nextLi.addEventListener("click", () => {
+        if (currentPage < total) {
+          currentPage++;
+          renderPagination();
+        }
+      });
+      paginationEl.appendChild(nextLi);
+    }
+
+    rowsPerPageSelect.addEventListener("change", function () {
+      rowsPerPage = parseInt(this.value, 10);
+      currentPage = 1;
+      renderPagination();
+    });
+
+    // initial render
+    renderPagination();
+
+    // --------------------------
+    // Table of Contents (columns)
+    // --------------------------
+    const table = document.getElementById("mainTable");
+    const tocList = document.getElementById("tocList");
+    const headerCells = Array.from(table.querySelectorAll("thead tr th"));
+
+    // Build TOC items for header cells that have data-col attribute with numeric label
+    headerCells.forEach((th, idx) => {
+      const key = th.getAttribute("data-col") || th.textContent.trim();
+      // we skip density/temp or keep them as top items
+      const label = th.textContent.trim();
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "list-group-item list-group-item-action";
+      item.textContent = label;
+      item.addEventListener("click", function () {
+        // compute the left offset of this column inside the table wrapper
+        const wrapper = document.getElementById("tableWrapper");
+        // find the first visible row cell of this column (use header cell offsetLeft relative to table)
+        // We need offset relative to wrapper.scrollLeft
+        // A robust approach: compute x of the th relative to the table element, then adjust wrapper.scrollLeft.
+        const tableRect = table.getBoundingClientRect();
+        const thRect = th.getBoundingClientRect();
+        const delta = thRect.left - tableRect.left; // position inside table
+        // Scroll wrapper so that that delta is visible at left with small padding
+        const padding = 12;
+        wrapper.scrollTo({
+          left: Math.max(0, wrapper.scrollLeft + delta - padding),
+          behavior: "smooth",
+        });
+        // close offcanvas (if using Bootstrap Offcanvas API)
+        const off = bootstrap.Offcanvas.getInstance(
+          document.getElementById("tocOffcanvas")
+        );
+        if (off) off.hide();
+      });
+      tocList.appendChild(item);
+    });
+
+    // Bonus: support keyboard arrows to navigate pages while focus is inside table
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") {
+        // prev page
+        if (currentPage > 1) {
+          currentPage--;
+          renderPagination();
+        }
+      } else if (e.key === "ArrowRight") {
+        // next page
+        const total = Math.max(1, Math.ceil(allRows.length / rowsPerPage));
+        if (currentPage < total) {
+          currentPage++;
+          renderPagination();
+        }
+      }
+    });
+  });
+</script>
+
+{% endblock %}

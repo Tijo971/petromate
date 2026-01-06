@@ -1,0 +1,185 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Supplier Out Standing Report</h3>
+
+    <!-- ===========================
+            LEFT FILTER FORM
+    ============================ -->
+    <div class="col-xl-4 col-lg-5 col-md-12">
+        <div class="card custom-card">
+            <div class="card-body">
+                <form id="SupplierSearchForm">
+
+                    <!-- ROW 1: REPORT TYPE -->
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="report_type" id="summary" value="summary" checked>
+                                <label class="form-check-label" for="summary">Summary</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="report_type" id="detailed" value="detailed">
+                                <label class="form-check-label" for="detailed">Detailed</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROW 2: DATE RANGE -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">From Date</label>
+                            <input type="date" class="form-control" id="from_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">To Date</label>
+                            <input type="date" class="form-control" id="to_date">
+                        </div>
+                    </div>
+
+                    <!-- ROW 3: SUPPLIER SELECT -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label">Select Supplier</label>
+                            <select class="form-select" id="supplier_select">
+                                <option value="all" selected>All Suppliers</option>
+                                <option value="1">Supplier X</option>
+                                <option value="2">Supplier Y</option>
+                                <option value="3">Supplier Z</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- ROW 4: SHOW BUTTON -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" id="showBtn" class="btn btn-warning btn-wave w-100">Show</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===========================
+            RIGHT TABLE RESULT
+    ============================ -->
+    <div class="col-xl-8 col-lg-7 col-md-12">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Report Result</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <a href="#" class="btn btn-success"><i class="ri-file-excel-2-line"></i> Export Excel</a>
+                        <a href="#" class="btn btn-danger"><i class="ri-file-pdf-line"></i> Export PDF</a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#summaryTable, #detailedTable" placeholder="Search...">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <!-- SUMMARY TABLE -->
+                    <table class="table table-bordered text-nowrap w-100" id="summaryTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl.No</th>
+                                <th>Supplier Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Supplier X</td><td>4500</td></tr>
+                            <tr><td>2</td><td>Supplier Y</td><td>3200</td></tr>
+                            <tr><td>3</td><td>Supplier Z</td><td>5200</td></tr>
+                        </tbody>
+                    </table>
+
+                    <!-- DETAILED TABLE -->
+                    <table class="table table-bordered text-nowrap w-100 d-none" id="detailedTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>Sl.No</th>
+                                <th>Supplier Name</th>
+                                <th>Invoice No</th>
+                                <th>Invoice Date</th>
+                                <th>Vehicle No</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Supplier X</td><td>INV1001</td><td>2025-01-10</td><td>KL07 AB1234</td><td>2500</td></tr>
+                            <tr><td>2</td><td>Supplier X</td><td>INV1002</td><td>2025-01-12</td><td>KL07 CD5678</td><td>2000</td></tr>
+                            <tr><td>3</td><td>Supplier Y</td><td>INV2001</td><td>2025-02-05</td><td>KL08 EF9012</td><td>3200</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const summaryTable = document.getElementById("summaryTable");
+    const detailedTable = document.getElementById("detailedTable");
+    const showBtn = document.getElementById("showBtn");
+    const fromDate = document.getElementById("from_date");
+    const toDate = document.getElementById("to_date");
+
+    // Switch tables based on radio
+    document.querySelectorAll("input[name='report_type']").forEach(radio => {
+        radio.addEventListener("change", function() {
+            toggleTables(this.value);
+        });
+    });
+
+    function toggleTables(type) {
+        if(type === "summary") {
+            summaryTable.classList.remove("d-none");
+            detailedTable.classList.add("d-none");
+        } else {
+            summaryTable.classList.add("d-none");
+            detailedTable.classList.remove("d-none");
+        }
+    }
+
+    // Show button click
+    showBtn.addEventListener("click", function() {
+        if(!fromDate.value || !toDate.value) {
+            alert("Please select both From Date and To Date");
+            return;
+        }
+        if(new Date(fromDate.value) > new Date(toDate.value)) {
+            alert("From Date cannot be greater than To Date");
+            return;
+        }
+        let type = document.querySelector("input[name='report_type']:checked").value;
+        toggleTables(type);
+    });
+
+    // Search tables
+    document.querySelectorAll(".search-table").forEach(el =>
+        el.addEventListener("input", function () {
+            let value = this.value.toLowerCase();
+            document.querySelectorAll("#summaryTable tbody tr, #detailedTable tbody tr").forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+            });
+        })
+    );
+
+});
+</script>
+
+{% endblock %}

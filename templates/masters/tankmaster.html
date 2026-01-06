@@ -1,0 +1,252 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Tank Master</h3>
+
+    <!-- ================= LEFT FORM ================= -->
+    <div class="col-xl-4">
+        <div class="card custom-card">
+            <div class="card-header justify-content-between">
+                <h5>{% if editing_tank %}Edit{% else %}Add{% endif %} Tank Master</h5>
+            </div>
+            <div class="card-body">
+
+                <form method="post" id="TankMasterForm" novalidate>
+                    {% csrf_token %}
+                    {% if editing_tank %}
+                        <input type="hidden" name="tank_id" value="{{ editing_tank.pk }}">
+                    {% endif %}
+
+                    <div class="row">
+
+                        <!-- Tank Name -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">
+                                Tank Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   name="tank_name"
+                                   class="form-control {% if form.tank_name.errors %}is-invalid{% endif %}"
+                                   value="{{ form.tank_name.value|default:'' }}"
+                                   placeholder="Enter Tank Name"
+                                   required>
+
+                            {% if form.tank_name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.tank_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Tank Specify -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Tank Specify</label>
+                            <select name="tank_volume" class="form-select">
+                                {% for value, label in form.fields.tank_volume.choices %}
+                                    <option value="{{ value }}"
+                                        {% if form.tank_volume.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check form-switch">
+                                <input type="checkbox"
+                                       name="is_active"
+                                       class="form-check-input"
+                                       id="is_active"
+                                       value="true"
+                                       {% if editing_tank %}
+                                           {% if editing_tank.is_active %}checked{% endif %}
+                                       {% else %}
+                                           checked
+                                       {% endif %}>
+                                <label class="form-check-label" for="is_active">Active</label>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-warning btn-wave">
+                                {% if editing_tank %}Update{% else %}Save{% endif %}
+                            </button>
+                            <button type="reset" class="btn btn-danger-light btn-wave">
+                                Cancel
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= RIGHT TABLE ================= -->
+    <div class="col-xl-8">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5>Tank Master List</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+
+                    <!-- Export -->
+                    <div>
+                        <a href="{% url 'masters:export_tanks' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:export_tanks' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="col-md-3">
+                        <input type="search"
+                               class="form-control search-table"
+                               data-target="#searchTable"
+                               placeholder="Search...">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap w-100" id="searchTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Action</th>
+                                <th>Tank Name</th>
+                                <th>Tank Specify</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tank in tanks %}
+                            <tr>
+                                <td>{{ forloop.counter0|add:tanks.start_index }}</td>
+                                <td>
+                                    <a href="?edit={{ tank.pk }}" class="text-info">
+                                        <i class="ri-edit-line"></i>
+                                    </a>
+
+                                    {% if not tank.is_used %}
+                                    <a href="javascript:void(0);"
+                                       data-url="{% url 'masters:delete_tank' tank.pk %}"
+                                       class="text-danger delete-btn ms-2">
+                                        <i class="ri-delete-bin-5-line"></i>
+                                    </a>
+                                    {% else %}
+                                    <i class="ri-lock-line text-warning ms-2"></i>
+                                    {% endif %}
+                                </td>
+                                <td>{{ tank.tank_name }}</td>
+                                <td>{{ tank.tank_volume.tank_volume|default:"N/A" }}</td>
+                                <td>
+                                    {% if tank.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    No Tank Master found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+/* ================= TABLE SEARCH ================= */
+function searchTable(e) {
+    const input = e.target;
+    const filter = input.value.toLowerCase();
+    const table = document.querySelector(input.dataset.target);
+    const tbody = table.querySelector("tbody");
+    const rows = tbody.querySelectorAll("tr");
+
+    let visibleRows = 0;
+
+    rows.forEach(row => {
+        if (row.classList.contains("no-data-row")) return;
+
+        if (row.innerText.toLowerCase().includes(filter)) {
+            row.style.display = "";
+            visibleRows++;
+        } else {
+            row.style.display = "none";
+        }
+    });
+
+    // Remove existing "no data" row
+    const oldRow = tbody.querySelector(".no-data-row");
+    if (oldRow) oldRow.remove();
+
+    // Show "No data found"
+    if (visibleRows === 0) {
+        const colCount = table.querySelectorAll("thead th").length;
+        const noRow = document.createElement("tr");
+        noRow.className = "no-data-row";
+        noRow.innerHTML = `
+            <td colspan="${colCount}" class="text-center py-4 text-muted">
+                No data found
+            </td>`;
+        tbody.appendChild(noRow);
+    }
+}
+
+document.querySelectorAll(".search-table")
+    .forEach(el => el.addEventListener("input", searchTable));
+
+/* ================= DELETE CONFIRM ================= */
+document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+        const url = this.dataset.url;
+        Swal.fire({
+            title: "Are you sure?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33"
+        }).then(result => {
+            if (result.isConfirmed) {
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = url;
+
+                const csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrf) {
+                    const token = document.createElement("input");
+                    token.type = "hidden";
+                    token.name = "csrfmiddlewaretoken";
+                    token.value = csrf.value;
+                    form.appendChild(token);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

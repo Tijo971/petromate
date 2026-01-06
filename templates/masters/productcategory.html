@@ -1,0 +1,351 @@
+{% extends "masters/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <h3 class="mt-1 mb-4">Product Category / Type Manage</h3>
+
+    <div class="col-xl-4">
+        <div class="card custom-card">
+            <div class="card-header justify-content-between">
+                <h5>{{ editing_packagetype.pk|yesno:'Edit,Add'}} Product Category / Type</h5>
+            </div>
+            <div class="card-body">
+
+                <!-- Product Category Form -->
+                <form method="post" id="ProductCategoryForm" novalidate>
+                    {% csrf_token %}
+                    {% if editing_packagetype %}
+                        <input type="hidden" name="packagetype_id" value="{{ editing_packagetype.pk }}">
+                    {% endif %}
+
+                    <div class="row">
+                        <!-- Category Type -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Category / Type <span class="text-danger">*</span></label>
+                            <select name="category_type" class="form-select {% if form.category_type.errors %}is-invalid{% endif %}" required>
+                                <option value="" disabled selected>Select an option</option>
+                                <option value="category" {% if form.category_type.value == "category" %}selected{% endif %}>Category</option>
+                                <option value="type" {% if form.category_type.value == "type" %}selected{% endif %}>Type</option>
+                            </select>
+
+                            {% if form.category_type.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.category_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Description</label>
+                            <input type="text"
+                                   name="description"
+                                   class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                                   value="{{ form.description.value|default_if_none:'' }}"
+                                   placeholder="Enter short description">
+
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check form-switch mb-2">
+                                <input type="checkbox" 
+                                    name="is_active" 
+                                    class="form-check-input {% if form.is_active.errors %}is-invalid{% endif %}" 
+                                    id="is_active" 
+                                    value="true"
+                                    {% if editing_packagetype %}
+                                        {% if editing_packagetype.is_active %}checked{% endif %}
+                                    {% else %}
+                                        checked
+                                    {% endif %}>
+                                <label class="form-check-label" for="is_active">Active</label>
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-warning btn-wave">
+                                {{ editing_packagetype.pk|yesno:'Update,Save' }}
+                            </button>
+                            <a href="{% url 'masters:productcategory' %}" class="btn btn-danger-light btn-wave">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Category List Table -->
+    <div class="col-xl-8">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="mb-1">Product Category List</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <!-- Export Buttons -->
+                    <div class="">
+                        <a href="{% url 'masters:export_productcategory' 'excel' %}" class="btn btn-success">
+                            <i class="ri-file-excel-2-line"></i> Export Excel
+                        </a>
+                        <a href="{% url 'masters:export_productcategory' 'pdf' %}" class="btn btn-danger">
+                            <i class="ri-file-pdf-line"></i> Export PDF
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="search" class="form-control search-table" data-target="#searchTable" placeholder="Search...">
+                    </div> 
+                </div>
+                <div class="table-responsive mt-2">
+                    <table class="table table-bordered text-nowrap w-100" id="searchTable">
+                        <thead class="tableth">
+                            <tr>
+                                <th>S.No</th>
+                                <th>Action</th>
+                                <th>Category / Type Name</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in packages %}
+                            <tr>
+                                <td>{{ forloop.counter0|add:packages.start_index }}</td>
+                                <td>
+                                    <!-- Edit -->
+                                    <a href="?edit={{ category.pk }}" class="text-info fs-14 lh-1" title="Edit">
+                                        <i class="ri-edit-line p-2"></i>
+                                    </a>
+                                    <!-- Delete -->
+                                    {% if category.is_used %}
+                                        <a href="javascript:void(0);" class="text-warning fs-14 lh-1" title="Category is in use - Cannot delete">
+                                            <i class="ri-lock-line p-1"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="javascript:void(0);" 
+                                           data-url="{% url 'masters:delete_productcategory' category.pk %}" 
+                                           class="text-danger fs-14 lh-1 delete-btn" 
+                                           title="Delete">
+                                            <i class="ri-delete-bin-5-line"></i>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ category.category_type|capfirst }}</td>
+                                <td>{{ category.description|default:"N/A"|truncatewords:10 }}</td>
+                                <td>
+                                    {% if category.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">No categories found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer border-top-0">
+                <!-- Pagination -->
+                <div class="d-flex align-items-center flex-wrap overflow-auto">
+                    <div class="mb-2 mb-sm-0">
+                        Showing <b>{{ packages.start_index }}</b> to <b>{{ packages.end_index }}</b> 
+                        of <b>{{ packages.paginator.count }}</b> Product Categories  
+                        <i class="bi bi-arrow-right ms-2 fw-medium"></i>
+                    </div>
+                    <div class="ms-auto">
+                        <ul class="pagination mb-0 overflow-auto">
+                            {% if packages.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ packages.previous_page_number }}">
+                                        <i class="ri-arrow-left-s-line align-middle"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link"><i class="ri-arrow-left-s-line align-middle"></i></span>
+                                </li>
+                            {% endif %}
+
+                            {% for i in packages.paginator.page_range %}
+                                {% if packages.number == i %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="javascript:void(0);">{{ i }}</a>
+                                    </li>
+                                {% elif i >= packages.number|add:'-2' and i <= packages.number|add:'2' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if packages.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ packages.next_page_number }}">
+                                        <i class="ri-arrow-right-s-line align-middle"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link"><i class="ri-arrow-right-s-line align-middle"></i></span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.getElementById("ProductCategoryForm");
+    if (form) {
+        form.addEventListener("submit", function(e) {
+            document.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
+            let isValid = true;
+            const field = form.querySelector('select[name="category_type"]');
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            }
+            if (!isValid) e.preventDefault();
+        });
+    }
+
+    // Delete buttons
+    document.querySelectorAll(".delete-btn").forEach(el => el.addEventListener("click", function() {
+        const url = this.getAttribute('data-url');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const f = document.createElement('form');
+                f.method = 'POST';
+                f.action = url;
+                const csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrf) {
+                    const i = document.createElement('input');
+                    i.type = 'hidden';
+                    i.name = 'csrfmiddlewaretoken';
+                    i.value = csrf.value;
+                    f.appendChild(i);
+                }
+                document.body.appendChild(f);
+                f.submit();
+            }
+        });
+    }));
+
+    // Show Django messages via Swal
+    {% if messages %}
+        {% for message in messages %}
+            {% if 'success' in message.tags %}
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: "{{ message|escapejs }}",
+                    confirmButtonColor: '#5bc0de'
+                });
+            {% elif 'error' in message.tags %}
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Duplicate Entry',
+                    text: "{{ message|escapejs }}",
+                    confirmButtonColor: '#d33'
+                });
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+});
+</script>
+{% if duplicate_error %}
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Duplicate Entry',
+    text: "{{ duplicate_error|escapejs }}",
+    confirmButtonColor: '#d33'
+});
+</script>
+{% endif %}
+
+<script>
+function searchTable(e) {
+    const input = e.target;
+    const tableSelector = input.getAttribute('data-target');
+    const table = document.querySelector(tableSelector);
+    const filter = input.value.toLowerCase();
+
+    if (!table) return;
+
+    const tbody = table.querySelector('tbody');
+    const rows = tbody.querySelectorAll('tr');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        // Ignore the "no data found" row
+        if (row.classList.contains('no-data')) return;
+
+        const text = row.textContent.toLowerCase();
+        if (text.includes(filter)) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Check if any rows are visible
+    let noDataRow = tbody.querySelector('.no-data');
+    if (!noDataRow) {
+        noDataRow = document.createElement('tr');
+        noDataRow.classList.add('no-data');
+        noDataRow.innerHTML = `<td colspan="${table.querySelectorAll('th').length}" class="text-center py-4">No data found</td>`;
+        tbody.appendChild(noDataRow);
+    }
+
+    if (visibleCount === 0) {
+        noDataRow.style.display = '';
+    } else {
+        noDataRow.style.display = 'none';
+    }
+}
+
+// Attach the event listener
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll(".search-table").forEach(el => {
+        el.addEventListener("input", searchTable);
+    });
+});
+</script>
+
+
+{% endblock %}
