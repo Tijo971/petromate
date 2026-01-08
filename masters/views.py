@@ -604,102 +604,71 @@ def delete_fuel_rate(request, pk):
     return redirect('masters:fuel_rate')
 
 
-    
-from django.views.generic import TemplateView
-from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404, redirect
-from django.db import transaction
-from django.contrib import messages
-from django.urls import reverse
 
-from .models import Staff, NozzleAllocation, NozzleEntry, Product
-from .forms import StaffForm
-
-class NozzleStaffAllocView(TemplateView):
+class NozzleStaffAllocPageView(TemplateView):
     template_name = "masters/nozil_stf_alloc.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        staff_qs = Staff.objects.all().order_by("-id")
-        paginator = Paginator(staff_qs, 10)
-        page_obj = paginator.get_page(self.request.GET.get("page"))
+        context["staff_list"] = Staff.objects.prefetch_related(
+            "nozzle_allocations"
+        ).order_by("staff_name")
 
-        staff_id = self.request.GET.get("edit")
-        editing_staff = None
-        staff_form = StaffForm()
-    
-        # Fetch allocations for all staff in current page
-        page_staff_ids = [staff.id for staff in page_obj]
-        allocations_qs = NozzleAllocation.objects.filter(
-            staff_id__in=page_staff_ids,
+        context["tank_entries"] = FuelEntry.objects.select_related(
+            "tank", "fuel_type"
+        )
+
+        context["nozzle_entries"] = NozzleEntry.objects.filter(
             is_active=True
         )
 
-        # Map allocations per staff_id
-        staff_alloc_map = {}
-        for alloc in allocations_qs:
-            staff_alloc_map.setdefault(alloc.staff.id, []).append(alloc)
-
-        if staff_id:
-            editing_staff = Staff.objects.filter(id=staff_id).first()
-            if editing_staff:
-                staff_form = StaffForm(instance=editing_staff)
-
-        staff_table_data = []
-        for staff in page_obj:
-            allocations = NozzleAllocation.objects.filter(staff=staff, is_active=True)
-            staff_table_data.append({
-                "staff": staff,
-                "allocations": allocations
-            })
-
-        context.update({
-            "staff_table_data": staff_table_data,
-            "staff_form": staff_form,
-            "staff_list": page_obj,
-            "total_staff": staff_qs.count(),
-            "tank_entries": Product.objects.select_related("tank").filter(tank__is_active=True),
-            "nozzle_entries": NozzleEntry.objects.filter(is_active=True).order_by("nozzle_name"),
-            "editing_staff": editing_staff,
-            "staff_alloc_map": staff_alloc_map,  # <- pass the mapping
-        })
         return context
 
+
+
+
     
-    
+from django.views import View
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.db import transaction
+
+class NozzleStaffAllocSaveView(View):
+
     def post(self, request, *args, **kwargs):
+
         staff_id = request.POST.get("staff_id")
 
-        if staff_id:
-            staff = get_object_or_404(Staff, id=staff_id)
-            staff_form = StaffForm(request.POST, instance=staff)
-        else:
-            staff_form = StaffForm(request.POST)
+        if not staff_id or staff_id == "all-staffs":
+            return JsonResponse({
+                "success": False,
+                "message": "Please select a valid staff"
+            }, status=400)
 
-        if not staff_form.is_valid():
-            context = self.get_context_data()
-            context["staff_form"] = staff_form
-            return self.render_to_response(context)
+        staff = get_object_or_404(Staff, pk=staff_id)
+
+        nozzle_names = request.POST.getlist("nozzle_name[]")
+        tank_names = request.POST.getlist("tank_name[]")
+        product_names = request.POST.getlist("product_name[]")
+
+        if not nozzle_names:
+            return JsonResponse({
+                "success": False,
+                "message": "Please add at least one allocation"
+            }, status=400)
 
         try:
             with transaction.atomic():
-                staff = staff_form.save(commit=False)
-                staff.ip_address = request.META.get("REMOTE_ADDR")
-                staff.save()
 
-                # Clear old allocations
                 NozzleAllocation.objects.filter(staff=staff).delete()
 
-                nozzle_names = request.POST.getlist("nozzle_name")
-                tank_names = request.POST.getlist("tank_name")
-                product_names = request.POST.getlist("product_name")
+                for i, nozzle_name in enumerate(nozzle_names):
+                    nozzle_entry = NozzleEntry.objects.filter(
+                        nozzle_name=nozzle_name,
+                        is_active=True
+                    ).first()
 
-                if not nozzle_names:
-                    raise ValueError("Please allocate at least one nozzle")
-
-                for nozzle_name, tank_name, product_name in zip(nozzle_names, tank_names, product_names):
-                    nozzle_entry = NozzleEntry.objects.filter(nozzle_name=nozzle_name, is_active=True).first()
                     if not nozzle_entry:
                         raise ValueError(f"Invalid nozzle: {nozzle_name}")
 
@@ -707,23 +676,52 @@ class NozzleStaffAllocView(TemplateView):
                         staff=staff,
                         nozzle_entry=nozzle_entry,
                         nozzle_name=nozzle_name,
-                        tank_name=tank_name,
-                        product_name=product_name or "",
+                        tank_name=tank_names[i],
+                        product_name=product_names[i] if i < len(product_names) else "",
                         is_active=True
                     )
 
-            messages.success(request, "Nozzle allocation saved successfully")
-            # Redirect with edit query to show allocations immediately
-            return redirect(f"{reverse('masters:nozzle_staff_alloc')}?edit={staff.id}")
+            return JsonResponse({
+                "success": True,
+                "message": "Nozzle allocation saved successfully"
+            })
 
         except Exception as e:
-            messages.error(request, str(e))
-            return redirect("masters:nozzle_staff_alloc")
-
-
-
-
+            return JsonResponse({
+                "success": False,
+                "message": str(e)
+            }, status=500)
     
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.shortcuts import get_object_or_404
+from .models import NozzleAllocation, Staff  # adjust import if needed
+
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import NozzleAllocation, Staff
+
+
+def nozzle_staff_alloc_delete(request):
+    if request.headers.get("x-requested-with") != "XMLHttpRequest":
+        return JsonResponse({"success": False, "message": "Invalid request"})
+
+    data = json.loads(request.body)
+    alloc_id = data.get("allocation_id")
+
+    allocation = get_object_or_404(NozzleAllocation, pk=alloc_id)
+    allocation.delete()
+
+    return JsonResponse({"success": True, "message": "Allocation deleted"})
+
+
+
+
 from django.views.generic import TemplateView
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
