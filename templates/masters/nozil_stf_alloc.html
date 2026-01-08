@@ -97,6 +97,17 @@
                         <tbody id="editAllocatedBody"></tbody>
                     </table>
 
+                    <div class="row mt-3">
+    <div class="col-md-6">
+        <label for="currentDate" class="form-label">Current Date</label>
+        <input type="text" id="currentDate" class="form-control" >
+    </div>
+    <div class="col-md-6">
+        <label for="currentTime" class="form-label">Current Time</label>
+        <input type="text" id="currentTime" class="form-control" readonly>
+    </div>
+</div>
+
                     <h6 class="fw-bold mt-3">Add Allocation</h6>
 
                     <div class="row g-2">
@@ -368,6 +379,25 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
+<script>
+function updateDateTime() {
+    const now = new Date();
 
+    const date = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0');
+
+    const time = String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0') + ':' +
+        String(now.getSeconds()).padStart(2, '0');
+
+    document.getElementById('currentDate').value = date;
+    document.getElementById('currentTime').value = time;
+}
+
+// Update immediately and then every second
+updateDateTime();
+setInterval(updateDateTime, 1000);
+</script>
 
 {% endblock %}

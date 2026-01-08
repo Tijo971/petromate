@@ -633,6 +633,7 @@ from django.views import View
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from .models import Staff, NozzleAllocation, NozzleEntry
 
 class NozzleStaffAllocSaveView(View):
 
@@ -660,9 +661,10 @@ class NozzleStaffAllocSaveView(View):
 
         try:
             with transaction.atomic():
-
+                # Delete existing allocations for the staff
                 NozzleAllocation.objects.filter(staff=staff).delete()
 
+                # Create new allocations
                 for i, nozzle_name in enumerate(nozzle_names):
                     nozzle_entry = NozzleEntry.objects.filter(
                         nozzle_name=nozzle_name,
@@ -681,6 +683,10 @@ class NozzleStaffAllocSaveView(View):
                         is_active=True
                     )
 
+                # ✅ Update staff field nozzle_applicable
+                staff.nozzle_applicable = 1
+                staff.save(update_fields=['nozzle_applicable'])
+
             return JsonResponse({
                 "success": True,
                 "message": "Nozzle allocation saved successfully"
@@ -691,7 +697,10 @@ class NozzleStaffAllocSaveView(View):
                 "success": False,
                 "message": str(e)
             }, status=500)
-    
+
+
+
+
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -700,12 +709,10 @@ from django.shortcuts import get_object_or_404
 from .models import NozzleAllocation, Staff  # adjust import if needed
 
 
+import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-import json
 from .models import NozzleAllocation, Staff
-
 
 def nozzle_staff_alloc_delete(request):
     if request.headers.get("x-requested-with") != "XMLHttpRequest":
@@ -715,9 +722,17 @@ def nozzle_staff_alloc_delete(request):
     alloc_id = data.get("allocation_id")
 
     allocation = get_object_or_404(NozzleAllocation, pk=alloc_id)
+    staff = allocation.staff  # Get the staff before deleting
+
     allocation.delete()
 
+    # ✅ Update staff nozzle_applicable field to 0 if no allocations left
+    if not NozzleAllocation.objects.filter(staff=staff).exists():
+        staff.nozzle_applicable = 0
+        staff.save(update_fields=['nozzle_applicable'])
+
     return JsonResponse({"success": True, "message": "Allocation deleted"})
+
 
 
 
