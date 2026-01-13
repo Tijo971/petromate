@@ -929,3 +929,7 @@ class NozzleAllocation(models.Model):
     def __str__(self):
         return f"{self.staff.staff_name} - {self.nozzle_name}"
 
+
+
+
+

@@ -735,8 +735,6 @@ def nozzle_staff_alloc_delete(request):
 
 
 
-
-
 from django.views.generic import TemplateView
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
