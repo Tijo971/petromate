@@ -1845,6 +1845,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.contrib import messages
+from django.db.models import Prefetch
+
 
 from .models import (
     Staff,
@@ -1865,14 +1867,17 @@ class StaffMasterView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-       
+        # =========================
         # Staff list with pagination
+        # =========================
         staff_qs = Staff.objects.all().order_by("-id")
         paginator = Paginator(staff_qs, 10)
         page_number = self.request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
+        # =========================
         # Edit staff
+        # =========================
         staff_id = self.request.GET.get("edit")
         staff_form = None
         editing_staff = None
@@ -1887,26 +1892,39 @@ class StaffMasterView(TemplateView):
         if not staff_form:
             staff_form = StaffForm()
 
+        # =========================
+        # ✅ COMBINED TANK + PRODUCT + NOZZLE (FIXED)
+        # =========================
+        tank_entries = TankMaster.objects.filter(
+            is_active=True
+                    ).prefetch_related(
+                Prefetch(
+                    "products",   # ← real related_name
+                        queryset=Product.objects.filter(tank__is_active=True),
+                        to_attr="tank_products"   # ✅ renamed
+                     ),
+                Prefetch(
+                        "nozzle_entries",   # ← real related_name
+                            queryset=NozzleEntry.objects.filter(
+                            is_active=True
+                            ).order_by("nozzle_name"),
+                            to_attr="tank_nozzles"    # ✅ renamed
+                                )
+                    )
 
-
-        # ✅ CONTEXT (ONLY tank_entries UPDATED)
+        # =========================
+        # CONTEXT
+        # =========================
         context.update({
             "staff_form": staff_form,
             "staff_list": page_obj,
             "total_staff": staff_qs.count(),
 
-            # 🔑 Product contains tank_id → use Product
-            "tank_entries": Product.objects.select_related("tank").filter(
-                tank__is_active=True
-            ),
-            
-
-            "nozzle_entries": NozzleEntry.objects.filter(
-                is_active=True
-            ).order_by("nozzle_name"),
+            # 🔑 Combined data via common tank_id
+            "tank_entries": tank_entries,
 
             "editing_staff": editing_staff,
-            "nozzle_allocations": nozzle_allocations,
+        "nozzle_allocations": nozzle_allocations,
         })
 
         return context
@@ -1917,7 +1935,7 @@ class StaffMasterView(TemplateView):
     def post(self, request, *args, **kwargs):
         staff_id = request.POST.get("staff_id")
 
-        # Create / Update staff
+    # Create / Update staff
         if staff_id:
             staff_instance = get_object_or_404(Staff, id=staff_id)
             staff_form = StaffForm(request.POST, instance=staff_instance)
@@ -1931,45 +1949,66 @@ class StaffMasterView(TemplateView):
 
         try:
             with transaction.atomic():
-                # Save staff
+
+            # =====================
+            # SAVE STAFF
+            # =====================
                 staff = staff_form.save(commit=False)
                 staff.ip_address = request.META.get("REMOTE_ADDR")
                 staff.save()
 
-                # Remove old allocations
+            # =====================
+            # CLEAR OLD ALLOCATIONS
+            # =====================
                 NozzleAllocation.objects.filter(staff=staff).delete()
 
-                # Save new allocations
+            # =====================
+            # SAVE NEW ALLOCATIONS
+            # =====================
                 if staff.nozzle_applicable:
-                    nozzle_names = request.POST.getlist("nozzle_name[]")
-                    tank_names = request.POST.getlist("tank_name[]")
-                    product_names = request.POST.getlist("product_name[]")
 
-                    for nozzle_name, tank_name, product_name in zip(
-                        nozzle_names, tank_names, product_names
-                    ):
-                        if not nozzle_name or not tank_name:
+                    nozzle_names = request.POST.getlist("nozzle_name[]")
+                    tank_ids = request.POST.getlist("tank_id[]")
+
+                    for nozzle_name, tank_id in zip(nozzle_names, tank_ids):
+
+                        if not nozzle_name or not tank_id:
                             continue
 
+                    # 🔑 Validate Tank
+                        tank = TankMaster.objects.filter(
+                            id=tank_id,
+                            is_active=True
+                        ).first()
+
+                        if not tank:
+                            raise ValueError("Invalid tank selected")
+
+                    # 🔑 Validate Nozzle belongs to Tank
                         nozzle_entry = NozzleEntry.objects.filter(
+                            tank=tank,
                             nozzle_name=nozzle_name,
                             is_active=True
                         ).first()
 
                         if not nozzle_entry:
                             raise ValueError(
-                                f"Invalid nozzle selected: {nozzle_name}"
+                                f"Nozzle '{nozzle_name}' does not belong to tank '{tank.tank_name}'"
                             )
+
+                    # 🔑 Product for same tank
+                        product = Product.objects.filter(
+                            tank=tank
+                        ).first()
 
                         NozzleAllocation.objects.create(
                             staff=staff,
                             nozzle_entry=nozzle_entry,
                             nozzle_name=nozzle_name,
-                            tank_name=tank_name,
-                            product_name=product_name or "",
+                            tank_name=tank.tank_name,
+                            product_name=product.product_name if product else "",
                             is_active=True
                         )
-
             messages.success(request, "Staff saved successfully")
             return redirect("masters:staffmaster")
 
@@ -1977,6 +2016,8 @@ class StaffMasterView(TemplateView):
             messages.error(request, str(e))
             return redirect("masters:staffmaster")
 
+    
+    
     # =========================
     # ERROR CONTEXT
     # =========================

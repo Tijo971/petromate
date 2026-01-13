@@ -4,33 +4,32 @@
 {% block content %}
 <div class="row">
     <h3 class="mt-1 mb-4">Staff Details</h3>
+        <!-- ========================== STAFF FORM ============================ -->
+        <div class="col-xl-6">
+            <div class="card custom-card">
+                <div class="card-header justify-content-between">
+                    <h5>{{ editing_staff.pk|yesno:'Edit,Add' }} Staff</h5>
+                </div>
 
-    <!-- ========================== STAFF FORM ============================ -->
-    <div class="col-xl-6">
-        <div class="card custom-card">
-            <div class="card-header justify-content-between">
-                <h5>{{ editing_staff.pk|yesno:'Edit,Add' }} Staff</h5>
-            </div>
+                <div class="card-body">
+                    <form method="post" id="StaffForm" novalidate>
+                        {% csrf_token %}
+                        {% if editing_staff %}
+                            <input type="hidden" name="staff_id" value="{{ editing_staff.pk }}">
+                        {% endif %}
 
-            <div class="card-body">
-<form method="post" id="StaffForm" novalidate>
-    {% csrf_token %}
-    {% if editing_staff %}
-        <input type="hidden" name="staff_id" value="{{ editing_staff.pk }}">
-    {% endif %}
-
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label class="form-label">Staff Name <span class="text-danger">*</span></label>
-            {{ staff_form.staff_name }}{{ staff_form.staff_name.errors }}
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Address</label>
-            {{ staff_form.address }}
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Phone</label>
-            {{ staff_form.phone }}{{ staff_form.phone.errors }}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Staff Name <span class="text-danger">*</span></label>
+                                    {{ staff_form.staff_name }}{{ staff_form.staff_name.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Address</label>
+                                    {{ staff_form.address }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone</label>
+                {{ staff_form.phone }}{{ staff_form.phone.errors }}
         </div>
         <div class="col-md-6">
             <label class="form-label">Mobile <span class="text-danger">*</span></label>
@@ -61,17 +60,15 @@
             </div>
         </div>
     </div>
-
     <hr>
-
     <!-- ========================== NOZZLE ALLOCATION ============================ -->
     <div id="nozzleTableContainer" class="d-none">
         <h5 class="mb-3">Add Nozzle</h5>
         <table class="table table-bordered" id="nozzleTable">
             <thead class="table-light">
                 <tr>
-                    <th>Nozzle Name</th>
                     <th>Tank Name</th>
+                    <th>Nozzle Name</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -82,7 +79,7 @@
 
     <div class="mt-3">
         <button type="submit" class="btn btn-warning btn-wave">{{ editing_staff.pk|yesno:'Update,Save' }}</button>
-        <button type="reset" class="btn btn-danger-light btn-wave">Cancel</button>
+        <a href="{% url 'masters:staffmaster' %}" class="btn btn-danger-light btn-wave">Cancel</a>
     </div>
 </form>
             </div>
@@ -222,34 +219,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <!-- ========================== JS for dynamic nozzle allocation ============================ -->
 <script>
-window.NOZZLES = `
-{% for n in nozzle_entries %}
-<option value="{{ n.nozzle_name }}">{{ n.nozzle_name }}</option>
+/* ================= TANK OPTIONS ================= */
+window.TANKS = `
+{% for tank in tank_entries %}
+    <option value="{{ tank.id }}">{{ tank.tank_name }}</option>
 {% endfor %}
 `;
 
-window.TANKS = `
-{% for t in tank_entries %}
-<option value="{{ t.tank.tank_name }}"
-        data-product="{{ t.product_name }}">
-    {{ t.tank.tank_name }}
-</option>
+/* ================= NOZZLES BY TANK ================= */
+window.NOZZLES_BY_TANK_ID = {
+{% for tank in tank_entries %}
+    "{{ tank.id }}": `
+        {% for nozzle in tank.tank_nozzles %}
+            <option value="{{ nozzle.nozzle_name|escapejs }}">
+                {{ nozzle.nozzle_name }}
+            </option>
+        {% endfor %}
+    `,
 {% endfor %}
-`;
+};
+
+/* ================= PRODUCT BY TANK ================= */
+window.PRODUCT_BY_TANK_ID = {
+{% for tank in tank_entries %}
+    "{{ tank.id }}": "{% if tank.tank_products %}{{ tank.tank_products.0.product_name|escapejs }}{% endif %}",
+{% endfor %}
+};
 </script>
+
+
+
 
 <script>
 window.EXISTING_ALLOCATIONS = [
-    {% for a in nozzle_allocations %}
-    {
-        nozzle_name: "{{ a.nozzle_name|escapejs }}",
-        tank_name: "{{ a.tank_name|escapejs }}",
-        product_name: "{{ a.product_name|escapejs }}"
-    },
-    {% endfor %}
+{% for a in nozzle_allocations %}
+{
+    tank_id: "{{ a.tank.id }}",
+    nozzle_name: "{{ a.nozzle_name|escapejs }}",
+    product_name: "{{ a.product_name|escapejs }}"
+},
+{% endfor %}
 ];
-
 </script>
+
+
 
 
 
@@ -262,58 +275,72 @@ document.addEventListener("DOMContentLoaded", function () {
     const tbody = document.querySelector("#nozzleTable tbody");
     const addBtn = document.getElementById("addNozzleRow");
 
-    // 🔒 SAFETY CHECK (THIS WAS MISSING)
-    if (!checkbox || !container || !tbody || !addBtn) {
-        return; // page loaded without form
-    }
+    if (!checkbox || !container || !tbody || !addBtn) return;
 
     function addRow(data = null) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-        <td>
-            <select name="nozzle_name[]" class="form-select">
-                <option value="">Select Nozzle</option>
-                ${window.NOZZLES}
-            </select>
-        </td>
 
-        <td>
-            <select name="tank_name[]" class="form-select tank-select">
-                <option value="">Select Tank</option>
-                ${window.TANKS}
-            </select>
-        </td>
+        const tr = document.createElement("tr");
 
-        <!-- ✅ HIDDEN PRODUCT FIELD -->
-        <td style="display:none;">
-            <input type="hidden"
-                   name="product_name[]"
-                   class="product-name">
-        </td>
+        tr.innerHTML = `
+            <td>
+                <select name="tank_id[]" class="form-select tank-select">
+                    <option value="">Select Tank</option>
+                    ${window.TANKS}
+                </select>
+            </td>
 
-        <td>
-            <button type="button"
-                    class="btn btn-danger btn-sm deleteRow">
-                Delete
-            </button>
-        </td>
-    `;
-    tbody.appendChild(tr);
+            <td>
+                <select name="nozzle_name[]" class="form-select nozzle-select">
+                    <option value="">Select Nozzle</option>
+                </select>
+            </td>
 
-    if (data) {
-        tr.querySelector('[name="nozzle_name[]"]').value = data.nozzle_name;
-        tr.querySelector('[name="tank_name[]"]').value = data.tank_name;
-        tr.querySelector('.product-name').value = data.product_name || "";
+            <td style="display:none;">
+                <input type="hidden"
+                       name="product_name[]"
+                       class="product-name">
+            </td>
+
+            <td>
+                <button type="button"
+                        class="btn btn-danger btn-sm deleteRow">
+                    Delete
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+
+        const tankSelect = tr.querySelector(".tank-select");
+        const nozzleSelect = tr.querySelector(".nozzle-select");
+        const productInput = tr.querySelector(".product-name");
+
+        /* 🔥 CORE LOGIC */
+        tankSelect.addEventListener("change", function () {
+            const tankId = this.value;
+
+            nozzleSelect.innerHTML = '<option value="">Select Nozzle</option>';
+            if (window.NOZZLES_BY_TANK_ID[tankId]) {
+                nozzleSelect.innerHTML += window.NOZZLES_BY_TANK_ID[tankId];
+            }
+
+            productInput.value = window.PRODUCT_BY_TANK_ID[tankId] || "";
+        });
+
+        /* ===== EDIT MODE ===== */
+        if (data) {
+            tankSelect.value = data.tank_id;
+            tankSelect.dispatchEvent(new Event("change"));
+            nozzleSelect.value = data.nozzle_name;
+            productInput.value = data.product_name || "";
+        }
     }
-}
-
-    
 
     function showTable() {
         container.classList.remove("d-none");
         tbody.innerHTML = "";
 
-        if (window.EXISTING_ALLOCATIONS && window.EXISTING_ALLOCATIONS.length) {
+        if (window.EXISTING_ALLOCATIONS?.length) {
             window.EXISTING_ALLOCATIONS.forEach(addRow);
         } else {
             addRow();
@@ -329,14 +356,9 @@ document.addEventListener("DOMContentLoaded", function () {
         checkbox.checked ? showTable() : hideTable();
     });
 
-    // ✅ EDIT MODE AUTO LOAD
-    if (checkbox.checked) {
-        showTable();
-    }
+    if (checkbox.checked) showTable();
 
-    addBtn.addEventListener("click", function () {
-        addRow();
-    });
+    addBtn.addEventListener("click", () => addRow());
 
     document.addEventListener("click", function (e) {
         if (e.target.classList.contains("deleteRow")) {
@@ -348,6 +370,8 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
+
+
 <script>
 document.addEventListener("change", function (e) {
     if (!e.target.classList.contains("tank-select")) return;
@@ -355,10 +379,11 @@ document.addEventListener("change", function (e) {
     const row = e.target.closest("tr");
     const selectedOption = e.target.selectedOptions[0];
 
-    const productName = selectedOption.dataset.product || "";
-    row.querySelector(".product-name").value = productName;
+    row.querySelector(".product-name").value =
+        selectedOption.dataset.product || "";
 });
 </script>
+
 
 
 

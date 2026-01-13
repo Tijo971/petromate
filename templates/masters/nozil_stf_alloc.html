@@ -111,6 +111,22 @@
                     <h6 class="fw-bold mt-3">Add Allocation</h6>
 
                     <div class="row g-2">
+                          <div class="col">
+                            <select class="form-select" id="newTank">
+                                <option value="">-- Select  --</option>
+                                {% for p in tank_entries %}
+                                    <option value="{{ p.tank.tank_name }}">{{ p.tank.tank_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                                                <div class="col">
+                            <select class="form-select" id="newNozzle">
+                                <option value="">-- Select Nozzle --</option>
+                                {% for n in nozzle_entries %}
+                                    <option value="{{ n.nozzle_name }}">{{ n.nozzle_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div class="col">
                             <select class="form-select" id="newProduct">
                                 <option value="">-- Select Product --</option>
@@ -119,20 +135,8 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col">
-                            <select class="form-select" id="newTank">
-                                {% for p in tank_entries %}
-                                    <option value="{{ p.tank.tank_name }}">{{ p.tank.tank_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select class="form-select" id="newNozzle">
-                                {% for n in nozzle_entries %}
-                                    <option value="{{ n.nozzle_name }}">{{ n.nozzle_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                      
+                        
                         <div class="col">
                             <button type="button"
                                     class="btn btn-success w-100"
