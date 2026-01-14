@@ -120,13 +120,23 @@ path(
     path('managecustomerview/', managecustomerview.as_view(), name='managecustomerview'),
     path('indentissueview', indentissueview.as_view(), name='indentissueview'),
     path('customeroutstandingview/', customeroutstandingview.as_view(), name='customeroutstandingview'),
-    path('managesupplierview/', managesupplierview.as_view(), name='managesupplierview'),
+    path('supplier/', SupplierView.as_view(), name='supplier'),
+    path(
+    'supplier/delete/<int:pk>/',
+    delete_supplier,
+    name='delete_supplier'
+    ),
     path('supplieroutstandingview/', supplieroutstandingview.as_view(), name='supplieroutstandingview'),
     path(
         'staff/',
         StaffMasterView.as_view(),
         name='staffmaster'
     ),
+    path(
+    'supplier/export/<str:export_type>/',
+    export_supplier_master,
+    name='export_supplier_master'
+),
     path('staff/delete/<int:pk>/', delete_staff, name='delete_staff'),
 
     path('staffs/export/<str:export_type>/',export_staff_list, name='export_staff'),

@@ -933,3 +933,158 @@ class NozzleAllocation(models.Model):
 
 
 
+from django.db import models
+from django.utils import timezone
+
+
+class Supplier(models.Model):
+
+    DR_CR_CHOICES = (
+        ('Dr', 'Dr'),
+        ('Cr', 'Cr'),
+    )
+
+    # Ledger Connection
+    ledger = models.ForeignKey(
+        'LedgerMaster',
+        on_delete=models.CASCADE,
+        related_name='suppliers',
+        verbose_name="Ledger"
+    )
+
+    # Basic Details
+    supplier_name = models.CharField(
+        max_length=255,
+        verbose_name="Supplier Name"
+    )
+
+    address = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Address"
+    )
+
+    phone = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="Phone"
+    )
+
+    mobile = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="Mobile"
+    )
+
+    contact_person = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Contact Person"
+    )
+
+    contact_person_mobile = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="Mobile"
+    )
+
+    # Tax Details
+    gst_no = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="GST No"
+    )
+
+    pan = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="PAN"
+    )
+
+    tan = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="TAN"
+    )
+
+    # Financial Details
+    open_balance = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        default=0.00,
+        verbose_name="Open Balance"
+    )
+
+    dr_cr = models.CharField(
+        max_length=2,
+        choices=DR_CR_CHOICES,
+        default='Dr',
+        verbose_name="Dr / Cr"
+    )
+
+    credit_period_days = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Credit Period (Days)"
+    )
+
+    # Flags
+    customer = models.BooleanField(
+        default=False,
+        verbose_name="Customer"
+    )
+
+    interstate_supplier = models.BooleanField(
+        default=False,
+        verbose_name="Interstate Supplier"
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Is Active"
+    )
+
+    is_used = models.BooleanField(
+        default=False,
+        verbose_name="Is Used"
+    )
+
+    # Additional Info
+    remark = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Remark"
+    )
+
+    # Date & Tracking
+    date = models.DateField(
+        default=timezone.now,
+        verbose_name="Date"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    ip_address = models.GenericIPAddressField(
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = "Supplier"
+        verbose_name_plural = "Suppliers"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.supplier_name

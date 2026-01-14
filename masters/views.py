@@ -1801,12 +1801,214 @@ class customeroutstandingview(TemplateView):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
     
-class managesupplierview(TemplateView):
+from django.views.generic import TemplateView
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+from django.core.paginator import Paginator
+
+from .models import Supplier, LedgerMaster
+from .forms import SupplierForm
+
+
+class SupplierView(TemplateView):
     template_name = "masters/suppliers/mnge_suppliers.html"
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        suppliers_qs = Supplier.objects.all().order_by('-created_at')
+
+        paginator = Paginator(suppliers_qs, 10)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        supplier_id = self.request.GET.get('edit')
+        form = None
+        editing_supplier = None
+
+        if supplier_id:
+            editing_supplier = get_object_or_404(Supplier, id=supplier_id)
+            form = SupplierForm(instance=editing_supplier)
+            context['editing_supplier'] = editing_supplier
+
+        if not form:
+            form = SupplierForm()
+
+        context.update({
+            'form': form,
+            'suppliers': page_obj,
+            'total_suppliers': suppliers_qs.count(),
+        })
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        supplier_id = request.POST.get('supplier_id')
+
+        if supplier_id:
+            supplier_instance = get_object_or_404(Supplier, id=supplier_id)
+            form = SupplierForm(request.POST, instance=supplier_instance)
+            action = "updated"
+        else:
+            form = SupplierForm(request.POST)
+            action = "created"
+
+        if not form.is_valid():
+            print("FORM ERRORS 👉", form.errors)  # DEBUG
+            context = self.get_context_data()
+            context['form'] = form
+            return self.render_to_response(context)
+
+        supplier_instance = form.save(commit=False)
+
+        # ===============================
+        # 🔴 REQUIRED LEDGER ASSIGNMENT
+        # ===============================
+        ledger = LedgerMaster.objects.first()
+        if not ledger:
+            messages.error(request, "LedgerMaster not found. Please create one first.")
+            context = self.get_context_data()
+            context['form'] = form
+            return self.render_to_response(context)
+
+        supplier_instance.ledger = ledger  # ✅ REQUIRED
+
+        # ===============================
+        # Checkbox handling
+        # ===============================
+        supplier_instance.customer = 'customer' in request.POST
+        supplier_instance.interstate_supplier = 'interstate_supplier' in request.POST
+        supplier_instance.is_active = 'is_active' in request.POST
+
+        # ===============================
+        # IP Address
+        # ===============================
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        supplier_instance.ip_address = (
+            x_forwarded_for.split(',')[0]
+            if x_forwarded_for
+            else request.META.get('REMOTE_ADDR')
+        )
+
+        supplier_instance.save()
+        messages.success(request, f"Supplier {action} successfully!")
+        return redirect('masters:supplier')
+
+
+#   Delete Supplier
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+
+def delete_supplier(request, pk):
+    if request.method == 'POST':
+        supplier = get_object_or_404(Supplier, pk=pk)
+
+        if supplier.is_used:
+            messages.error(
+                request,
+                'This Supplier is already in use and cannot be deleted!'
+            )
+            return redirect('masters:supplier')
+
+        supplier.delete()
+        messages.success(
+            request,
+            'Supplier deleted successfully!'
+        )
+        return redirect('masters:supplier')
+
+    return redirect('masters:supplier')
+
+
+
+
+import csv
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
+
+from .models import Supplier
+
+
+def export_supplier_master(request, export_type):
+    suppliers = Supplier.objects.all().order_by('supplier_name')
+
+    # =======================
+    # EXPORT TO EXCEL (CSV)
+    # =======================
+    if export_type == 'excel':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="Supplier_Master.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'Sl.No',
+            'Supplier Name',
+            'Mobile',
+            'Status'
+        ])
+
+        for idx, supplier in enumerate(suppliers, 1):
+            writer.writerow([
+                idx,
+                supplier.supplier_name,
+                supplier.mobile or '',
+                'Active' if supplier.is_active else 'Inactive'
+            ])
+
+        return response
+
+    # =======================
+    # EXPORT TO PDF
+    # =======================
+    elif export_type == 'pdf':
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="Supplier_Master.pdf"'
+
+        p = canvas.Canvas(response, pagesize=letter)
+        p.setTitle("Supplier Master")
+
+        # Title
+        p.setFont("Helvetica-Bold", 16)
+        p.drawString(50, 750, "Supplier Master List")
+
+        # Table Data
+        data = [['Sl.No', 'Supplier Name', 'Mobile', 'Status']]
+
+        for idx, supplier in enumerate(suppliers, 1):
+            data.append([
+                str(idx),
+                supplier.supplier_name,
+                supplier.mobile or '',
+                'Active' if supplier.is_active else 'Inactive'
+            ])
+
+        table = Table(data, colWidths=[50, 200, 120, 80])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('ALIGN', (1, 1), (1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ]))
+
+        table.wrapOn(p, 500, 600)
+        table.drawOn(p, 40, 650)
+
+        p.showPage()
+        p.save()
+        return response
+
+    return redirect('masters:supplier')
+
+
+
 class supplieroutstandingview(TemplateView):
     template_name = "masters/suppliers/suplers_outstanding.html"
 

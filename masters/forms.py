@@ -1100,3 +1100,157 @@ class NozzleAllocationForm(forms.ModelForm):
             cleaned_data['product_name'] = nozzle_entry.product_name
 
         return cleaned_data
+
+
+
+
+
+
+from django import forms
+from django.utils import timezone
+from .models import Supplier
+import re
+
+
+class SupplierForm(forms.ModelForm):
+
+    supplier_name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter Supplier Name'
+        })
+    )
+
+    # ✅ MOBILE NUMBER – REQUIRED (default validation)
+    mobile = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter Mobile Number'
+        })
+    )
+
+    # ✅ PHONE NUMBER – OPTIONAL (default validation)
+    phone = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter Phone Number'
+        })
+    )
+
+    open_balance = forms.DecimalField(
+        required=True,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'step': '0.01',
+            'placeholder': 'Enter Opening Balance'
+        })
+    )
+
+    dr_cr = forms.ChoiceField(
+        choices=Supplier.DR_CR_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={
+            'class': 'form-select'
+        })
+    )
+
+    date = forms.DateField(
+        initial=timezone.now,
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type': 'date'
+        })
+    )
+
+    class Meta:
+        model = Supplier
+        fields = [
+            'supplier_name',
+            'address',
+            'phone',
+            'mobile',
+            'contact_person',
+            'contact_person_mobile',
+            'gst_no',
+            'pan',
+            'tan',
+            'open_balance',
+            'dr_cr',
+            'credit_period_days',
+            'customer',
+            'interstate_supplier',
+            'remark',
+            'date',
+            'is_active'
+        ]
+
+        widgets = {
+            'address': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Enter Address'
+            }),
+            'contact_person': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Contact Person'
+            }),
+            'contact_person_mobile': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Contact Person Mobile Number'
+            }),
+            'gst_no': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter GST Number'
+            }),
+            'pan': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter PAN Number'
+            }),
+            'tan': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter TAN Number'
+            }),
+            'credit_period_days': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Credit Period in Days'
+            }),
+            'customer': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'interstate_supplier': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'remark': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Enter Remarks'
+            }),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    # =========================
+    # Field Validations
+    # =========================
+
+    def clean_supplier_name(self):
+        name = self.cleaned_data.get('supplier_name')
+
+        if not re.match(r'^[A-Za-z\s]+$', name):
+            raise forms.ValidationError(
+                "Supplier Name must contain only letters and spaces"
+            )
+        return name
+
+    def clean_open_balance(self):
+        balance = self.cleaned_data.get('open_balance')
+        if balance is None:
+            raise forms.ValidationError("Open Balance is required")
+        return balance
+
+    def clean_dr_cr(self):
+        dr_cr = self.cleaned_data.get('dr_cr')
+        if not dr_cr:
+            raise forms.ValidationError("Please select Dr or Cr")
+        return dr_cr
+
+    def clean_date(self):
+        date = self.cleaned_data.get('date')
+        return date or timezone.now().date()
